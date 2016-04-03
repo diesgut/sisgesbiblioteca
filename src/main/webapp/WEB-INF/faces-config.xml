@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!-- =========== FULL CONFIGURATION FILE ================================== -->
+
+<faces-config version="2.0"
+    xmlns="http://java.sun.com/xml/ns/javaee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+
+
+    <application>
+        <resource-bundle>
+            <base-name>Mensajes</base-name>
+            <var>msgs</var>
+        </resource-bundle>
+       <!--     <message-bundle>com.sisgesbib.config.Mensajes</message-bundle>-->
+        <locale-config>
+            <default-locale>es</default-locale>
+            <supported-locale>es</supported-locale>
+        </locale-config>
+    </application>
+   <!--
+    <lifecycle>
+        <phase-listener>com.sisgesbib.util.LoggedInCheck</phase-listener>    
+    </lifecycle> 
+    -->
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>successLogin</from-outcome>
+            <to-view-id>/welcome.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>logOff</from-outcome>
+            <to-view-id>/login.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    <managed-bean>
+        <managed-bean-name>matterMaintenanceMB</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.managed.beans.MatterMaintenanceMB</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+</faces-config>

@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!-- =========== FULL CONFIGURATION FILE ================================== -->
+
+<faces-config version="2.0"
+    xmlns="http://java.sun.com/xml/ns/javaee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+    <managed-bean>
+        <managed-bean-name>usuarioBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.dao.beans.UsuarioBean</managed-bean-class>
+
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>empresaBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.dao.beans.EmpresaBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>sedeBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.dao.beans.SedeBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>sesionUsuarioBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.dao.beans.SesionUsuarioBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>autorBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.dao.beans.AutorBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>temaBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.dao.beans.TemaBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>materiaBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.dao.beans.MateriaBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>categoriaBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.dao.beans.CategoriaBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>menuBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.dao.beans.MenuBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>perfilBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.dao.beans.PerfilBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>editorialBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.dao.beans.EditorialBean</managed-bean-class>
+    
+        <managed-bean-scope>request</managed-bean-scope></managed-bean>
+    <managed-bean>
+        <managed-bean-name>textoBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.dao.beans.TextoBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>ejemplarBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.dao.beans.EjemplarBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>lectorBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.dao.beans.LectorBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>solicitudBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.dao.beans.SolicitudBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>prestamoBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.dao.beans.PrestamoBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+</faces-config>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="solicitud">
+    
+    <insert id="insertaSolicitud"
+            parameterClass="com.sisgesbib.dao.beans.SolicitudBean">
+        insert 
+            Solicitud 
+                (FechaIns,TipoPrestamo,Estado,UsuarioAte,TextoId,LectorId,SedeId)
+        values
+            (sysdate(),#tipoPrestamo#,"E",#usuarioAte#,#textoId#,#lectorId#,#sedeId#)
+    </insert>
+    
+    <select id="cantSolicitudesPend"
+            parameterClass="int"
+            resultClass="int">
+        Select
+            Count(*)
+        From
+            Solicitud
+        Where
+            LectorId=#value# and Estado='E'
+    </select>
+    
+    <select id="getListaSolicitudes"
+            parameterClass="com.sisgesbib.beans.filters.SolicitudPaginacionBean"
+            resultClass="java.util.HashMap">
+        Select
+            sol.SolicitudId     as  solicitudId,
+            sol.FechaIns        as  fechaIns,
+            sol.FechaAte        as  fechaAte,
+            sol.TipoPrestamo    as  tipoPrestamo,
+            sol.Estado          as  estado,
+            sol.UsuarioAte      as  usuarioAte,
+            sol.TextoId         as  textoId,
+            sol.LectorId        as  lectorId,
+            sol.SedeId          as  sedeId,
+            Concat(ApePaterno," ",ApeMaterno,", ",Nombres)  as  nombreLector,
+            tex.CodigoInterno   as  codigoInterno,
+            Nombre              as  nombreTexto,
+            lec.Tipo            as  tipoLector
+        From
+            Solicitud   sol
+        inner join 
+            Lector  lec on  lec.LectorId=sol.LectorId
+        inner join
+            Texto   tex    on  sol.TextoId=tex.TextoId
+        Where
+            Date(sol.FechaIns)  between Date(#dateFrom#) and Date(#dateTo#)
+        <isNotNull property="estado" prepend="and">
+            sol.Estado=#estado#
+        </isNotNull>
+        <isNotNull property="sedeId" prepend="and">
+               sol.SedeId=#sedeId#
+        </isNotNull>
+        <isNotEmpty property="argTipoPrestamo">
+            <iterate property="argTipoPrestamo" prepend="and" open=" sol.TipoPrestamo in (" close=")" conjunction=",">
+                #argTipoPrestamo[]#
+            </iterate>
+        </isNotEmpty>
+    </select>
+    
+    <update id="updateOrderState"
+            parameterClass="com.sisgesbib.dao.beans.SolicitudBean">
+        Update
+            Solicitud
+        Set
+            Estado=#estado#,
+            FechaAte=now()
+        Where
+            SolicitudId=#solicitudId#
+        Limit 1
+    </update>
+    
+</sqlMap>

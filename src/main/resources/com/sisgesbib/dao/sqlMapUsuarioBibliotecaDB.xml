@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="usuario">
+
+    <select id="loginUsuario" 
+            parameterClass="com.sisgesbib.dao.beans.UsuarioBean" 
+            resultClass="com.sisgesbib.dao.beans.UsuarioBean">
+        Select
+                UsuarioId           as  usuarioId,
+                Login               as  login,
+                Nombre              as  nombre,
+                Estado              as  estado,
+                ApePaterno          as  apePaterno,
+                ApeMaterno          as  apeMaterno,
+                IntInvalidos        as  intInvalidos
+        from
+                Usuario
+            where
+                Login=#login#
+            and
+                Contraseña=AES_ENCRYPT(#contraseña#,#keyAes#)
+    </select>
+
+    <select id="validaLogin" 
+            parameterClass="com.sisgesbib.dao.beans.UsuarioBean" 
+            resultClass="com.sisgesbib.dao.beans.UsuarioBean">
+        Select
+                UsuarioId           as  usuarioId,
+                IntInvalidos        as  intInvalidos,
+                Login               as  login,
+                Estado              as  estado,
+                Nombre              as  nombre,
+                ApePaterno          as  apePaterno,
+                ApeMaterno          as  apeMaterno,
+                Email               as  email
+	from
+            Usuario
+        <dynamic prepend="WHERE">
+            <isNotNull prepend="AND" property="login" >
+                Login    =  #login#
+            </isNotNull>
+            <isNotNull prepend="AND" property="email" >
+                Email    =  #email#
+            </isNotNull>
+            <isNotNull prepend="AND" property="estado" >
+                Estado  =   #estado#
+            </isNotNull>
+        </dynamic>
+    </select>
+
+    <update id="invalidAttemps" 
+            parameterClass="com.sisgesbib.dao.beans.UsuarioBean">
+        Update
+                Usuario set IntInvalidos=#intInvalidos#
+                where   UsuarioId=#usuarioId#
+    </update>
+
+    <update id="usuarioUpdateStatus" 
+            parameterClass="com.sisgesbib.dao.beans.UsuarioBean">
+        Update
+                Usuario set Estado=#estado#
+                where   UsuarioId=#usuarioId#
+    </update>
+    
+    <select id="getInfoForUserSession"
+            parameterClass="java.util.Map"
+            resultClass="com.sisgesbib.dao.beans.SesionUsuarioBean">
+        Select
+            e.EmpresaId   as  empresaId,
+            e.Nombre      as  nombreEmpresa,
+            s.SedeId      as  sedeId,
+            s.Nombre      as  nombreSede,
+            p.PerfilId    as  perfilId,
+            p.Nombre      as  nombrePerfil,
+            s.Direccion   as  direccionSede
+        From
+            Empresa e
+        inner join
+            Sede    s   on  e.EmpresaId=s.EmpresaId
+        inner join
+            UsuarioSedePerfil   usp     on  s.SedeId=usp.SedeId
+        inner join
+            Perfil  p   on  p.PerfilId=usp.PerfilId
+        Where
+            s.SedeId=#sedeId#  and usp.UsuarioId=#userId#
+    </select>
+    
+    <select id="getListaUsers" 
+            parameterClass="com.sisgesbib.dao.beans.UsuarioBean"
+            resultClass="com.sisgesbib.beans.filters.UsuarioPaginationBean">
+        Select
+            UsuarioId   as  usuarioId,
+            Nombre      as  nombre,
+            ApePaterno  as  apePaterno,
+            ApeMaterno  as  apeMaterno,
+            Email       as  email,
+            Login       as  login,
+            IntInvalidos    as  intInvalidos,
+            FechaIns    as  fechaIns,
+            FechaAct    as  fechaAct,
+            Estado      as  estado
+        From
+            Usuario  
+        <dynamic prepend="where">
+            <isNotEmpty property="login" prepend="and">
+                Login like '%$login$%'
+            </isNotEmpty>
+            <isNotEmpty property="nombre" prepend="and">
+                Concat(Nombre," ",ApePaterno," ",ApeMaterno) like '%$nombre$%'
+            </isNotEmpty>
+            <isNotEmpty property="email" prepend="and">
+                Email like '%$email$%'
+            </isNotEmpty>
+        </dynamic>    
+        Order By
+            ApePaterno
+    </select>
+
+    <select id="usernameValidate"
+            parameterClass="com.sisgesbib.dao.beans.UsuarioBean"
+            resultClass="int">
+        Select
+            Count(*)
+        From
+            Usuario
+        Where
+            Login=#login#
+    </select>
+    
+    <select id="validateLoginChange" parameterClass="com.sisgesbib.dao.beans.UsuarioBean" resultClass="int">
+        Select
+            Count(*)
+        From
+            Usuario
+        Where
+            Login=#login# and
+            UsuarioId!=#usuarioId#
+    </select>
+
+    <insert id="insertaUsuario" parameterClass="com.sisgesbib.dao.beans.UsuarioBean">
+        insert Usuario
+            (Nombre,ApePaterno,ApeMaterno,Email,Login,Contraseña,IntInvalidos,FechaIns,Estado)
+        values
+            (#nombre#,#apePaterno#,#apeMaterno#,#email#,#login#,Aes_Encrypt(#contraseña#,#keyAes#),#intInvalidos#,now(),#estado#)
+    </insert>
+    
+    <update id="updateUsuario" 
+            parameterClass="com.sisgesbib.dao.beans.UsuarioBean">
+        Update 
+            Usuario
+        Set
+            Nombre=#nombre#,
+            ApePaterno=#apePaterno#,
+            ApeMaterno=#apeMaterno#,
+            Email=#email#,
+            Login=#login#,
+            IntInvalidos=#intInvalidos#,
+            FechaAct=now(),
+            Estado=#estado#
+        Where
+            UsuarioId=#usuarioId#
+    </update>
+    
+    <update id="changeUserPassword"
+            parameterClass="com.sisgesbib.dao.beans.UsuarioBean">
+        Update
+            Usuario
+        Set
+            Contraseña=AES_ENCRYPT(#contraseña#,#keyAes#)
+        Where
+            UsuarioId=#usuarioId#
+    </update>
+
+</sqlMap>

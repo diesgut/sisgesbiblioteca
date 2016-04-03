@@ -1,0 +1,362 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="/templates/main.xhtml">
+        <ui:define name="body">
+
+            <script type="text/javascript" language="javasciprt">
+                function processOrder(conf){
+                    if(conf=='success'){
+                       showModalPanel('modalConfirmarSolicitud')
+                    }else if(conf=='solPend'){
+                       showModalPanel('modalSolicitudPendiente')
+                    }else if(conf=='presCur'){
+                        showModalPanel('modalPrestamoEnCurso');
+                    }
+                    
+                }
+            </script>
+
+            <h:form id="frmSolicitud">
+                <a4j:outputPanel id="opnlSolicitud">
+                    <table width="100%">
+                        <tr>
+                            <td>
+                                <rich:tabPanel style="width: 100%;">
+                                    <rich:tab header="Localizacion">
+                                        <table>
+                                            <tr>
+                                                <td width="100">
+                                                    <h:outputText value="Local:"/>
+                                                </td>
+                                                <td>
+                                                    <h:inputText 
+                                                        value="#{sesionUsuarioBean.nombreSede} - #{sesionUsuarioBean.direccionSede}"
+                                                        size="45" disabled="true"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </rich:tab>
+                                </rich:tabPanel>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <rich:tabPanel style="width: 100%;">
+                                    <rich:tab header="Datos del Texto">
+                                        <table>
+                                            <tr>
+                                                <td width="100">
+                                                    <h:outputText value="Codigo:"
+                                                                  />
+                                                </td>
+                                                <td>
+                                                    <h:inputText id="txtTextoId"
+                                                                 value="#{textoBean.textoId}"
+                                                                 disabled="true"/>
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="Categoria:"/>
+                                                </td>
+                                                <td colspan="3">
+                                                    <h:inputText id="txtCategory" 
+                                                                 size="40"
+                                                                 value="#{viewCategoria}"
+                                                                 disabled="true"/>
+                                                    &nbsp;
+                                                    <a4j:commandButton id="btnConsultarText"
+                                                                       value="#{msgs.buttonConsultar}"
+                                                                       onclick="showModalPanel('modalSearchText');return false;"/>
+                                                    &nbsp; &nbsp;
+                                                
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <h:outputText value="Texto:"/>
+                                                </td>
+                                                <td colspan="5">
+                                                    <h:inputText size="90" 
+                                                                 value="#{textoBean.nombre}"
+                                                                 disabled="true"
+                                                                 />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <h:outputText value="Autor(es):"/>
+                                                </td>
+                                                <td colspan="5">
+                                                    <h:inputText size="55" 
+                                                                 value="#{viewAutores}"
+                                                                 disabled="true"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <h:outputText value="Edicióm:"/>
+                                                </td>
+                                                <td>
+                                                    <h:inputText value="#{textoBean.edicion}"
+                                                                 disabled="true"/>
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="Año:"/>
+                                                </td>
+                                                <td>
+                                                    <h:inputText value="#{textoBean.añoEdicion}"
+                                                                 disabled="true" />
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="Pais:" rendered="false"/>
+                                                </td>
+                                                <td>
+                                                    <h:inputText value="#{viewPais}"
+                                                                 disabled="true" rendered="false"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <h:outputText value="Tomo:"/>
+                                                </td>
+                                                <td>
+                                                    <h:inputText value="#{textoBean.tomo}" 
+                                                                 disabled="true"/>
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="Editorial:"/>
+                                                </td>
+                                                <td>
+                                                    <h:inputText value="#{viewEditorial}" 
+                                                                 disabled="true"/>
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="Páginas:"/>
+                                                </td>
+                                                <td>
+                                                    <h:inputText value="#{textoBean.numeroPaginas}"
+                                                                 disabled="true"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </rich:tab>
+                                </rich:tabPanel>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <rich:tabPanel style="width: 100%;">
+                                    <rich:tab header="Datos del Lector">
+                                        <table >
+                                            <tr>
+                                                <td width="100">
+                                                    <h:outputText value="Tipo de Prestamo : "/>
+                                                </td>
+                                                <td>
+                                                    <h:selectOneMenu id="cboTipoPres"
+                                                                     value="#{reqTipoPrestamo}"
+                                                                     >
+                                                        <f:selectItem itemLabel="Sala" itemValue="S"/>
+                                                        <f:selectItem itemLabel="Domicilio" itemValue="D"/>
+                                                    </h:selectOneMenu>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <h:outputText value="Tipo de Usuario : "/>
+                                                </td>
+                                                <td>
+                                                    <h:selectOneMenu id="cboTipoLector"
+                                                                     value="#{lectorBean.tipo}">
+                                                        <f:selectItem itemLabel="Estudiante" itemValue="E"/>
+                                                        <f:selectItem itemLabel="Docentes y Pers. Adm" itemValue="P"/>
+                                                    </h:selectOneMenu>
+                                                </td>
+                                            </tr>
+                                            <!--    <tr>
+                                                       <td>
+                                                           <h:outputText value="Procedencia : "/>
+                                                       </td>
+                                                       <td>
+                                                           <h:selectOneMenu id="cboProc">
+                                                               <f:selectItem itemLabel="#{msgs.fieldStudent}" itemValue="E"/>
+                                                               <f:selectItem itemLabel="#{msgs.fieldPerAdm}" itemValue="P"/>
+                                                           </h:selectOneMenu>
+                                                       </td>
+                                                   </tr> -->
+                                            <tr>
+                                                <td style="white-space: nowrap;">
+                                                    <h:outputText value="Ingrese su Codigo : "/>
+                                                </td>
+                                                <td style="white-space: nowrap;">
+                                                    <h:inputText id="txtCodLector"
+                                                                 value="#{lectorBean.codigo}"
+                                                                 autocomplete="off"/>
+                                                    &nbsp;
+                                                    <a4j:commandButton id="cmbConsultarLector"
+                                                                       value="Confirmar"
+                                                                       execute="txtCodLector,cboTipoLector,cboTipoPres"
+                                                                       action="#{consultarTextosMB.validateReader()}"
+                                                                       render="frmSolicitud:txtFullName,richMsgReqText,frmConfirm:opnlConfirm"
+                                                                       limitRender="true" 
+                                                                       oncomplete="processOrder('#{confirmar}')"
+                                                                       >
+                                                        <a4j:param value="#{textoBean.textoId}" assignTo="#{textoBean.textoId}"/>
+                                                        <a4j:param value="#{textoBean.nombre}" assignTo="#{textoBean.nombre}"/>
+                                                    </a4j:commandButton>
+                                                    &nbsp;
+                                                    <a4j:commandButton value="#{msgs.buttonCancel}"
+                                                                       action="#{consultarTextosMB.cancelOrder()}"
+                                                                       render="opnlSolicitud"/>
+                                                    <rich:message id="richMsgReqText" for="frmSolicitud:cmbConsultarLector"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="white-space: nowrap;">
+                                                    <h:outputText value="Apellidos y Nombres : "/>
+                                                </td>
+                                                <td style="white-space: nowrap;">
+                                                    <h:inputText id="txtFullName" value="#{lectorBean.apePaterno} #{lectorBean.apeMaterno}, #{lectorBean.nombres}"
+                                                                 size="40"
+                                                                 disabled="true"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </rich:tab>
+                                </rich:tabPanel>
+                            </td>
+                        </tr>
+                    </table>
+                </a4j:outputPanel>   
+            </h:form>
+
+            <rich:popupPanel id="modalConfirmarSolicitud"
+                             header="#{msgs.tittleConfirmLoan}"
+                             modal="true"
+                             autosized="true"
+                             moveable="false"
+                             >
+                <h:form id="frmConfirm">
+                    <a4j:outputPanel id="opnlConfirm">
+                        <table>
+                            <tr>
+                                <td>
+                                    <h:outputFormat value="#{msgs.messageConifirmLoan}" 
+                                                    escape="false"
+                                                    style="font-size: 12px;">
+                                        <f:param value="#{lectorBean.apePaterno}"/>
+                                        <f:param value="#{lectorBean.apeMaterno}"/>
+                                        <f:param value="#{lectorBean.nombres}"/>
+                                        <f:param value="#{textoBean.nombre}"/>
+                                    </h:outputFormat>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center">
+                                    <a4j:commandButton id="cmbConfirm"
+                                                       value="#{msgs.buttonConfirm}"
+                                                       action="#{consultarTextosMB.confirmaSolicitud()}"
+                                                       render="opnlSolicitud"
+                                                       oncomplete="alert('#{msgs.messageSuccessRegisterOrder}');#{rich:component('modalConfirmarSolicitud')}.hide();"
+                                                       >
+                                        <a4j:param value="#{lectorBean.lectorId}" assignTo="#{lectorBean.lectorId}"/>
+                                        <a4j:param value="#{lectorBean.tipo}" assignTo="#{lectorBean.tipo}"/>
+                                        <a4j:param value="#{textoBean.textoId}" assignTo="#{textoBean.textoId}"/>
+                                        <a4j:param value="#{reqTipoPrestamo}" assignTo="#{reqTipoPrestamo}"/>
+                                    </a4j:commandButton>
+
+                                    &nbsp; <!--    action="#{consultarTextosMB.cancelOrder()}" -->
+                                    <a4j:commandButton value="#{msgs.buttonCancel}"
+                                                       render="opnlSolicitud"
+                                                       onclick="#{rich:component('modalConfirmarSolicitud')}.hide();return false;"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </a4j:outputPanel>
+                </h:form> 
+            </rich:popupPanel>
+            
+            <rich:popupPanel id="modalSolicitudPendiente"
+                             header="#{msgs.titleOrderPending}"
+                             modal="true"
+                             autosized="true"
+                             moveable="false"
+                             >
+                <h:form id="frmOrderPending">
+                    <a4j:outputPanel id="onplOrderPend">
+                        <table>
+                            <tr>
+                                <td>
+                                    <h:outputFormat value="#{msgs.messageOrderPending}" 
+                                                    escape="false"
+                                                    style="font-size: 12px;">
+                                    </h:outputFormat>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center">
+                                   
+                                    <a4j:commandButton value="#{msgs.buttonOk}"
+                                                       action="#{consultarTextosMB.cancelOrder()}"
+                                                       render="opnlSolicitud"
+                                                       oncomplete="#{rich:component('modalSolicitudPendiente')}.hide()"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </a4j:outputPanel>
+                </h:form> 
+            </rich:popupPanel>
+            
+            <rich:popupPanel id="modalPrestamoEnCurso"
+                             header="#{msgs.tittleLoanEnCurso}"
+                             modal="true"
+                             autosized="true"
+                             moveable="false"
+                             >
+                <h:form id="frmPrestamoEnCurso">
+                    <a4j:outputPanel id="onplPrestamoEnCurso">
+                        <table>
+                            <tr>
+                                <td>
+                                    <h:outputFormat value="#{msgs.messagePrestamoEnCurso}" 
+                                                    escape="false"
+                                                    style="font-size: 12px;">
+                                    </h:outputFormat>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center">
+                                   
+                                    <a4j:commandButton value="#{msgs.buttonOk}"
+                                                       action="#{consultarTextosMB.cancelOrder()}"
+                                                       render="opnlSolicitud"
+                                                       oncomplete="#{rich:component('modalPrestamoEnCurso')}.hide()"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </a4j:outputPanel>
+                </h:form> 
+            </rich:popupPanel>
+
+            <rich:popupPanel id="modalSearchText"
+                             header="Buscar Texto"
+                             modal="true"
+                             show="true"
+                             autosized="true"
+                             width="700"
+                             height="440"
+                             onbeforeshow="$('[id=\'frmResult:lblNoData\']').css('display','none');"
+                             >
+                <ui:include src="/library/includes/servicios/consultartexto.xhtml" />
+            </rich:popupPanel>
+
+
+
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,599 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="/templates/main.xhtml">
+        <ui:define name="body">
+
+            <table width="100%">
+                <tr>
+                    <td align="left">
+                        <h:outputText styleClass="tittlePage"
+                                      value="#{msgs.tittlePublishingMaintenance}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:form id="frmSearchUser"
+                                >
+                            <h:inputHidden value="#{publishingMaintenanceMB.initPage}"/>
+                            <rich:tabPanel>
+                                <rich:tab header="#{msgs.labelFilters}">
+
+
+                                    <table width="100%">
+                                        <tr>
+                                            <td style="white-space: nowrap;width: 170px;"  align="left">
+                                                <h:outputText value="#{msgs.fieldName}" /> &nbsp;
+                                                <h:inputText id="txtUserName" 
+                                                             value="#{editorialPaginationBean.nombre}"
+                                                             maxlength="20"
+                                                             autocomplete="off"
+                                                             />
+                                            </td>
+                                            <td style="white-space: nowrap;width: 300px;"  align="left">
+                                                <h:outputText value="#{msgs.fieldCountry}" /> &nbsp;
+                                                <h:selectOneMenu id="cboCountry"
+                                                                 value="#{editorialPaginationBean.paisId}">
+                                                    <f:selectItem itemValue="-1" itemLabel="#{msgs.fieldSelect}"/>
+                                                    <f:selectItems value="#{viewMapCountry}"/>
+                                                    <a4j:ajax event="change"
+                                                              listener="#{publishingMaintenanceMB.loadCityByCountry}"
+                                                              render="frmSearchUser:cboCity"
+                                                              limitRender="true"
+                                                              status="statusCountryLoading"
+                                                              execute="@this"/>
+                                                </h:selectOneMenu>
+                                            </td>
+                                            <td style="white-space: nowrap;width: 300px;"  align="left">
+                                                <h:outputText value="#{msgs.fieldCity}" /> &nbsp;
+                                                <h:selectOneMenu id="cboCity"
+                                                                 value="#{editorialPaginationBean.ciudadId}">
+                                                    <f:selectItem itemValue="-1" itemLabel="#{msgs.fieldSelect}"/>
+                                                    <f:selectItems value="#{viewMapCity}"/>
+                                                </h:selectOneMenu>
+                                                <span id="spnCountryLoading" style="display: none;">
+                                                    <img style="position: absolute;"  
+                                                         src="../../../images/loading/little-loading.gif"/>
+                                                </span>
+                                            </td>
+
+                                            <td style="white-space: nowrap;" align="right">
+                                                &nbsp; &nbsp;
+                                                <a4j:commandButton id="cmdSearch"
+                                                                   value="#{msgs.buttonSearch}"
+                                                                   action="#{publishingMaintenanceMB.listaEditorial}"
+                                                                   execute="@form"
+                                                                   render="pnlPublishingMaint"
+                                                                   limitRender="true"
+                                                                   />
+                                                &nbsp; 
+                                                <a4j:commandButton id="btnNewUser"
+                                                                   value="#{msgs.buttonNew}"
+                                                                   onclick="showModalPanel('modalNewPublishing');return false;"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </rich:tab>
+                            </rich:tabPanel>
+                        </h:form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:form id="frmPublishingMaintenance">
+                            <rich:panel id="pnlPublishingMaint" style="width: 100%;">
+
+                                <rich:dataScroller for="edtbPublishingrMaint"
+                                                   maxPages="5" />
+
+                                <rich:extendedDataTable id="edtbPublishingrMaint" rows="13"
+                                                        value="#{editorialPaginationBean.listaPublishing}"
+                                                        var="pub"
+                                                        style="width:  900px;height: 350px;"
+                                                        frozenColumns="2" noDataLabel="#{msgs.messageNoData}"
+                                                        >
+
+                                    <rich:column styleClass="columnCenter"
+                                                 width="30px">
+                                        <f:facet name="header">
+
+                                        </f:facet> 
+                                        <a4j:commandLink actionListener="#{publishingMaintenanceMB.selectPublishing}"
+                                                         render="opnlupdPublishing,lblUpdPub"
+                                                         oncomplete="showModalPanel('modalupdPublishing')" 
+                                                         execute="@this"
+                                                         limitRender="true"
+                                                         >
+                                            <h:graphicImage value="/images/updated.png"
+                                                            style="cursor:pointer;border: 0;"
+                                                            width="10px" height="15px"/>
+                                            <f:attribute name="pubSelected" value="#{pub}"/>
+                                        </a4j:commandLink>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 sortBy="#{pub.nombre}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldName}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{pub.nombre}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldCountry}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{pub.nombrePais}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldCity}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{pub.nombreCiudad}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="200px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldAddress}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{pub.direccion}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="150px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldEmail}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{pub.email}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="150px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldWeb}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{pub.web}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldPhone}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{pub.telefono}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldMovil}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{pub.movil}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnCenter"
+                                                 width="60px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldState}"/>
+                                        </f:facet>
+                                         <h:graphicImage value="#{pub.estado == true ? '/images/icons/enable.png' : '/images/icons/disable.png'}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldDateTimeIns}">
+                                                <f:convertDateTime pattern="#{msgs.datePattern}"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                        <h:outputText value="#{pub.fechaIns}">
+                                            <f:convertDateTime pattern="#{msgs.datePattern}"/>
+                                        </h:outputText>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldUserIns}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{pub.nomUsuIns}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldDateTimeUpd}">
+                                                <f:convertDateTime pattern="#{msgs.datePattern}"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                        <h:outputText value="#{pub.fechaAct}">
+                                            <f:convertDateTime pattern="#{msgs.datePattern}"/>
+                                        </h:outputText>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldUserUpd}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{pub.nomUsuAct}"/>
+                                    </rich:column>
+
+                                </rich:extendedDataTable>
+
+                                <rich:dataScroller for="edtbPublishingrMaint"
+                                                   maxPages="5" />
+
+                            </rich:panel>
+                        </h:form>
+                    </td>
+                </tr>
+            </table>
+
+
+            <rich:popupPanel id="modalNewPublishing" 
+                             autosized="true"
+                             resizeable="false" domElementAttachment="parent"
+                             header="#{msgs.tittleNewPublishing}"
+                             onshow="jQuery('[id=\'frmNewPublishing:txtName\']').focus()"
+                             onbeforeshow="cleanForm('frmNewPublishing','lblErrorNewEditorial','frmNewPublishing:richMsgErrorNewEditorial')"  
+                             modal="true">
+                <h:form id="frmNewPublishing"
+                        >
+                    <a4j:outputPanel id="opnlNewPublishing">
+                        <table width="280">
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="#{msgs.fieldName}"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:inputText id="txtName"
+                                                 value="#{editorialBean.nombre}"
+                                                 label="#{msgs.fieldName}"
+                                                 required="true"
+                                                 autocomplete="off"
+                                                 />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="#{msgs.fieldAddress}"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:inputText id="txtAddress"
+                                                 value="#{editorialBean.direccion}"
+                                                 label="#{msgs.fieldAddress}"
+                                                 autocomplete="off"
+                                                 required="true"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="#{msgs.fieldEmail}"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:inputText id="txtEmail"
+                                                 value="#{editorialBean.email}"
+                                                 label="#{msgs.fieldEmail}"
+                                                 autocomplete="off"
+                                                 required="true"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="#{msgs.fieldWeb}"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:inputText id="txtWeb"
+                                                 value="#{editorialBean.web}"
+                                                 label="#{msgs.fieldWeb}"
+                                                 autocomplete="off"
+                                                 required="true"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="#{msgs.fieldPhone}"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:inputText id="txtPhone"
+                                                 value="#{editorialBean.telefono}"
+                                                 label="#{msgs.fieldPhone}"
+                                                 autocomplete="off"
+                                                 />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="#{msgs.fieldMovil}"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:inputText id="txtMovil"
+                                                 value="#{editorialBean.movil}"
+                                                 label="#{msgs.fieldMovil}"
+                                                 autocomplete="off"
+                                                 />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="#{msgs.fieldCountry}"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:selectOneMenu id="cboCountry"
+                                                     value="#{requestScope['reqCountryId']}"
+                                                     label="#{msgs.fieldCountry}"
+                                                     style="width: 200px;">
+                                        <f:selectItem itemValue="-1" itemLabel="#{msgs.fieldSelect}"/>
+                                        <f:selectItems value="#{viewMapCountry}"/>
+                                        <f:validateRegex pattern="[a-zA-z ]*"/>
+                                        <a4j:ajax event="change"
+                                                  listener="#{publishingMaintenanceMB.loadCityByCountry}"
+                                                  render="frmNewPublishing:cboCity"
+                                                  limitRender="true"
+                                                  status="statusCountryLoadingIns"
+                                                  execute="@this"/>
+                                    </h:selectOneMenu>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="#{msgs.fieldCity}"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:selectOneMenu id="cboCity"
+                                                     value="#{editorialBean.ciudadId}"
+                                                     label="#{msgs.fieldCity}"
+                                                     style="width: 200px;">
+                                        <f:selectItem itemValue="-1" itemLabel="#{msgs.fieldSelect}"/>
+                                        <f:selectItems value="#{viewMapCity}"/>
+                                        <f:validateLongRange minimum="0"/>
+                                    </h:selectOneMenu>
+                                    <span id="spnCountryLoadingIns" style="display: none;">
+                                        <img style="position: absolute;"  
+                                             src="../../../images/loading/little-loading.gif"/>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="center" style="white-space: nowrap">
+                                    <a4j:commandButton id="btnInsUser"
+                                                       value="#{msgs.buttonInsert}"
+                                                       action="#{publishingMaintenanceMB.insertaEditorial}"
+                                                       render="pnlPublishingMaint,opnlNewPublishing"
+                                                       execute="@form"
+                                                       limitRender="true"
+                                                       oncomplete="if (#{facesContext.maximumSeverity==null}){alert('#{msgs.messageSuccessSave}');#{rich:component('modalNewPublishing')}.hide();}" 
+                                                       />
+                                    &nbsp;
+
+                                    <a4j:commandButton id="btnCancel"
+                                                       value="#{msgs.buttonCancel}"
+                                                       onclick="#{rich:component('modalNewPublishing')}.hide();return false;"
+                                                       onkeydown="return focusInCampo(event,'frmNewUser:txtUserName')"
+                                                       />
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"  width="100%">
+
+                                    <rich:messages id="richMsgErrorNewEditorial"
+                                                   />
+
+                                    <label id="lblErrorNewEditorial" class="error"></label>
+                                </td>
+                            </tr>
+                        </table>
+                    </a4j:outputPanel>
+                </h:form>
+            </rich:popupPanel>
+            
+         
+            
+            <rich:popupPanel id="modalupdPublishing" 
+                             autosized="true"
+                             resizeable="false" domElementAttachment="parent"
+                             header="#{msgs.tittleNewPublishing}"
+                             onshow="jQuery('[id=\'frmUpdPublishing:txtName\']').focus()"
+                             modal="true">
+                <f:facet name="header">
+                    <h:outputFormat id="lblUpdPub" value="#{msgs.tittleUpdatePublishing}">
+                        <f:param value="#{editorialBean.nombre}"/>
+                    </h:outputFormat>
+                </f:facet>
+                <h:form id="frmUpdPublishing"
+                        >
+                    <a4j:outputPanel id="opnlupdPublishing">
+                        <table width="280">
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="#{msgs.fieldName}"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:inputText id="txtName"
+                                                 value="#{editorialBean.nombre}"
+                                                 label="#{msgs.fieldName}"
+                                                 required="true"
+                                                 autocomplete="off"
+                                                 />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="#{msgs.fieldAddress}"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:inputText id="txtAddress"
+                                                 value="#{editorialBean.direccion}"
+                                                 label="#{msgs.fieldAddress}"
+                                                 autocomplete="off"
+                                                 required="true"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="#{msgs.fieldEmail}"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:inputText id="txtEmail"
+                                                 value="#{editorialBean.email}"
+                                                 label="#{msgs.fieldEmail}"
+                                                 autocomplete="off"
+                                                 required="true"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="#{msgs.fieldWeb}"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:inputText id="txtWeb"
+                                                 value="#{editorialBean.web}"
+                                                 label="#{msgs.fieldWeb}"
+                                                 autocomplete="off"
+                                                 required="true"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="#{msgs.fieldPhone}"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:inputText id="txtPhone"
+                                                 value="#{editorialBean.telefono}"
+                                                 label="#{msgs.fieldPhone}"
+                                                 autocomplete="off"
+                                                 />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="#{msgs.fieldMovil}"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:inputText id="txtMovil"
+                                                 value="#{editorialBean.movil}"
+                                                 label="#{msgs.fieldMovil}"
+                                                 autocomplete="off"
+                                                 />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="#{msgs.fieldCountry}"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:selectOneMenu id="cboCountry"
+                                                     value="#{requestScope['reqCountryId']}"
+                                                     label="#{msgs.fieldCountry}"
+                                                     style="width: 200px;">
+                                        <f:selectItem itemValue="-1" itemLabel="#{msgs.fieldSelect}"/>
+                                        <f:selectItems value="#{viewMapCountry}"/>
+                                        <f:validateRegex pattern="[a-zA-z ]*"/>
+                                        <a4j:ajax event="change"
+                                                  listener="#{publishingMaintenanceMB.loadCityByCountry}"
+                                                  render="frmUpdPublishing:cboCity"
+                                                  limitRender="true"
+                                                  status="statusCountryLoadingUpd"
+                                                  execute="@this"/>
+                                    </h:selectOneMenu>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="#{msgs.fieldCity}"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:selectOneMenu id="cboCity"
+                                                     value="#{editorialBean.ciudadId}"
+                                                     label="#{msgs.fieldCity}"
+                                                     style="width: 200px;">
+                                        <f:selectItem itemValue="-1" itemLabel="#{msgs.fieldSelect}"/>
+                                        <f:selectItems value="#{viewMapCity}"/>
+                                        <f:validateLongRange minimum="0"/>
+                                    </h:selectOneMenu>
+                                    <span id="spnCountryLoadingUpd" style="display: none;">
+                                        <img style="position: absolute;"  
+                                             src="../../../images/loading/little-loading.gif"/>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="#{msgs.fieldState}"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:selectOneRadio id="rdoStatus"
+                                                      value="#{editorialBean.estado}">
+                                        <f:selectItem itemValue="true" itemLabel="#{msgs.fieldActive}"/>
+                                        <f:selectItem itemValue="false" itemLabel="#{msgs.fieldInactive}"/>
+                                    </h:selectOneRadio>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="center" style="white-space: nowrap">
+                                    <a4j:commandButton id="btnUpdPub"   
+                                                       value="#{msgs.buttonSave}"
+                                                       action="#{publishingMaintenanceMB.updateEditorial}"
+                                                       render="pnlPublishingMaint,opnlupdPublishing"
+                                                       execute="@form"
+                                                       limitRender="true"
+                                                       oncomplete="if (#{facesContext.maximumSeverity==null}){alert('#{msgs.messageSuccessSave}');#{rich:component('modalupdPublishing')}.hide();}" 
+                                                       >
+                                        <a4j:param value="#{editorialBean.editorialId}" assignTo="#{editorialBean.editorialId}"/>
+                                    </a4j:commandButton>
+                                    &nbsp;
+
+                                    <a4j:commandButton id="btnCancel"
+                                                       value="#{msgs.buttonCancel}"
+                                                       onclick="#{rich:component('modalupdPublishing')}.hide();return false;"
+                                                       onkeydown="return focusInCampo(event,'frmUpdPublishing:txtName')"
+                                                       />
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"  width="100%">
+
+                                    <rich:messages id="richMsgErrorNewEditorial"
+                                                   />
+
+                                    <label id="lblErrorNewEditorial" class="error"></label>
+                                </td>
+                            </tr>
+                        </table>
+                    </a4j:outputPanel>
+                </h:form>
+            </rich:popupPanel>
+            
+
+            <a4j:region>
+                <a4j:status id="statusCountryLoading"  name="statusCountryLoading"
+                            onstart="jQuery('#spnCountryLoading').show();"
+                            onstop="jQuery('#spnCountryLoading').hide();"/>
+
+                <a4j:status id="statusCountryLoadingIns"  name="statusCountryLoadingIns"
+                            onstart="jQuery('#spnCountryLoadingIns').show();"
+                            onstop="jQuery('#spnCountryLoadingIns').hide();"/>
+          
+                <a4j:status id="statusCountryLoadingUpd"  name="statusCountryLoadingUpd"
+                            onstart="jQuery('#spnCountryLoadingUpd').show();"
+                            onstop="jQuery('#spnCountryLoadingUpd').hide();"/>
+            </a4j:region>
+
+        </ui:define>
+    </ui:composition>
+
+</html>

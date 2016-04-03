@@ -1,0 +1,797 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="/templates/main.xhtml">
+        <ui:define name="body">
+    <script type="text/javascript" language="javascript">
+//  <![CDATA[
+        function validaFrmNewUser(){
+            //limpiamos errores del rich:message
+            //    reRenderPanelErrorNewUser();
+            document.getElementById("frmNewUser:richMsgErrorNewUser").style.display="none";
+
+            var userName=document.getElementById("frmNewUser:txtUserName");
+            var name=document.getElementById('frmNewUser:txtName');
+            var firstName=document.getElementById("frmNewUser:txtApePat");
+            var lastName=document.getElementById("frmNewUser:txtApeMat");
+            var email=document.getElementById("frmNewUser:txtEmail");
+            var pass1=document.getElementById("frmNewUser:txtPassword");
+            var pass2=document.getElementById("frmNewUser:txtPasswordRetype");
+            var RegExOnlyLetters = /^[A-Za-záéíóúÁÉÍÓÚÑñ\s]*$/;
+
+
+            if(trim(userName)==''){
+                userName.value=trim(userName);
+                document.getElementById("lblErrorNewUser").innerHTML="${msgs.messageErrorRequiredName}";
+                userName.focus();
+                return false;
+            }else if(userName.value.length<5){
+                userName.value=trim(userName);
+                document.getElementById("lblErrorNewUser").innerHTML="${msgs.messageErrorRequiredUsername}";
+                userName.focus();
+                return false;
+            }else{
+                var espacios = false;
+                var cont=0;
+                while (!espacios && (cont < userName.value.length)) {
+                    if (userName.value.charAt(cont) == " ")
+                        espacios = true;
+                    cont++;
+                }
+                if(espacios){
+                    document.getElementById("lblErrorNewUser").innerHTML="${msgs.messageErrorUsernameNoBlanks}";
+                    userName.focus();
+                    return false;
+                }
+            }
+
+            if(trim(name)==''){
+                document.getElementById("lblErrorNewUser").innerHTML="${msgs.messageErrorRequiredName}";
+                name.focus();
+                return false;
+            }
+
+            if(trim(firstName)=="" || firstName.value.length<3){
+                firstName.value=trim(firstName);
+                document.getElementById("lblErrorNewUser").innerHTML="${msgs.messageErrorRequiredApePat}";
+                firstName.focus();
+                return false;
+            }else if(!RegExOnlyLetters.test(trim(firstName))){
+                firstName.focus();
+                document.getElementById("lblErrorNewUser").innerHTML="${msgs.messageErrorOnlyLetters}";
+                return false;
+            }else{
+                firstName.value=trim(firstName);
+            }
+
+            if(trim(lastName)=="" || lastName.value.length<3){
+                document.getElementById("lblErrorNewUser").innerHTML="${msgs.messageErrorRequiredApeMat}";
+                lastName.value=trim(lastName);
+                lastName.focus();
+                return false;
+            }else if(!RegExOnlyLetters.test(trim(lastName))){
+                document.getElementById("lblErrorNewUser").innerHTML="${msgs.messageErrorOnlyLetters}";
+                lastName.value=trim(lastName);
+                lastName.focus();
+                return false;
+            }else{
+                lastName.value=trim(lastName);
+            }
+
+            if(trim(email)==""){
+                document.getElementById("lblErrorNewUser").innerHTML="${msgs.messageErrorRequiredEmail}";
+                email.focus();
+                return false;
+            }else{
+                var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+                var address = email.value;
+                if(reg.test(address      ) == false) {
+                    document.getElementById("lblErrorNewUser").innerHTML="${msgs.messageErrorFormatEmail}";
+                    email.focus();
+                    return false;
+                }
+            }
+
+            if(trim(pass1)=="" || pass1.value.length<5){
+                document.getElementById("lblErrorNewUser").innerHTML="${msgs.messageErrorRequiredPassword}";
+                pass1.focus();
+                return false;
+            }else{
+                var espacios = false;
+                var cont=0;
+                while (!espacios && (cont < pass1.value.length)) {
+                    if (pass1.value.charAt(cont) == " ")
+                        espacios = true;
+                    cont++;
+                }
+                if(espacios){
+                    document.getElementById("lblErrorNewUser").innerHTML="${msgs.messageErrorRequiredPassword}";
+                    pass1.focus();
+                    return false;
+                }
+            }
+            if(pass2==""){
+                document.getElementById("lblErrorNewUser").innerHTML="${msgs.messageErrorRetypePassword}";
+                pass2.focus();
+                return false;
+            }
+
+            if(trim(pass1).length>10){
+                document.getElementById("lblErrorNewUser").innerHTML="${msgs.messageErrorLengthPassword}";
+                pass1.focus();
+                return false;
+            }
+
+            if(pass1.value!=pass2.value){
+                document.getElementById("lblErrorNewUser").innerHTML="${msgs.messageErrorDifderentsPasswords}";
+                pass2.focus();
+                return false;
+            }
+
+            return true
+        }
+                
+    function validaChangePassword(){
+
+        var pass1=document.getElementById("frmChangePass:txtPassword");
+        var pass2=document.getElementById("frmChangePass:txtRPassword");
+        if(pass1.value==""){
+            document.getElementById("lblErrorChangePass").innerHTML="${msgs.messageErrorRequiredPassword}";
+            pass1.focus();
+            return false;
+        }else{
+            var espacios = false;
+            var cont=0;
+            while (!espacios && (cont < pass1.value.length)) {
+                if (pass1.value.charAt(cont) == " ")
+                    espacios = true;
+                cont++;
+            }
+            if (espacios) {
+                document.getElementById("lblErrorChangePass").innerHTML="${msgs.messageErrorFormatPasswordIncorrect}";
+                pass1.focus();
+                return false;
+            }
+        }
+        if(pass2.value==""){
+            document.getElementById("lblErrorChangePass").innerHTML="${msgs.messageErrorRetypePassword}";
+            pass2.focus();
+            return false;
+        }
+
+
+        if(pass1.value!=pass2.value){
+            document.getElementById("lblErrorChangePass").innerHTML="${msgs.messageErrorDifderentsPasswords}";
+            pass2.focus();
+            return false;
+        }
+        return true;
+    }
+
+//    ]]>
+    </script>
+
+    <table width="100%">
+        <tr>
+            <td align="left">
+                <h:outputText styleClass="tittlePage"
+                              value="#{msgs.tittleUserMaintenance}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h:form id="frmSearchUser"
+                        >
+                    <h:inputHidden value="#{userMaintenanceMB.initPage}"/>
+                    <rich:tabPanel>
+                        <rich:tab header="#{msgs.labelFilters}">
+                            <table width="100%">
+                                <tr>
+                                    <td style="white-space: nowrap;width: 170px;"  align="left">
+                                        <h:outputText value="#{msgs.fieldUsername}" /> &nbsp;
+                                        <h:inputText id="txtUserName" 
+                                                     value="#{usuarioPaginationBean.login}"
+                                                     maxlength="20"
+                                                     autocomplete="off"
+                                                     />
+                                    </td>
+
+                                    <td style="white-space: nowrap;width: 200px;"  align="left">
+                                        <h:outputText value="#{msgs.fieldFullName}"/> &nbsp;
+                                        <h:inputText id="txtFirstName" 
+                                                     value="#{usuarioPaginationBean.nombre}"
+                                                     autocomplete="off"
+                                                     />
+                                    </td>
+
+                                    <td style="white-space: nowrap;width: 200px;" align="left">
+                                        <h:outputText value="#{msgs.fieldEmail}"/> &nbsp;
+                                        <h:inputText id="txtEmail" 
+                                                     value="#{usuarioPaginationBean.email}"
+
+                                                     autocomplete="off"/>
+                                    </td>
+
+                                    <td style="white-space: nowrap;" align="right">
+                                        &nbsp; &nbsp;
+                                        <a4j:commandButton id="cmdSearch"
+                                                           value="#{msgs.buttonSearch}"
+                                                           action="#{userMaintenanceMB.listaUserForMaintenance()}"
+                                                           execute="@form"
+                                                           render="pnlUerMaint"
+                                                           limitRender="true"
+                                                           />
+                                        &nbsp; 
+                                        <a4j:commandButton id="btnNewUser"
+                                                           value="#{msgs.buttonNew}"
+                                                           onclick="showModalPanel('modalNewUser');return false;"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </rich:tab>
+                    </rich:tabPanel>
+                </h:form>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h:form id="frmUserMaintenance">
+                    <rich:panel id="pnlUerMaint" style="width: 100%;">
+
+                        <rich:dataScroller for="edtbUserMaint"
+                                           maxPages="5" />
+
+                        <rich:extendedDataTable id="edtbUserMaint" rows="13"
+                                                value="#{viewLstUserMaintenance}"
+                                                var="usu"
+                                                style="width:  900px;height: 350px;"
+                                                frozenColumns="3" noDataLabel="#{msgs.messageNoData}"
+                                                >
+
+                            <rich:column styleClass="columnCenter"
+                                         width="30px">
+                                <f:facet name="header">
+
+                                </f:facet> 
+                                <a4j:commandLink actionListener="#{userMaintenanceMB.selectUserForAssign}"
+                                                 render="frmRoleAssign:opnlRoleAssign"
+                                                 oncomplete="showModalPanel('modalRoleAssign')"
+                                                 execute="@this"
+                                                 limitRender="true"
+                                                 >
+                                    <h:graphicImage value="/images/assign.png"
+                                                    style="cursor:pointer;border: 0;"
+                                                    width="10px" height="15px"/>
+                                    <f:attribute name="userSelected" value="#{usu}"/>
+                                    <rich:tooltip style="background-color: #FAE6B0;border: 1px solid #E5973E;">
+                                        <h:outputText value="#{msgs.fieldAssign}"/>
+                                    </rich:tooltip>
+                                </a4j:commandLink>
+                            </rich:column>
+
+                            <rich:column styleClass="columnCenter"
+                                         width="30px">
+                                <f:facet name="header">
+
+                                </f:facet>
+                                <a4j:commandLink actionListener="#{userMaintenanceMB.selectUser}"
+                                                 render="opnlModalUpdUser,opnlModalChangePassword,lblTittleChgPass"
+                                                 oncomplete="showModalPanel('modalUpdUser')"
+                                                 execute="@this"
+                                                 limitRender="true"
+                                                 >
+                                    <h:graphicImage value="/images/updated.png"
+                                                    style="cursor:pointer;border: 0;"
+                                                    width="10px" height="15px"/>
+                                    <f:attribute name="userSelected" value="#{usu}"/>
+                                    <rich:tooltip style="background-color: #FAE6B0;border: 1px solid #E5973E;">
+                                        <h:outputText value="#{msgs.fieldUpdate}"/>
+                                    </rich:tooltip>
+                                </a4j:commandLink>
+                            </rich:column>
+
+                            <rich:column styleClass="columnLeft"
+                                         width="100px"
+                                         sortBy="#{usu.login}">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.fieldUsername}"/>
+                                </f:facet>
+                                <h:outputText value="#{usu.login}"/>
+                            </rich:column>
+
+                            <rich:column styleClass="columnLeft"
+                                         width="100px">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.fieldName}"/>
+                                </f:facet>
+                                <h:outputText value="#{usu.nombre}"/>
+                            </rich:column>
+
+                            <rich:column styleClass="columnLeft"
+                                         width="150px">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.fieldApePat}"/>
+                                </f:facet>
+                                <h:outputText value="#{usu.apePaterno}"/>
+                            </rich:column>
+
+                            <rich:column styleClass="columnLeft"
+                                         width="150px">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.fieldApeMat}"/>
+                                </f:facet>
+                                <h:outputText value="#{usu.apeMaterno}"/>
+                            </rich:column>
+
+                            <rich:column styleClass="columnLeft"
+                                         width="200px">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.fieldEmail}"/>
+                                </f:facet>
+                                <h:outputText value="#{usu.email}"/>
+                            </rich:column>
+
+                            <rich:column styleClass="columnLeft"
+                                         width="100px">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.fieldInvAttemps}"/>
+                                </f:facet>
+                                <h:outputText value="#{usu.intInvalidos}"/>
+                            </rich:column>
+
+                            <rich:column styleClass="columnCenter"
+                                         width="60px">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.fieldState}"/>
+                                </f:facet>
+                                <h:graphicImage value="#{usu.estado == 'A' ? '/images/icons/enable.png' : usu.estado=='B' ? '/images/icons/bloqued.png' : '/images/icons/disable.png'}"/>
+                            </rich:column>
+
+                            <rich:column styleClass="columnLeft"
+                                         width="100px">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.fieldDateTimeIns}"/>
+                                </f:facet>
+                                <h:outputText value="#{usu.fechaIns}">
+                                    <f:convertDateTime pattern="#{msgs.datePattern}"/>
+                                </h:outputText>
+                            </rich:column>
+
+                            <rich:column styleClass="columnLeft"
+                                         width="100px">
+                                <f:facet name="header">
+                                    <h:outputText value="#{msgs.fieldDateTimeUpd}">
+                                        <f:convertDateTime pattern="#{msgs.datePattern}"/>
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{usu.fechaAct}">
+                                    <f:convertDateTime pattern="#{msgs.datePattern}"/>
+                                </h:outputText>
+                            </rich:column>
+
+                        </rich:extendedDataTable>
+
+                        <rich:dataScroller for="edtbUserMaint"
+                                           maxPages="5" />
+
+                    </rich:panel>
+                </h:form>
+            </td>
+        </tr>
+    </table>
+
+
+
+
+    <rich:popupPanel id="modalNewUser" 
+                     autosized="true"
+                     resizeable="false" domElementAttachment="parent"
+                     header="#{msgs.tittleNewUser}"
+                     onshow="jQuery('[id=\'frmNewUser:txtUserName\']').focus()"
+                     modal="true">
+        <h:form id="frmNewUser"
+                >
+            <a4j:outputPanel id="opnlNewUser">
+                <table width="280">
+                    <tr>
+                        <td style="white-space: nowrap" width="100">
+                            <h:outputText value="#{msgs.fieldUsername}"/>
+                        </td>
+                        <td style="white-space: nowrap" width="180">
+
+                            <h:inputText id="txtUserName"
+                                         value="#{usuarioBean.login}"
+                                         label="#{msgs.FieldUserName}"
+                                         required="true"
+                                         maxlength="20"
+                                         autocomplete="off" tabindex="-1"
+                                         />
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="white-space: nowrap" width="100">
+                            <h:outputText value="#{msgs.fieldName}"/>
+                        </td>
+                        <td style="white-space: nowrap" width="180">
+                            <h:inputText id="txtName"
+                                         value="#{usuarioBean.nombre}"
+                                         label="#{msgs.FieldFirstName}"
+                                         required="true"
+                                         autocomplete="off"
+                                         />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="white-space: nowrap" width="100">
+                            <h:outputText value="#{msgs.fieldApePat}"/>
+                        </td>
+                        <td style="white-space: nowrap" width="180">
+                            <h:inputText id="txtApePat"
+                                         value="#{usuarioBean.apePaterno}"
+                                         label="#{msgs.FieldLasttName}"
+                                         autocomplete="off"
+                                         required="true"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="white-space: nowrap" width="100">
+                            <h:outputText value="#{msgs.fieldApeMat}"/>
+                        </td>
+                        <td style="white-space: nowrap" width="180">
+                            <h:inputText id="txtApeMat"
+                                         value="#{usuarioBean.apeMaterno}"
+                                         label="#{msgs.FieldLasttName}"
+                                         autocomplete="off"
+                                         required="true"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="white-space: nowrap" width="100">
+                            <h:outputText value="#{msgs.fieldEmail}"/>
+                        </td>
+                        <td style="white-space: nowrap" width="180">
+                            <h:inputText id="txtEmail"
+                                         value="#{usuarioBean.email}"
+                                         label="#{msgs.FieldCorreo}"
+                                         autocomplete="off"
+                                         required="true"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="white-space: nowrap" width="100">
+                            <h:outputText value="#{msgs.fieldPassword}"/>
+                        </td>
+                        <td style="white-space: nowrap" width="180">
+                            <h:inputSecret id="txtPassword"
+                                           value="#{usuarioBean.contraseña}"
+                                           label="#{msgs.FieldPassword}"
+                                           required="true"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="100">
+                            <h:outputText value="#{msgs.fieldRetypePassowrd}"/>
+                        </td>
+                        <td width="180">
+                            <h:inputSecret id="txtPasswordRetype"
+                                           label="#{msgs.FieldPassword}"
+                                           required="true"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center" style="white-space: nowrap">
+                            <a4j:commandButton id="btnInsUser"
+                                               value="#{msgs.buttonInsert}"
+                                               action="#{userMaintenanceMB.insertUser}"
+                                               onclick="return validaFrmNewUser();"
+                                               render=":frmNewUser:opnlNewUser,:frmUserMaintenance:pnlUerMaint"
+                                               execute="@form"
+                                               limitRender="true"
+                                               oncomplete="if (#{facesContext.maximumSeverity==null}){alert('#{msgs.messageSuccessSave}');#{rich:component('modalNewUser')}.hide();}" 
+                                               />
+                            &nbsp;
+
+                            <a4j:commandButton id="btnCancel"
+                                               value="#{msgs.buttonCancel}"
+                                               onclick="return cleanAndCloseModal('frmNewUser','lblErrorNewUser','frmNewUser:richMsgErrorNewUser','modalNewUser')"
+                                               onkeydown="return focusInCampo(event,'frmNewUser:txtUserName')"
+                                               />
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"  width="100%">
+
+                            <rich:messages id="richMsgErrorNewUser"
+                                           for="frmNewUser:btnInsUser"
+                                           />
+
+                            <label id="lblErrorNewUser" class="error"></label>
+                        </td>
+                    </tr>
+                </table>
+            </a4j:outputPanel>
+        </h:form>
+    </rich:popupPanel>
+
+
+    <rich:popupPanel id="modalUpdUser" 
+                     autosized="true"
+                     resizeable="false" domElementAttachment="parent"
+                     header="#{msgs.tittleUpdateUser}"
+                     onshow="jQuery('[id=\'frmUpdUser:txtUserName\']').focus()"
+                     modal="true">
+        <h:form id="frmUpdUser"
+                >
+            <a4j:outputPanel id="opnlModalUpdUser">
+                <table width="280">
+                    <tr>
+                        <td style="white-space: nowrap" width="100">
+                            <h:outputText value="#{msgs.fieldUsername}"/>
+                        </td>
+                        <td style="white-space: nowrap" width="180">
+
+                            <h:inputText id="txtUserName"
+                                         value="#{usuarioBean.login}"
+                                         label="#{msgs.FieldUserName}"
+                                         required="true"
+                                         maxlength="20"
+                                         autocomplete="off" tabindex="-1"
+                                         />
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="white-space: nowrap" width="100">
+                            <h:outputText value="#{msgs.fieldName}"/>
+                        </td>
+                        <td style="white-space: nowrap" width="180">
+                            <h:inputText id="txtName"
+                                         value="#{usuarioBean.nombre}"
+                                         label="#{msgs.FieldFirstName}"
+                                         required="true"
+                                         autocomplete="off"
+                                         />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="white-space: nowrap" width="100">
+                            <h:outputText value="#{msgs.fieldApePat}"/>
+                        </td>
+                        <td style="white-space: nowrap" width="180">
+                            <h:inputText id="txtApePat"
+                                         value="#{usuarioBean.apePaterno}"
+                                         label="#{msgs.FieldLasttName}"
+                                         autocomplete="off"
+                                         required="true"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="white-space: nowrap" width="100">
+                            <h:outputText value="#{msgs.fieldApeMat}"/>
+                        </td>
+                        <td style="white-space: nowrap" width="180">
+                            <h:inputText id="txtApeMat"
+                                         value="#{usuarioBean.apeMaterno}"
+                                         label="#{msgs.FieldLasttName}"
+                                         autocomplete="off"
+                                         required="true"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="white-space: nowrap" width="100">
+                            <h:outputText value="#{msgs.fieldEmail}"/>
+                        </td>
+                        <td style="white-space: nowrap" width="180">
+                            <h:inputText id="txtEmail"
+                                         value="#{usuarioBean.email}"
+                                         label="#{msgs.FieldCorreo}"
+                                         autocomplete="off"
+                                         required="true"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="white-space: nowrap" width="100">
+                            <h:outputText value="#{msgs.fieldInvAttemps}"/>
+                        </td>
+                        <td style="white-space: nowrap" width="180">
+
+                            <rich:inputNumberSpinner id="txtIntAttemps"
+                                                     value="#{usuarioBean.intInvalidos}"
+                                                     required="true" 
+                                                     minValue="0" maxValue="3"
+                                                     style="width:93px"
+                                                     tabindex="5"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="white-space: nowrap;">
+                            <h:outputText value="#{msgs.fieldState}"/>
+                        </td>
+                        <td style="white-space: nowrap;">
+                            <h:selectOneRadio id="rdbUpdStatus"
+                                              value="#{usuarioBean.estado}"
+                                              tabindex="6">
+                                <f:selectItem itemLabel="#{msgs.fieldActive}" itemValue="A"/>
+                                <f:selectItem itemLabel="#{msgs.fieldBlocked}" itemValue="B"/>
+                                <f:selectItem itemLabel="#{msgs.fieldInactive}" itemValue="I"/>
+                            </h:selectOneRadio>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center" style="white-space: nowrap">
+                            <a4j:commandButton id="btnUpd"
+                                               value="#{msgs.buttonUpdate}"
+                                               action="#{userMaintenanceMB.updateUser}"
+                                               render=":frmUpdUser:opnlModalUpdUser,:frmUserMaintenance:pnlUerMaint"
+                                               execute="@form"
+                                               limitRender="true"
+                                               oncomplete="if (#{facesContext.maximumSeverity==null}){alert('#{msgs.messageSuccessSave}');#{rich:component('modalUpdUser')}.hide();}" 
+                                               >
+                                <a4j:param id="prmUserId" value="#{usuarioBean.usuarioId}" assignTo="#{usuarioBean.usuarioId}"/>
+                            </a4j:commandButton>
+                            &nbsp;
+
+                            <a4j:commandButton id="btnChangePass"
+                                               value="#{msgs.buttonChangePassword}"
+                                               onclick="showModalPanel('modalChangePassword');#{rich:component('modalUpdUser')}.hide();return false;"/>
+                            &nbsp;
+
+                            <a4j:commandButton id="btnCancel"
+                                               value="#{msgs.buttonCancel}"
+                                               onclick="#{rich:component('modalUpdUser')}.hide();return false;"
+                                               onkeydown="return focusInCampo(event,'frmUpdUser:txtUserName')"
+                                               />
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"  width="100%">
+
+                            <rich:messages id="richMsgErrorNewUser" for="frmUpdUser:btnUpd"/>
+                        </td>
+                    </tr>
+                </table>
+            </a4j:outputPanel>
+        </h:form>
+    </rich:popupPanel>
+
+    <rich:popupPanel id="modalChangePassword"
+                     modal="true"
+                     resizeable="false"
+                     autosized="true"
+                     height="130"
+                     >
+        <f:facet name="header">
+            <h:outputFormat id="lblTittleChgPass" value="#{msgs.tittleChangePassword}" 
+                            escape="false">
+                <f:param value="#{usuarioBean.login}"/>
+            </h:outputFormat>
+        </f:facet>
+        <h:form id="frmChangePass" style="width: 100%;">
+            <a4j:outputPanel id="opnlModalChangePassword" >
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <h:outputText value="#{msgs.fieldPassword}"/>
+                        </td>
+                        <td>
+                            <h:inputText id="txtPassword" 
+                                         value="#{usuarioBean.contraseña}"
+                                         autocomplete="off"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h:outputText value="#{msgs.fieldRetypePassowrd}"/>
+                        </td>
+                        <td>
+                            <h:inputText id="txtRPassword" 
+                                         autocomplete="off"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" colspan="2" style="white-space: nowrap;">
+                            <h:inputHidden value="#{usuarioBean.usuarioId}"/>
+                            <a4j:commandButton value="#{msgs.buttonSave}"
+                                               action="#{userMaintenanceMB.changePassword}"
+                                               onclick="return validaChangePassword();"
+                                               execute="@form"
+                                               oncomplete="if(#{rich:component('modalChangePassword')}.hide())"/>
+                            &nbsp;
+                            <a4j:commandButton value="#{msgs.buttonBack}"
+                                               onclick="$('#lblErrorChangePass').html('');showModalPanel('modalUpdUser');#{rich:component('modalChangePassword')}.hide();return false;"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <label id="lblErrorChangePass" class="error"></label>
+                        </td>
+                    </tr>
+                </table>
+            </a4j:outputPanel>
+        </h:form>
+    </rich:popupPanel>
+
+    <rich:popupPanel id="modalRoleAssign"
+                     autosized="true"
+                     resizeable="false"
+                     modal="true"
+                     header="#{msgs.tittleRoleAssign}">
+        <f:facet name="controls">
+            <h:graphicImage value="/images/close.png"
+                            onclick="#{rich:component('modalRoleAssign')}.hide()"
+                            style="cursor: pointer;"/>
+        </f:facet>
+        <h:form id="frmRoleAssign">
+            <a4j:outputPanel id="opnlRoleAssign">
+                <table width="350">
+                    <tr>
+                        <td width="80" style="white-space: nowrap;">
+                            <h:outputText value="#{msgs.fieldCompany} :"/>
+                        </td>
+                        <td style="white-space: nowrap;" align="right">
+                            <h:inputHidden id="user" value="#{usuarioBean.usuarioId}"/>
+                            <h:selectOneMenu id="cboCompany"
+                                             value="#{companyId}"
+                                             label="#{msgs.fieldCompany}">
+
+                                <f:selectItems value="#{viewMapCompany}"/>
+                                <a4j:ajax event="change"
+                                          listener="#{userMaintenanceMB.loadUserSedeRole}"
+                                          execute="frmRoleAssign:cboCompany,frmRoleAssign:user"
+                                          render="dtbRoleAssign"
+                                          limitRender="true"/>
+                            </h:selectOneMenu>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="left" style="white-space: nowrap;">
+                            <rich:dataTable id="dtbRoleAssign"
+                                            value="#{lstUserSedeRole}"
+                                            var="usr" style="width: 100%;"
+                                            >
+                                <rich:column styleClass="columnLeft"
+                                             style="width: 60%;padding-bottom: 0;padding-top: 0;">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{msgs.fieldHeadQuarters}"/>
+                                    </f:facet>
+                                    <h:outputText value="#{usr.nombreSede}"/>
+                                </rich:column>
+                                <rich:column style="width: 40%;padding-bottom: 0;padding-top: 0;"
+                                             styleClass="columnCenter">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{msgs.fieldPerfil}"/>
+                                    </f:facet>
+                                    <h:selectOneMenu id="cboPerfil"
+                                                     value="#{usr.perfilId}"
+                                                     style="width: 100px;">
+                                        <f:selectItem itemLabel="#{msgs.fieldNotAssign}" itemValue="-1"/>
+                                        <f:selectItems value="#{viewMapPerfil}"/>
+                                    </h:selectOneMenu>
+                                </rich:column>
+                            </rich:dataTable>   
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="right">
+                            <a4j:commandButton value="#{msgs.buttonAssign}"
+                                               action="#{userMaintenanceMB.assignSedePerfil}"
+                                               oncomplete="#{rich:component('modalRoleAssign')}.hide()"/>
+                        </td>
+                    </tr>
+                </table>
+            </a4j:outputPanel>
+        </h:form>
+    </rich:popupPanel>
+
+        </ui:define>
+    </ui:composition>
+
+</html>

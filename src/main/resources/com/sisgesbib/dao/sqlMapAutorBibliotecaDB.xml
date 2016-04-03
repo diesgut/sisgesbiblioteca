@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="autor">
+    
+    <select id="getListaAuthors" parameterClass="com.sisgesbib.beans.filters.AutorPaginationBean" resultClass="java.util.HashMap">
+        Select
+            AutorId     as  autorId,
+            Nombres     as  nombres,
+            Apellidos   as  apellidos,
+            a.Email       as  email,
+            Web         as  web,
+            Sexo        as  sexo,
+            a.Estado      as  estado,
+            a.PaisId      as  paisId,
+            p.Nombre    as  nombrePais,
+            a.FechaIns    as  fechaIns,
+            a.FechaAct    as  fechaAct,
+            a.UsuarioIns  as  usuarioIns,
+            if(a.UsuarioIns=u.UsuarioId,u.Login,"") nameUsuIns,
+            a.UsuarioAct  as  usuarioAct,
+            if(a.UsuarioAct=u.UsuarioId,u.Login,"") nameUsuAct
+        From
+            Autor   a
+        inner join
+            Pais    p   on  a.PaisId=p.PaisId
+        inner join
+            Usuario u   on  a.UsuarioIns=u.UsuarioId || a.UsuarioAct=u.UsuarioId
+        <dynamic prepend="where">
+            <isNotEmpty property="nombres" prepend="and">
+                Concat(Nombres, "", Apellidos) like '%$nombres$%'
+            </isNotEmpty>
+        </dynamic>
+        Order by
+            Nombres
+    </select>
+
+    <update id="updateAutor" parameterClass="com.sisgesbib.dao.beans.AutorBean">
+        Update
+            Autor
+        Set
+            Nombres=#nombres#,
+            Apellidos=#apellidos#,
+            Email=#email#,
+            Web=#web#,
+            Sexo=#sexo#,
+            PaisId=#paisId#,
+            FechaAct=now(),
+            UsuarioAct=#usuarioAct#,
+            Estado=#estado#
+        Where
+            AutorId=#autorId#
+    </update>
+
+    <select id="validateFullNameAuthor" resultClass="int" parameterClass="com.sisgesbib.dao.beans.AutorBean">
+        Select
+            Count(*)
+        From
+            Autor
+        Where
+            Nombres=#nombres# and Apellidos=#apellidos#
+         <!--   Concat(Nombres," ",Apellidos) like '%$nombres$ $apellidos$%' -->
+    </select>
+
+    <select id="validateChangeFullName" resultClass="int" parameterClass="com.sisgesbib.dao.beans.AutorBean">
+        Select
+            Count(*)
+        From
+            Autor
+        Where
+            Nombres=#nombres# and Apellidos=#apellidos# and
+            AutorId!=#autorId#
+    </select>
+
+    <insert id="insertaAutor" parameterClass="com.sisgesbib.dao.beans.AutorBean">
+        insert into Autor
+        (Nombres,Apellidos,Email,Web,Sexo,PaisId,FechaIns,UsuarioIns,Estado)
+        values
+        (#nombres#,#apellidos#,#email#,#web#,#sexo#,#paisId#,now(),#usuarioIns#,#estado#)
+    </insert>
+    
+    <select id="getAuthorsByTexto"
+            resultClass="java.util.HashMap"
+            parameterClass="int">
+        Select
+            a.AutorId     as  autorId,
+            a.Nombres     as  nombres,
+            a.Apellidos   as  apellidos,
+            a.Sexo        as  sexo,
+            a.Estado      as  estado,
+            a.PaisId      as  paisId,
+            p.Nombre    as  nombrePais,
+            a.UsuarioIns  as  usuarioIns
+        From
+            Autor   a
+        inner join
+            Pais    p   on  a.PaisId=p.PaisId
+        inner join
+            TextoAutor  ta  on  a.AutorId=ta.AutorId
+        Where
+            ta.TextoId=#value#
+        Order by
+            Nombres
+    </select>
+    
+    <select id="getAutoresPorTexto"
+            resultClass="string"
+            parameterClass="int">
+        Select
+            Group_Concat(Distinct Concat(Apellidos,", ",Nombres)," " SEPARATOR ' - ')   as  autores
+        From
+            Autor a
+        inner join
+            TextoAutor ta   on  a.AutorId=ta.AutorId
+        Where
+            ta.TextoId=#value#
+    </select>
+    
+
+</sqlMap>

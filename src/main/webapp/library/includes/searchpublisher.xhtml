@@ -1,0 +1,134 @@
+<?xml version="1.0"?><!DOCTYPE some_name [<!ENTITY nbsp "&#160;">]> 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                >
+
+    <rich:popupPanel id="modalSearchPublisher"
+                     autosized="true"
+                     modal="false"
+                     resizeable="false"
+                     header="#{msgs.tittleSearchPublisher}"
+                     onshow="$('[id=\'frmSearchPub:txtPubName\']').focus()">
+        <f:facet name="controls">
+            <h:graphicImage value="/images/close.png"
+                            style="cursor:pointer;"
+                            onclick="#{rich:component('modalSearchPublisher')}.hide()"/>
+        </f:facet>
+        <table width="450">
+            <tr>
+                <td>
+            <h:form id="frmSearchPub">
+                <rich:tabPanel>
+                    <rich:tab header="#{msgs.labelFilters}">
+
+
+                        <table width="100%">
+                            <tr>
+                                <td style="white-space: nowrap;width: 170px;"  align="left">
+                            <h:outputText value="#{msgs.fieldName}" /> &nbsp;
+                            <h:inputText id="txtPubName" 
+                                         value="#{editorialPaginationBean.nombre}"
+                                         maxlength="20"
+                                         autocomplete="off"
+                                         />
+
+                            </td>
+
+                            <td style="white-space: nowrap;" align="right">
+                            <a4j:commandButton id="cmdSearch"
+                                               value="#{msgs.buttonSearch}"
+                                               action="#{publishingMaintenanceMB.listaEditorial}"
+                                               execute="@form"
+                                               render="pnlSearchPublishing"
+                                               limitRender="true"
+                                               />
+                            </td>
+                            </tr>
+                        </table>
+
+                    </rich:tab>
+                </rich:tabPanel>
+            </h:form>
+            </td>
+            </tr>
+            <tr>
+                <td>
+            <h:form id="frmSearchPublishing">
+                <rich:panel id="pnlSearchPublishing" style="width: 100%;">
+
+                    <rich:dataScroller for="edtbSearchPublishing"
+                                       maxPages="5" />
+
+                    <rich:dataTable id="edtbSearchPublishing" 
+                                    value="#{editorialPaginationBean.listaPublishing}"
+                                    var="pub"
+                                    style="width: 100%;"
+                                    noDataLabel="#{msgs.messageNoData}"
+                                    rows="7"
+                                    >
+
+                        <rich:column styleClass="columnCenter"
+                                     style="margin-top: 0pt; margin-bottom: 0pt; padding-top: 0px; padding-bottom: 0px;"
+                                     width="5%">
+                            <f:facet name="header">
+
+                            </f:facet> 
+                            <a4j:commandLink actionListener="#{textMaintenance.selectPublishing}"
+                                             render="opnlPublisher"
+                                             oncomplete="#{rich:component('modalSearchPublisher')}.hide()" 
+                                             execute="@this"
+                                             limitRender="true"
+                                             >
+                                <h:graphicImage value="/images/select.png"
+                                                style="cursor:pointer;border: 0;"
+                                                width="10px" height="15px"/>
+                                <f:attribute name="pubSelected" value="#{pub}"/>
+                                <rich:tooltip style="background-color: #FAE6B0;border: 1px solid #E5973E;">
+                                    <h:outputText value="#{msgs.fieldSeleccionar}"/>
+                                </rich:tooltip>
+                            </a4j:commandLink>
+                        </rich:column>
+
+                        <rich:column styleClass="columnLeft"
+                                     style="margin-top: 0pt; margin-bottom: 0pt; padding-top: 0px; padding-bottom: 0px;"
+                                     width="70%">
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.fieldName}"/>
+                            </f:facet>
+                            <h:outputText value="#{pub.nombre}"/>
+                        </rich:column>
+
+                        <rich:column styleClass="columnLeft"
+                                     style="margin-top: 0pt; margin-bottom: 0pt; padding-top: 0px; padding-bottom: 0px;"
+                                     width="25%">
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.fieldCountry}"/>
+                            </f:facet>
+                            <h:outputText value="#{pub.nombrePais}"/>
+                        </rich:column>
+
+                        <rich:column styleClass="columnLeft"
+                                     style="margin-top: 0pt; margin-bottom: 0pt; padding-top: 0px; padding-bottom: 0px;"
+                                     width="25%">
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.fieldCity}"/>
+                            </f:facet>
+                            <h:outputText value="#{pub.nombreCiudad}"/>
+                        </rich:column>
+
+
+                    </rich:dataTable>
+
+
+                </rich:panel>
+            </h:form>
+            </td>
+            </tr>
+        </table>
+    </rich:popupPanel>
+
+</ui:composition>

@@ -1,0 +1,325 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="/templates/main.xhtml">
+        <ui:define name="body">
+            <script type="text/javascript" language="javascript">
+      //  <![CDATA[
+      //
+      //    ]]>
+            </script>
+
+            <table width="100%">
+                <tr>
+                    <td>
+                        <h:outputText value="#{msgs.tittleMatterMaintenance}"
+                                      styleClass="tittlePage"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:form id="frmSearchMatter"
+                                >
+                            <h:inputHidden value="#{matterMaintenanceMB.initPage}"/>
+                            <rich:tabPanel>
+                                <rich:tab header="#{msgs.labelFilters}">
+                                    <table width="100%">
+                                        <tr>
+                                            <td style="white-space: nowrap;" align="left">
+                                                <h:outputText value="#{msgs.fieldName}"/> &nbsp;
+                                                <h:inputText id="txtName"
+                                                             value="#{materiaPaginationBean.nombre}"
+                                                             autocomplete="off"
+                                                             />
+                                            </td>
+
+                                            <td style="white-space: nowrap;" align="right">
+                                                &nbsp; &nbsp;
+                                                <a4j:commandButton id="cmdSearch"
+                                                                   value="#{msgs.buttonSearch}"
+                                                                   action="#{matterMaintenanceMB.listaMatters}"
+                                                                   execute="@form"
+                                                                   render="pnlMatterMaint"
+                                                                   limitRender="true"
+                                                                   />
+                                                &nbsp;
+                                                <a4j:commandButton id="btnNewUser"
+                                                                   value="#{msgs.buttonNew}"
+                                                                   onclick="showModalPanel('modalNewMatter');return false;"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </rich:tab>
+                            </rich:tabPanel>
+                        </h:form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:form id="frmMattersMaint">
+                            <rich:panel id="pnlMatterMaint" style="width: 100%;">
+
+                                <rich:dataScroller for="edtbMattersMaint"
+                                                   maxPages="5" />
+
+                                <rich:extendedDataTable id="edtbMattersMaint"
+                                                        var="mat"
+                                                        value="#{materiaPaginationBean.lstMateria}"
+                                                        style="width:  900px;height: 350px;"
+                                                        frozenColumns="2"
+                                                        noDataLabel="#{msgs.messageNoData}"
+                                                        rows="13"
+                                                        >
+                                    <rich:column styleClass="columnCenter"
+                                                 width="30px">
+                                        <f:facet name="header">
+
+                                        </f:facet>
+                                        <a4j:commandLink actionListener="#{matterMaintenanceMB.selectMatter}"
+                                                         render="lblTittleUpdMatter,opnlUpdMatter"
+                                                         oncomplete="showModalPanel('modalUpdMatter')"
+                                                         execute="@this"
+                                                         limitRender="true"
+                                                         >
+                                            <h:graphicImage value="/images/updated.png"
+                                                            style="cursor:pointer;border: 0;"
+                                                            width="10px" height="15px"/>
+                                            <f:attribute name="matterSelected" value="#{mat}"/>
+                                        </a4j:commandLink>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="300px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldName}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{mat.nombre}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="400px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldDescripcion}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{mat.descripcion}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnCenter"
+                                                 width="60px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldState}"/>
+                                        </f:facet>
+                                        <h:graphicImage value="#{mat.estado == true ? '/images/icons/enable.png' : '/images/icons/disable.png'}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldDateTimeIns}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{mat.fechaIns}">
+                                            <f:convertDateTime pattern="#{msgs.datePattern}"/>
+                                        </h:outputText>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldUserIns}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{mat.nameUsuIns}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldDateTimeUpd}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{mat.fechaAct}">
+                                            <f:convertDateTime pattern="#{msgs.datePattern}"/>
+                                        </h:outputText>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldUserUpd}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{mat.nameUsuAct}"/>
+                                    </rich:column>
+
+
+                                </rich:extendedDataTable>
+
+                                <rich:dataScroller for="edtbMattersMaint"
+                                                   maxPages="5" />
+                            </rich:panel>
+                        </h:form>
+                    </td>
+                </tr>
+            </table>
+
+            <rich:popupPanel id="modalNewMatter" 
+                             autosized="true"
+                             modal="true"
+                             resizeable="false"
+                             header="#{msgs.tittleNewMatter}"
+                             onbeforeshow="cleanForm('frmNewMatter','lblNewMatter','frmNewMatter:richMsgNewMatter')"
+                             onshow="$('[id=\'frmNewMatter:txtName\']').focus()">
+                <h:form id="frmNewMatter">
+                    <a4j:outputPanel id="opnlNewMatter">
+                        <table>
+                            <tr>
+                                <td width="100">
+                                    <h:outputText value="#{msgs.fieldName}"/>
+                                </td>
+                                <td style="white-space: nowrap;">
+                                    <h:inputText id="txtName"
+                                                 value="#{materiaBean.nombre}"
+                                                 required="true"
+                                                 label="#{msgs.fieldName}"
+                                                 autocomplete="off"
+                                                 style="width : 200px;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td valign="top">
+                                    <h:outputText value="#{msgs.fieldDescripcion}"/>
+                                </td>
+                                <td style="white-space: nowrap;">
+                                    <h:inputTextarea id="txtDescription"
+                                                     value="#{materiaBean.descripcion}"
+                                                     style="width: 200px;"
+                                                     required="true"
+                                                     label="#{msgs.fieldDescripcion}"
+                                                     rows="4"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="center">
+                                    <a4j:commandButton id="cmbInsertMatter"
+                                                       value="#{msgs.buttonInsert}"
+                                                       action="#{matterMaintenanceMB.insertMatter}"
+                                                       oncomplete="if(#{facesContext.maximumSeverity==null}){alert('#{msgs.messageSuccessSave}');#{rich:component('modalNewMatter')}.hide();}"
+                                                       render="frmMattersMaint:pnlMatterMaint,frmNewMatter:opnlNewMatter"
+                                                       limitRender="true"
+                                                       execute="@form"
+                                                       />
+                                    &nbsp;
+                                    <a4j:commandButton value="#{msgs.buttonCancel}"
+                                                       onclick="#{rich:component('modalNewMatter')}.hide();return false;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <label id="lblNewMatter"></label>
+                                    <rich:messages id="richMsgNewMatter"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </a4j:outputPanel>
+                </h:form>
+
+            </rich:popupPanel>
+
+
+            <rich:popupPanel id="modalUpdMatter"
+                             autosized="true"
+                             modal="true"
+                             resizeable="false"
+                             onshow="$('[id=\'frmUpdMatter:txtName\']').focus()">
+
+                <f:facet name="header">
+                    <h:outputFormat id="lblTittleUpdMatter" value="#{msgs.tittleUpdateMatter}">
+                        <f:param value="#{materiaBean.nombre}"/>
+                    </h:outputFormat>
+                </f:facet>
+
+                <h:form id="frmUpdMatter">
+                    <a4j:outputPanel id="opnlUpdMatter">
+                        <table>
+                            <tr>
+                                <td width="100">
+                                    <h:outputText value="#{msgs.fieldName}"/>
+                                </td>
+                                <td style="white-space: nowrap;">
+                                    <h:inputText id="txtName"
+                                                 value="#{materiaBean.nombre}"
+                                                 required="true"
+                                                 autocomplete="off"
+                                                 label="#{msgs.fieldName}"
+                                                 style="width : 200px;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="100">
+                                    <h:outputText value="#{msgs.fieldState}"/>
+                                </td>
+                                <td style="white-space: nowrap;">
+                                    <h:selectOneRadio id="rdbState"
+                                                      value="#{materiaBean.estado}"
+                                                      label="#{msgs.fieldState}">
+                                        <f:selectItem itemLabel="#{msgs.fieldActive}" itemValue="true"/>
+                                        <f:selectItem itemLabel="#{msgs.fieldInactive}" itemValue="false"/>
+                                    </h:selectOneRadio>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td valign="top">
+                                    <h:outputText value="#{msgs.fieldDescripcion}"/>
+                                </td>
+                                <td style="white-space: nowrap;">
+                                    <h:inputTextarea id="txtDescription"
+                                                     value="#{materiaBean.descripcion}"
+                                                     style="width: 200px;"
+                                                     required="true"
+                                                     label="#{msgs.fieldDescripcion}"
+                                                     rows="4"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="center">
+                                    <a4j:commandButton id="cmbUpdateTheme"
+                                                       value="#{msgs.buttonSave}"
+                                                       action="#{matterMaintenanceMB.updateMatter}"
+                                                       oncomplete="if(#{facesContext.maximumSeverity==null}){alert('#{msgs.messageSuccessSave}');#{rich:component('modalUpdMatter')}.hide()}"
+                                                       render="frmUpdMatter:opnlUpdMatter,:frmMattersMaint:pnlMatterMaint"
+                                                       limitRender="true"
+                                                       execute="@form"
+                                                       >
+                                        <a4j:param value="#{materiaBean.materiaId}" assignTo="#{materiaBean.materiaId}"/>
+                                    </a4j:commandButton>
+                                    &nbsp;
+                                    <a4j:commandButton value="#{msgs.buttonCancel}"
+                                                       onclick="#{rich:component('modalUpdMatter')}.hide();return false;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <label id="lblUpdMatter"></label>
+                                    <rich:messages id="richMsgUpdMatter"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </a4j:outputPanel>
+                </h:form>
+
+            </rich:popupPanel>
+
+
+        </ui:define>
+    </ui:composition>
+
+</html>

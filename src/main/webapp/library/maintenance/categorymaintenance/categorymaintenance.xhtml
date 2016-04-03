@@ -1,0 +1,365 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="/templates/main.xhtml">
+        <ui:define name="body">
+            <script type="text/javascript" language="javascript">
+      //  <![CDATA[
+      //
+      //    ]]>
+            </script>
+
+            <table width="100%">
+                <tr>
+                    <td>
+                        <h:outputText value="#{msgs.tittleCategoryMaintenance}"
+                                      styleClass="tittlePage"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:form id="frmSearchCategory"
+                                >
+                            <h:inputHidden value="#{categoryMaintenance.initPage}"/>
+                            <rich:tabPanel>
+                                <rich:tab header="#{msgs.labelFilters}">
+                                    <table width="100%">
+                                        <tr>
+                                            <td style="white-space: nowrap;" align="left">
+                                                <h:outputText value="#{msgs.fieldName}"/> &nbsp;
+                                                <h:inputText id="txtName"
+                                                             value="#{categoriaPaginationBean.nombre}"
+                                                             autocomplete="off"
+                                                             />
+                                            </td>
+
+                                            <td style="white-space: nowrap;" align="right">
+                                                &nbsp; &nbsp;
+                                                <a4j:commandButton id="cmdSearch"
+                                                                   value="#{msgs.buttonSearch}"
+                                                                   action="#{categoryMaintenance.listaCategory}"
+                                                                   execute="@form"
+                                                                   render="pnlCategoryMaint"
+                                                                   limitRender="true"
+                                                                   />
+                                                &nbsp;
+                                                <a4j:commandButton id="btnNewUser"
+                                                                   value="#{msgs.buttonNew}"
+                                                                   onclick="showModalPanel('modalNewCategory');return false;"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </rich:tab>
+                            </rich:tabPanel>
+                        </h:form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:form id="frmCategoryMaint" >
+                            <rich:panel id="pnlCategoryMaint" style="width: 100%;">
+
+                                <rich:dataScroller for="edtbCategoryMaint"
+                                                   maxPages="5" />
+
+                                <rich:extendedDataTable id="edtbCategoryMaint"
+                                                        var="cat"
+                                                        value="#{categoriaPaginationBean.listaCategoria}"
+                                                        style="width:  900px;height: 350px;"
+                                                        frozenColumns="2"
+                                                        noDataLabel="#{msgs.messageNoData}"
+                                                        rows="13"
+                                                        >
+
+                                    <rich:column styleClass="columnCenter"
+                                                 width="30px">
+                                        <f:facet name="header">
+
+                                        </f:facet>
+                                        <a4j:commandLink actionListener="#{categoryMaintenance.selectCategory}"
+                                                         render="lblTittleUpdCategory,opnlUpdCategory"
+                                                         oncomplete="showModalPanel('modalUpdCategory')"
+                                                         execute="@this"
+                                                         limitRender="true"
+                                                         >
+                                            <h:graphicImage value="/images/updated.png"
+                                                            style="cursor:pointer;border: 0;"
+                                                            width="10px" height="15px"/>
+                                            <f:attribute name="categorySelected" value="#{cat}"/>
+                                        </a4j:commandLink>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="300px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldName}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{cat.nombre}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="400px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldDescripcion}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{cat.descripcion}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnCenter"
+                                                 width="60px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldState}"/>
+                                        </f:facet>
+                                        <h:graphicImage value="#{cat.estado == true ? '/images/icons/enable.png' : '/images/icons/disable.png'}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldType}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{cat.tipo == 'B'? msgs.fieldCategoryTypeBib: msgs.fieldCategoryTypeHem}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldDateTimeIns}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{cat.fechaIns}">
+                                            <f:convertDateTime pattern="#{msgs.datePattern}"/>
+                                        </h:outputText>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldUserIns}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{cat.nameUsuIns}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldDateTimeUpd}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{cat.fechaAct}">
+                                            <f:convertDateTime pattern="#{msgs.datePattern}"/>
+                                        </h:outputText>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldUserUpd}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{cat.nameUsuAct}"/>
+                                    </rich:column>
+
+                                </rich:extendedDataTable>
+
+                                <rich:dataScroller for="edtbCategoryMaint"
+                                                   maxPages="5" />
+                            </rich:panel>
+                        </h:form>
+                    </td>
+                </tr>
+            </table>
+
+
+            <rich:popupPanel id="modalNewCategory"
+                             autosized="true"
+                             modal="true"
+                             resizeable="false"
+                             header="#{msgs.tittleNewCategory}"
+                             onbeforeshow="cleanForm('frmNewCategory','lblNewCategory','frmNewCategory:richMsgNewCategory')"
+                             onshow="$('[id=\'frmNewCategory:txtName\']').focus()">
+                <h:form id="frmNewCategory">
+                    <a4j:outputPanel id="opnlNewCategory">
+                        <table>
+                            <tr>
+                                <td width="100">
+                                    <h:outputText value="#{msgs.fieldName}"/>
+                                </td>
+                                <td style="white-space: nowrap;">
+                                    <h:inputText id="txtName"
+                                                 value="#{categoriaBean.nombre}"
+                                                 required="true"
+                                                 label="#{msgs.fieldName}"
+                                                 autocomplete="off"
+                                                 style="width : 200px;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="100">
+                                    <h:outputText value="#{msgs.fieldType}"/>
+                                </td>
+                                <td style="white-space: nowrap;">
+
+                                    <h:selectOneRadio id="rdbType"
+                                                      value="#{categoriaBean.tipo}"
+                                                      required="true"
+                                                      label="#{msgs.fieldType}">
+                                        <f:selectItem itemLabel="#{msgs.fieldCategoryTypeBib}" itemValue="B"/>
+                                        <f:selectItem itemLabel="#{msgs.fieldCategoryTypeHem}" itemValue="H"/>
+                                    </h:selectOneRadio>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td valign="top">
+                                    <h:outputText value="#{msgs.fieldDescripcion}"/>
+                                </td>
+                                <td style="white-space: nowrap;">
+                                    <h:inputTextarea id="txtDescription"
+                                                     value="#{categoriaBean.descripcion}"
+                                                     style="width: 200px;"
+                                                     required="true"
+                                                     label="#{msgs.fieldDescripcion}"
+                                                     rows="4"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="center">
+                                    <a4j:commandButton id="cmbInsertMatter"
+                                                       value="#{msgs.buttonInsert}"
+                                                       action="#{categoryMaintenance.insertCategory}"
+                                                       oncomplete="if(#{facesContext.maximumSeverity==null}){alert('#{msgs.messageSuccessSave}');#{rich:component('modalNewCategory')}.hide();}"
+                                                       render="frmCategoryMaint:pnlCategoryMaint,opnlNewCategory"
+                                                       limitRender="true"
+                                                       execute="@form"
+                                                       />
+                                    &nbsp;
+                                    <a4j:commandButton value="#{msgs.buttonCancel}"
+                                                       onclick="#{rich:component('modalNewCategory')}.hide();return false;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <label id="lblNewCategory"></label>
+                                    <rich:messages id="richMsgNewCategory"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </a4j:outputPanel>
+                </h:form>
+
+            </rich:popupPanel>
+
+            <rich:popupPanel id="modalUpdCategory"
+                             autosized="true"
+                             modal="true"
+                             resizeable="false"
+                             onshow="$('[id=\'frmUpdMatter:txtName\']').focus()">
+
+                <f:facet name="header">
+                    <h:outputFormat id="lblTittleUpdCategory" value="#{msgs.tittleUpdateCategory}">
+                        <f:param value="#{categoriaBean.nombre}"/>
+                    </h:outputFormat>
+                </f:facet>
+
+                <h:form id="frmUpdCategory">
+                    <a4j:outputPanel id="opnlUpdCategory">
+                        <table>
+                            <tr>
+                                <td width="100">
+                                    <h:outputText value="#{msgs.fieldName}"/>
+                                </td>
+                                <td style="white-space: nowrap;">
+                                    <h:inputText id="txtName"
+                                                 value="#{categoriaBean.nombre}"
+                                                 required="true"
+                                                 label="#{msgs.fieldName}"
+                                                 autocomplete="off"
+                                                 style="width : 200px;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="100">
+                                    <h:outputText value="#{msgs.fieldType}"/>
+                                </td>
+                                <td style="white-space: nowrap;">
+
+                                    <h:selectOneRadio id="rdbType"
+                                                      value="#{categoriaBean.tipo}"
+                                                      required="true"
+                                                      label="#{msgs.fieldType}">
+                                        <f:selectItem itemLabel="#{msgs.fieldCategoryTypeBib}" itemValue="B"/>
+                                        <f:selectItem itemLabel="#{msgs.fieldCategoryTypeHem}" itemValue="H"/>
+                                    </h:selectOneRadio>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="100">
+                                    <h:outputText value="#{msgs.fieldState}"/>
+                                </td>
+                                <td style="white-space: nowrap;">
+
+                                    <h:selectOneRadio id="rdbStatus"
+                                                      value="#{categoriaBean.estado}"
+                                                      required="true"
+                                                      label="#{msgs.fieldState}">
+                                        <f:selectItem itemLabel="#{msgs.fieldActive}" itemValue="true"/>
+                                        <f:selectItem itemLabel="#{msgs.fieldInactive}" itemValue="false"/>
+                                    </h:selectOneRadio>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td valign="top">
+                                    <h:outputText value="#{msgs.fieldDescripcion}"/>
+                                </td>
+                                <td style="white-space: nowrap;">
+                                    <h:inputTextarea id="txtDescription"
+                                                     value="#{categoriaBean.descripcion}"
+                                                     style="width: 200px;"
+                                                     required="true"
+                                                     label="#{msgs.fieldDescripcion}"
+                                                     rows="4"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="center">
+                                    <a4j:commandButton id="cmbUpdateCategoria"
+                                                       value="#{msgs.buttonSave}"
+                                                       action="#{categoryMaintenance.updateCategory}"
+                                                       oncomplete="if(#{facesContext.maximumSeverity==null}){alert('#{msgs.messageSuccessSave}');#{rich:component('modalUpdCategory')}.hide()}"
+                                                       render="opnlUpdCategory,:frmCategoryMaint:pnlCategoryMaint"
+                                                       limitRender="true"
+                                                       execute="@form"
+                                                       >
+                                        <a4j:param value="#{categoriaBean.categoriaId}" assignTo="#{categoriaBean.categoriaId}"/>
+                                    </a4j:commandButton>
+                                    &nbsp;
+                                    <a4j:commandButton value="#{msgs.buttonCancel}"
+                                                       onclick="#{rich:component('modalUpdCategory')}.hide();return false;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <label id="lblUpdCategory"></label>
+                                    <rich:messages id="richMsgUpdCategory"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </a4j:outputPanel>
+                </h:form>
+
+            </rich:popupPanel>
+
+
+        </ui:define>
+    </ui:composition>
+</html>

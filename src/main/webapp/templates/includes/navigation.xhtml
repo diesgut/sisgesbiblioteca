@@ -1,0 +1,25 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                >
+    <h:form>
+        <rich:toolbar id="tbarMainMenu" binding="#{menuMB.tbarMainMenu}"/>
+
+        <rich:toolbar height="26px" width="100%" rendered="false">
+
+            <rich:dropDownMenu mode="ajax" label="Mantenimiento" rendered="false">
+                <rich:menuItem  label="Usuario" rendered="false"
+                                onclick="document.location.href='#{facesContext.externalContext.requestContextPath}/sisgesbib/maintenance/usermaintenance/usermaintenance.jsf';return false;"
+                                />
+                <rich:menuItem  label="Autor"
+                                onclick="document.location.href='#{facesContext.externalContext.requestContextPath}/sisgesbib/maintenance/authormaintenance/authormaintenance.jsf';return false;"
+                                />
+            </rich:dropDownMenu>
+
+        </rich:toolbar>
+
+    </h:form>
+</ui:composition>

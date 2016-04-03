@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+    <!--
+        Allow the use of properties from application.properties
+        throughout this configuration file
+    -->
+    <bean id="placeholderConfig"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location">
+            <value>classpath:GeneralParams.properties</value>
+        </property>
+        <property name="systemPropertiesModeName">
+            <value>SYSTEM_PROPERTIES_MODE_OVERRIDE</value>
+        </property>
+    </bean>
+
+    <bean id="dataSourceBiblioteca" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName">
+            <value>${jdbcBiblioteca.driver}</value>
+        </property>
+        <property name="url">
+            <value>${jdbcBiblioteca.url}</value>
+        </property>
+        <property name="username">
+            <value>${jdbcBiblioteca.user}</value>
+        </property>
+        <property name="password">
+            <value>${jdbcBiblioteca.password}</value>
+        </property>
+        <property name="minIdle">
+            <value>${jdbcBiblioteca.minIdle}</value>
+        </property>
+        <property name="maxActive">
+            <value>${jdbcBiblioteca.maxActive}</value>
+        </property>
+    </bean>
+
+<!-- IBATIS -->
+    
+    <bean id="sqlMapClientBiblioteca" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocation" value="WEB-INF/ibatisSqlConfigBibliotecaDB.xml"/>
+        <property name="dataSource">
+            <ref bean="dataSourceBiblioteca"/>
+        </property>
+    </bean>
+
+ <!-- DAO -->
+
+    <bean id="usuarioDAO" class="com.sisgesbib.dao.UsuarioDAO">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClientBiblioteca"/>
+        </property>
+    </bean>
+
+    <bean id="empresaDAO" class="com.sisgesbib.dao.EmpresaDAO">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClientBiblioteca"/>
+        </property>
+    </bean>
+
+    <bean id="sedeDAO" class="com.sisgesbib.dao.SedeDAO">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClientBiblioteca"/>
+        </property>
+    </bean>
+
+    <bean id="autorDAO" class="com.sisgesbib.dao.AutorDAO">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClientBiblioteca"/>
+        </property>
+    </bean>
+
+    <bean id="paisDAO" class="com.sisgesbib.dao.PaisDAO">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClientBiblioteca"/>
+        </property>
+    </bean>
+    
+    <bean id="temaDAO" class="com.sisgesbib.dao.TemaDAO">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClientBiblioteca"/>
+        </property>
+    </bean>
+
+    <bean id="materiaDAO" class="com.sisgesbib.dao.MateriaDAO">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClientBiblioteca"/>
+        </property>
+    </bean>
+
+    <bean id="categoriaDAO" class="com.sisgesbib.dao.CategoriaDAO">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClientBiblioteca"/>
+        </property>
+    </bean>
+
+    <bean id="menuDAO" class="com.sisgesbib.dao.MenuDAO">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClientBiblioteca"/>
+        </property>
+    </bean>
+
+    <bean id="perfilDAO" class="com.sisgesbib.dao.PerfilDAO">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClientBiblioteca"/>
+        </property>
+    </bean>
+    
+    <bean id="editorialDAO" class="com.sisgesbib.dao.EditorialDAO">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClientBiblioteca"/>
+        </property>
+    </bean>
+    
+    <bean id="textoDAO" class="com.sisgesbib.dao.TextoDAO">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClientBiblioteca"/>
+        </property>
+    </bean>
+    
+    <bean id="utilDAO" class="com.sisgesbib.dao.UtilDAO">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClientBiblioteca"/>
+        </property>
+    </bean>
+    
+    <bean id="ejemplarDAO" class="com.sisgesbib.dao.EjemplarDAO">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClientBiblioteca"/>
+        </property>
+    </bean>
+    
+    <bean id="lectorDAO" class="com.sisgesbib.dao.LectorDAO">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClientBiblioteca"/>
+        </property>
+    </bean>
+    
+    <bean id="solicitudDAO" class="com.sisgesbib.dao.SolicitudDAO">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClientBiblioteca"/>
+        </property>
+    </bean>
+    
+    <bean id="prestamoDAO" class="com.sisgesbib.dao.PrestamoDAO">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClientBiblioteca"/>
+        </property>
+    </bean>
+    
+</beans>

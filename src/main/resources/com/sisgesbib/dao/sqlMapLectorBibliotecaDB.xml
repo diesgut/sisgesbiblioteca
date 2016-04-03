@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="lector">
+    
+    <select id="getListaLectores"
+            parameterClass="com.sisgesbib.beans.filters.LectorPaginacionBean"
+            resultClass="com.sisgesbib.dao.beans.LectorBean">
+        Select
+            l.LectorId    as  lectorId,
+            l.Codigo      as  codigo,
+            l.Nombres     as  nombres,
+            l.ApePaterno  as  apePaterno,
+            l.ApeMaterno  as  apeMaterno,
+            l.Sexo        as  sexo,
+            l.Tipo        as  tipo,
+            l.Estado      as  estado,
+            l.FechaIns    as  fechaIns,   
+            l.FechaAct  as  fechaAct,
+            l.UsuarioIns          as  usuarioIns,
+            l.UsuarioAct          as  usuarioAct,
+            if(UsuarioIns=u.UsuarioId,u.Login,"")   as  nomUsuIns,
+            if(UsuarioAct=u.UsuarioId,u.Login,"")   as  nomUsuAct
+        From
+            Lector  l
+        inner join
+            Usuario u   on u.UsuarioId=l.UsuarioIns || u.UsuarioId=l.UsuarioAct 
+        <dynamic prepend="where">
+            <isNotEmpty property="nombres" prepend="and">
+                Concat(l.Nombres , " ",l.ApePaterno," ",l.ApeMaterno) like '%$nombres$%'
+            </isNotEmpty>
+            <isNotEmpty property="codigo" prepend="and">
+                l.Codigo = #codigo#
+            </isNotEmpty>
+        </dynamic>   
+        order by
+            Nombres
+    </select>
+    
+    <select id="validaCodigoLector"
+            parameterClass="com.sisgesbib.dao.beans.LectorBean"
+            resultClass="int">
+        Select
+            Count(*)
+        From
+            Lector
+        Where
+            Codigo=#codigo#
+    </select>
+    
+    <insert id="insertaLector"
+            parameterClass="com.sisgesbib.dao.beans.LectorBean">
+        Insert into
+            Lector(Codigo,Nombres,ApePaterno,ApeMaterno,Sexo,Tipo,FechaIns,UsuarioIns,Estado)
+        values
+            (#codigo#,#nombres#,#apePaterno#,#apeMaterno#,#sexo#,#tipo#,now(),#usuarioIns#,1)
+    </insert>
+    
+    <select id="validaChangeCodigoLector"
+            parameterClass="com.sisgesbib.dao.beans.LectorBean"
+            resultClass="int">
+        Select
+            Count(*)
+        From
+            Lector
+        Where
+            Codigo=#codigo#
+        and
+            LectorId!=#lectorId#
+    </select>
+    
+    <update id="updateLector"
+            parameterClass="com.sisgesbib.dao.beans.LectorBean">
+        update 
+            Lector
+        set
+            Codigo=#codigo#,
+            Nombres=#nombres#,
+            ApePaterno=#apePaterno#,
+            ApeMaterno=#apeMaterno#,
+            Sexo=#sexo#,
+            Tipo=#tipo#,
+            FechaAct=now(),
+            UsuarioAct=#usuarioAct#,
+            Estado=#estado#
+        Where
+            LectorId=#lectorId#
+    </update>
+    
+    <select id="findOneReader"
+            parameterClass="com.sisgesbib.dao.beans.LectorBean"
+            resultClass="com.sisgesbib.dao.beans.LectorBean">
+        Select
+            l.LectorId    as  lectorId,
+            l.Codigo      as  codigo,
+            l.Nombres     as  nombres,
+            l.ApePaterno  as  apePaterno,
+            l.ApeMaterno  as  apeMaterno,
+            l.Sexo        as  sexo,
+            l.Tipo        as  tipo,
+            l.Estado      as  estado,
+            l.FechaIns    as  fechaIns,   
+            l.FechaAct  as  fechaAct,
+            l.UsuarioIns          as  usuarioIns,
+            l.UsuarioAct          as  usuarioAct
+        From
+            Lector  l
+       <dynamic prepend="where">
+           <isNotNull property="lectorId" prepend="and">
+               LectorId=#lectorId#
+           </isNotNull>
+           <isNotNull property="codigo" prepend="and">
+               Codigo=#codigo#
+           </isNotNull>
+           <isNotNull property="tipo" prepend="and">
+                Tipo=#tipo#   
+           </isNotNull>
+       </dynamic>
+    </select>
+
+</sqlMap>

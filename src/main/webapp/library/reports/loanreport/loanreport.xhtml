@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="/templates/main.xhtml">
+        <ui:define name="body">
+            <style type="text/css">
+
+                input[type="radio"] { margin: 0px; } 
+                input[type="checkbox"] { margin: 0px; } 
+            </style>
+            <script type="text/javascript" language="javascript">
+//  <![CDATA[
+                window.onload=function(){
+                   
+               //     var vari=$('#frmSearchLoan').find("input[type=checkbox]");
+      //         var vari=$('#frmSearchLoan').find('input[type=checkbox]').find("[id*='chkLoanType']");
+                var vari=$('#frmSearchLoan').find('input[type=checkbox][id*=chkLoanType]');
+                $(vari).attr('checked',true);
+                 //   console.dir(vari);
+                }
+                
+                function validateSearchLoanReport(){
+                    var spnErrorLogin =$("#spnErrorFilterLoanRep").children().children();
+                    $("#spnErrorFilterLoanRep").hide();
+                    if(!validateDate('frmSearchLoan:calDateFromInputDate','frmSearchLoan:calDateToInputDate')){
+                        $("#spnErrorFilterLoanRep").show();
+                        $(spnErrorLogin).html("${msgs.messageErrorIncorrectDateFrom}");
+                        return false;
+                    }
+                    //messageErrorSelectLoanType
+                    if(document.getElementById("frmSearchLoan:chkLoanType:0").checked==false && document.getElementById("frmSearchLoan:chkLoanType:1").checked==false){
+                        $("#spnErrorFilterLoanRep").show();
+                        $(spnErrorLogin).html("${msgs.messageErrorSelectLoanType}");
+                        return false;
+                    }
+                    return true;
+                }
+      //    ]]>
+            </script>
+            <table width="100%">
+                <tr>
+                    <td align="left">
+                        <h:outputText styleClass="tittlePage"
+                                      value="#{msgs.tittleLoanReport}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:form id="frmSearchLoan"
+                                >
+                            <h:inputHidden value="#{loanReportMB.initPage}"/>
+                            <rich:tabPanel>
+                                <rich:tab header="#{msgs.labelFilters}">
+                                    <table >
+                                        <tr>
+                                            <td style="white-space: nowrap;" width="100"  align="left" valign="top">
+                                                <h:outputText value="#{msgs.fieldDateFrom}"/>
+
+                                            </td>
+                                            <td style="white-space: nowrap;" width="150"  align="left" valign="top">
+                                                <rich:calendar id="calDateFrom"
+                                                               value="#{prestamoPaginationBean.dateFrom}"
+                                                               datePattern="#{msgs.datePattern}"
+                                                               inputSize="10"
+                                                               />
+                                            </td>
+                                            <td style="white-space: nowrap;"  width="100" align="left" valign="top">
+                                                <h:outputText value="#{msgs.fieldDateTo}"/>
+                                            </td>
+                                            <td style="white-space: nowrap;"  align="left" valign="top">
+                                                <rich:calendar id="calDateTo"
+                                                               value="#{prestamoPaginationBean.dateTo}"
+                                                               datePattern="#{msgs.datePattern}"
+                                                               inputSize="10"
+                                                               />
+                                            </td>
+
+                                            <td style="white-space: nowrap;" align="right">
+                                                &nbsp; &nbsp;
+                                                <a4j:commandButton id="cmbSearch"
+                                                                   value="#{msgs.buttonSearch}"
+                                                                   action="#{loanReportMB.listaPrestamos()}"
+                                                                   execute="@form"
+                                                                   render="pnlLoanReport"
+                                                                   limitRender="true"
+                                                                   onclick="return validateSearchLoanReport();"
+                                                                   />
+                                                &nbsp; &nbsp;
+                                            </td>
+                                            <td style="white-space: nowrap;">
+
+                                                <span id="spnErrorFilterLoanRep"  class="rf-msgs error">
+                                                    <span class="rf-msgs-err">
+                                                        <span class="rf-msgs-sum"></span>
+                                                    </span>
+                                                </span>
+                                                <rich:messages rendered="false"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="white-space: nowrap;"  align="left">
+                                                <h:outputText value="#{msgs.fieldLoanState}" 
+                                                              style="display: inline-block;margin-top: 0;"
+                                                              /> 
+
+                                            </td>
+                                            <td style="white-space: nowrap;" align="left">
+                                                <h:selectOneRadio id="rdoLoanState" 
+                                                                  value="#{prestamoPaginationBean.estado}"
+                                                                  style="margin: 0px;"  
+                                                                  >
+                                                    <f:selectItem itemLabel="#{msgs.fieldEnCurso}" 
+                                                                  itemValue="C"/>
+                                                    <f:selectItem itemLabel="#{msgs.fieldFinalizado}"
+                                                                  itemValue="F"/>
+                                                </h:selectOneRadio>
+                                            </td>
+                                            <td style="white-space: nowrap;"  align="left">
+                                                <h:outputText value="#{msgs.fieldTipoPrestamo}" 
+                                                              style="display: inline-block;margin-top: 0;"
+                                                              /> 
+
+                                            </td>
+                                            <td style="white-space: nowrap;" align="left" colspan="3">
+                                                <h:selectManyCheckbox id="chkLoanType" styleClass="marginRdo"
+                                                                      value="#{prestamoPaginationBean.argTipoPrestamo}"
+                                                                      >
+                                                    <f:selectItem itemLabel="#{msgs.fieldTextTipoPrestamoS}"
+                                                                  itemValue="S"/>
+                                                    <f:selectItem itemLabel="#{msgs.fieldTextTipoPrestamoD}"
+                                                                  itemValue="D"/>
+                                                </h:selectManyCheckbox>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </rich:tab>
+                            </rich:tabPanel>
+                        </h:form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:form id="frmLoanReport">
+                            <rich:panel id="pnlLoanReport" >
+
+                                <table width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td>
+                                            <rich:dataScroller for="edtbLoanReport"
+                                                               maxPages="5" />
+                                        </td>
+                                        <td align="right">
+                                            <h:commandButton value="#{msgs.fieldExportToExcel}"
+                                                             action="#{loanReportMB.exportToExcel()}"
+                                                             style="margin-right: 20px;"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <rich:extendedDataTable id="edtbLoanReport" rows="13"
+                                                                    value="#{prestamoPaginationBean.listaPrestamos}"
+                                                                    var="pres"
+                                                                    style="width:  900px;height: 350px;"
+                                                                    frozenColumns="1" noDataLabel="#{msgs.messageNoData}"
+                                                                    > 
+                                                <rich:column 
+                                                    style="text-align: left;"
+                                                    width="200px">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{msgs.fieldReaderName}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{pres.nombreLector}"/>
+                                                </rich:column>
+
+                                                <rich:column 
+                                                    style="text-align: left;"
+                                                    width="200px">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{msgs.fieldTextTitle}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{pres.nombreTexto}"/>
+                                                </rich:column>
+
+                                                <rich:column 
+                                                    style="text-align: left;"
+                                                    width="200px">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{msgs.fieldAuthors}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{pres.authors}"/>
+                                                </rich:column>        
+
+
+                                                <rich:column 
+                                                    style="text-align: left;"
+                                                    width="100px">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{msgs.fieldLoanType}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{pres.tipoPrestamo=='S' ? msgs.fieldTextTipoPrestamoS : msgs.fieldTextTipoPrestamoD}"/>
+                                                </rich:column>  
+
+                                                <rich:column 
+                                                    style="text-align: left;"
+                                                    width="170px">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{msgs.fieldDateTimeStart}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{pres.fechaInicio}">
+                                                        <f:convertDateTime timeZone="GMT-5:00" locale="es" type="both" dateStyle="long" />
+                                                    </h:outputText>
+                                                </rich:column>  
+
+                                                <rich:column 
+                                                    style="text-align: left;"
+                                                    width="170px">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{msgs.fieldDateTimeEnd}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{pres.fechaFin}">
+                                                        <f:convertDateTime timeZone="GMT-5:00" locale="es" type="both" dateStyle="long" />
+                                                    </h:outputText>
+                                                </rich:column>  
+
+                                                <rich:column 
+                                                    style="text-align: left;"
+                                                    width="100px">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{msgs.fieldVolume}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{pres.tomoTexto}"/>
+                                                </rich:column>
+
+                                                <rich:column 
+                                                    style="text-align: left;"
+                                                    width="100px">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{msgs.fieldEditionDate}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{pres.añoEdicionTexto}"/>
+                                                </rich:column>
+
+                                                <rich:column 
+                                                    style="text-align: left;"
+                                                    width="100px">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{msgs.fieldEdition}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{pres.edicionTexto}"/>
+                                                </rich:column>
+
+                                                <rich:column 
+                                                    style="text-align: left;"
+                                                    width="100px">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{msgs.fieldRenovado}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{pres.renovado ==0 ? 'NO' : 'SI'}"/>
+                                                </rich:column>  
+
+                                            </rich:extendedDataTable>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <rich:dataScroller for="edtbLoanReport"
+                                                               maxPages="5" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </rich:panel>
+                        </h:form>
+                    </td>
+                </tr>
+            </table>
+
+        </ui:define>
+    </ui:composition>
+</html>

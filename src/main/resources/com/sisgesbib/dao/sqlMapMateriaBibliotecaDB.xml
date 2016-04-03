@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="materia">
+
+    <select id="getListaMateria"
+            resultClass="com.sisgesbib.dao.beans.MateriaBean"
+            parameterClass="com.sisgesbib.beans.filters.MateriaPaginationBean">
+        Select
+            MateriaId   as  materiaId,
+            m.Nombre      as  nombre,
+            Descripcion as  descripcion,
+            m.Estado      as  estado,
+            m.FechaIns    as  fechaIns,
+            m.FechaAct    as  fechaAct,
+            m.UsuarioIns  as  usuarioIns,
+            m.UsuarioAct  as  usuarioAct,
+            if(UsuarioIns=u.UsuarioId,u.Login,"")   as  nameUsuIns,
+            if(UsuarioAct=u.UsuarioId,u.Login,"")   as  nameUsuAct
+        From
+            Materia m
+        inner join
+            Usuario u   on u.UsuarioId=m.UsuarioIns || u.UsuarioId=m.UsuarioAct
+        <dynamic prepend="where">
+            <isNotEmpty property="nombre" prepend="and">
+                m.Nombre like '%$nombre$%'
+            </isNotEmpty>
+        </dynamic>
+        Order by
+            m.Nombre
+    </select>
+
+    <select id="validateName"
+            parameterClass="com.sisgesbib.dao.beans.MateriaBean"
+            resultClass="int">
+        Select
+            Count(*)
+        From
+            Materia
+        Where
+            Nombre=#nombre#
+    </select>
+
+    <insert id="insertMatter"
+            parameterClass="com.sisgesbib.dao.beans.MateriaBean">
+        insert into Materia
+            (Nombre,Descripcion,Estado,FechaIns,UsuarioIns)
+        values
+            (#nombre#,#descripcion#,1,now(),#usuarioIns#)
+    </insert>
+
+    <select id="validateChangeName"
+            parameterClass="com.sisgesbib.dao.beans.MateriaBean"
+            resultClass="int">
+        Select
+            Count(*)
+        From
+            Materia
+        Where
+            Nombre=#nombre# and
+            MateriaId!=#materiaId#
+    </select>
+
+    <update id="updateMatter">
+        Update
+            Materia
+        Set
+            Nombre=#nombre#,
+            Descripcion=#descripcion#,
+            Estado=#estado#,
+            FechaAct=now(),
+            UsuarioAct=#usuarioAct#
+        Where
+            MateriaId=#materiaId#
+    </update>
+    
+    <select id="getMattersForCombo"
+            resultClass="com.sisgesbib.dao.beans.MateriaBean">
+        Select
+            MateriaId   as  materiaId,
+            Nombre      as  nombre
+        From
+            Materia
+        Where
+            Estado=1        
+    </select>
+    
+    <select id="getLstMatterResume"
+            resultClass="java.util.HashMap"
+            parameterClass="int">
+        Select 
+            m.MateriaId   as  materiaId,
+            m.Nombre      as  nombre,
+            Sum(if(t.MateriaId=m.MateriaId,1,0))    as  titulos,
+            Sum(if(t.MateriaId=m.MateriaId and c.Tipo='B',1,0)) as  canTitBiblioteca,
+            Sum(if(t.MateriaId=m.MateriaId and c.Tipo='H',1,0)) as  canTitHemeroteca,
+            ifNull(tCantEjem.cantEjeTot,0)  as  cantEjeTot,
+            ifNull(tCantEjem.canEjeBiblioteca,0)    as  canEjeBiblioteca,
+            ifNull(tCantEjem.canEjeHemeroteca,0)    as  canEjeHemeroteca
+        From
+            Materia m
+        Left join
+            Texto  t    on  m.MateriaId=t.MateriaId
+        left join
+            Categoria   c   on  t.CategoriaId=c.CategoriaId
+        left join
+            (Select
+                m.MateriaId as  materiaId,
+                Sum(if(t.MateriaId=m.MateriaId and c.Tipo='B',1,0)) canEjeBiblioteca,
+                Sum(if(t.MateriaId=m.MateriaId and c.Tipo='H',1,0)) canEjeHemeroteca,
+                Sum(1)  as  cantEjeTot
+            From
+                Materia m
+            inner join
+                Texto   t   on  m.MateriaId=t.MateriaId
+            inner join
+                Categoria   c   on  t.CategoriaId=c.CategoriaId
+            inner join
+                Ejemplar    e   on  t.TextoId=e.TextoId
+            Where
+                e.SedeId=#value#
+            Group by
+                m.MateriaId)    as  tCantEjem   on  m.MateriaId=tCantEjem.MateriaId
+        Group by
+            m.MateriaId
+        Order by
+            m.Nombre
+    </select>
+    
+    <select id="totalsMatterResume"
+            resultClass="java.util.HashMap"
+            parameterClass="int">
+        Select 
+            Sum(if(t.MateriaId=m.MateriaId,1,0))    as  titulos,
+            Sum(if(t.MateriaId=m.MateriaId and c.Tipo='B',1,0)) as  canTitBiblioteca,
+            Sum(if(t.MateriaId=m.MateriaId and c.Tipo='H',1,0)) as  canTitHemeroteca,
+            ifNull(tCantEjem.cantEjeTot,0)  as  cantEjeTot,
+            ifNull(tCantEjem.canEjeBiblioteca,0)    as  canEjeBiblioteca,
+            ifNull(tCantEjem.canEjeHemeroteca,0)    as  canEjeHemeroteca
+        From
+            Materia m
+        Left join
+            Texto  t    on  m.MateriaId=t.MateriaId
+        left join
+            Categoria   c   on  t.CategoriaId=c.CategoriaId
+        left join
+            (Select
+                m.MateriaId as  materiaId,
+                Sum(if(t.MateriaId=m.MateriaId and c.Tipo='B',1,0)) canEjeBiblioteca,
+                Sum(if(t.MateriaId=m.MateriaId and c.Tipo='H',1,0)) canEjeHemeroteca,
+                Sum(1)  as  cantEjeTot
+            From
+                Materia m
+            inner join
+                Texto   t   on  m.MateriaId=t.MateriaId
+            inner join
+                Categoria   c   on  t.CategoriaId=c.CategoriaId
+            inner join
+                Ejemplar    e   on  t.TextoId=e.TextoId
+            Where
+                e.SedeId=#value#
+            )    as  tCantEjem   on  m.MateriaId=tCantEjem.MateriaId
+    </select>
+
+</sqlMap>

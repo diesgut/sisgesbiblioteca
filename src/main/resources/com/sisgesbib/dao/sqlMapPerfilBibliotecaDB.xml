@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="perfil">
+
+    <select id="getListaPerfil" resultClass="com.sisgesbib.dao.beans.PerfilBean">
+        Select
+            PerfilId    as  perfilId,
+            Nombre      as  nombre,
+            Descripcion as  descripcion,
+            Estado      as  estado
+        From
+            Perfil
+    </select>
+
+    <select id="validateName"
+            parameterClass="com.sisgesbib.dao.beans.PerfilBean"
+            resultClass="int">
+        Select
+            Count(*)
+        From
+            Perfil
+        Where
+            Nombre=#nombre#
+    </select>
+
+    <insert id="insertNewPerfil"
+            parameterClass="com.sisgesbib.dao.beans.PerfilBean">
+        insert into
+            Perfil (Nombre,Descripcion,Estado)
+        values
+            (#nombre#,#descripcion#,1)
+    </insert>
+    
+    <select id="validateChangeName"
+            parameterClass="com.sisgesbib.dao.beans.PerfilBean"
+            resultClass="int">
+        Select
+            Count(*)
+        From
+            Perfil
+        Where
+            Nombre=#nombre# and
+            PerfilId!=#perfilId#
+            
+    </select>
+    
+    <update id="updatePerfil"
+            parameterClass="com.sisgesbib.dao.beans.PerfilBean">
+        Update
+            Perfil
+        Set
+            Nombre=#nombre#,
+            Descripcion=#descripcion#,
+            Estado=#estado#
+        Where
+            PerfilId=#perfilId#
+    </update>
+    
+    <select id="getRolesAssignedForUserAndCompany"
+            parameterClass="java.util.Map"
+            resultClass="java.util.HashMap">
+        Select
+           Nombre       as  nombreSede,
+           ifNull(PerfilId,-1)     as  perfilId,
+           UsuarioId    as  usuarioId,
+           s.SedeId   as  sedeId
+        From
+            Sede    s
+        left join
+            UsuarioSedePerfil   usp on s.SedeId=usp.SedeId and usp.UsuarioId=#usuarioId#
+        Where
+            s.EmpresaId=#empresaId#  
+        Order by
+            s.Nombre
+    </select>
+    
+    <select id="getMapPerfiles"
+            resultClass="com.sisgesbib.dao.beans.PerfilBean">
+        Select 
+            PerfilId    as  perfilId,
+            Nombre      as  nombre
+        From
+            Perfil
+        Where
+            Estado=1    
+    </select>
+    
+   <delete id="deleteUsuarioSedePerfilByUserAndSedes"
+           parameterClass="map">
+        delete from 
+            UsuarioSedePerfil
+        Where
+            UsuarioId=#usuarioId#   and
+            <iterate property="listaSedesToDelete" open=" SedeId in (" close=")" conjunction=",">
+                #listaSedesToDelete[]#
+            </iterate>
+   </delete>
+   
+   <insert id="multiInsertUsuarioSedePerfil"
+            parameterClass="map">
+        insert into 
+            UsuarioSedePerfil
+        values
+        <iterate property="lstUserSedeRole" conjunction=",">
+            (#usuarioId#,#lstUserSedeRole[].sedeId#,#lstUserSedeRole[].perfilId#)
+        </iterate>
+   </insert>
+
+</sqlMap>

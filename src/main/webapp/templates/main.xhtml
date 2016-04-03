@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich">
+    <f:view contentType="text/html">
+        <h:head>
+            <title><h:outputText value="#{msgs.tittleSisGesBis}"/></title>
+
+            <h:outputScript name="jquery.js"/> 
+            <h:outputScript name="funciones.js" library="js"/>
+            <!-- 
+            <link rel="stylesheet" type="text/css" href="../../../resources/css/application.css"/>
+            <link rel="stylesheet" type="text/css" href="../../../resources/css/base.css"/>
+             <h:outputScript name="jsf.js" library="javax.faces" /> -->
+            <!--//  <![CDATA[
+            <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+            <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+            <META HTTP-EQUIV="Expires" CONTENT="0">
+                  //    ]]> -->
+        </h:head>
+            <h:outputStylesheet library="css" name="application.css"/>
+            <h:outputStylesheet library="css" name="base.css"/>
+        <h:body>
+ 
+            <style type="text/css">
+                .rf-cp-hdr {
+                    border-bottom-width: 0;
+                    border-top-width: 0;
+                    padding-bottom: 0;
+                    padding-top: 0;
+                }
+                .rf-cp-b {
+                    color: #000000;
+                    font-family: Arial,Verdana,sans-serif;
+                    font-size: 11px;
+                    padding: 0;
+                }
+
+            </style>
+            <div id="page">
+                <div id="header">
+                    <!--   <div class="tittle"
+                      <h:outputText value="#{msgs.tittleSisGesBis}"
+                                    style="font-family: Segoe UI,Tahoma,Verdana,Arial;letter-spacing: 0.03em;font-size: 100%;font-size: 20pt;"/>
+                      </div>
+                      <div  class="right-menu">
+                          <ui:include src="/templates/includes/navigation.xhtml" />
+                      </div> -->
+                    <a href="#" class="logo">
+
+                    </a>
+                    <div class="right-controls">
+                        <h:form id="frmControls">
+                            <ul class="top-links layout">
+                                <li><h:outputText value="#{sesionUsuarioBean.nombreEmpresa}"/></li>
+                                <li><h:outputText value="#{sesionUsuarioBean.nombreSede}"/></li>
+                                <li><h:outputText value="#{sesionUsuarioBean.login}"/></li>
+                                <li class="download-link">#{sesionUsuarioBean.nombrePerfil}</li>
+                                <li class="last">
+
+                                    <h:commandLink value="Cerrar Sessión"
+                                                   style="font:11px Lucida Sans Unicode, Lucida Grande, Geneva,Verdana,Arial,sans-serif;color: #fff;"
+                                                   actionListener="#{loginMB.logOff()}"
+                                                   action="logOff"
+                                                   />
+
+
+                                </li>
+                            </ul>
+                        </h:form>
+                    </div>
+                    <div class="menu">
+                        <ui:include src="/templates/includes/navigation.xhtml" />
+                    </div>
+                </div>
+                <div id="page-content">
+                    <div class="content-container">
+                        <ui:insert name="body">
+                            Body content missed
+                        </ui:insert>
+                    </div>
+                </div>
+                <div id="footer">
+
+                </div>
+            </div>
+
+
+            <a4j:status  onstart="RichFaces.$('modalPanelLoading').show()"
+                         onstop="#{rich:component('modalPanelLoading')}.hide()"
+                         />
+
+            <rich:popupPanel id="modalPanelLoading"
+                             autosized="true"
+                             resizeable="false"
+                             shadowDepth="0"
+                             shadowOpacity="0"
+                             style="font-family:Arial,Verdana,sans-serif;padding: 0px;margin: 0px;"
+
+                             >
+                <!--   <table cellpadding="0" cellspacing="0">  
+                       <tr>
+                           <td style="padding: 0 10px;">
+                               <h:outputText value="Cargando..."
+                                             style="font-size: 12px;"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td> -->
+                <h:graphicImage value="/images/loading/16.gif" 
+                                style="width: 220px;height: 15px;"
+                                />
+                <!--    </td>
+                </tr>
+            </table> -->
+            </rich:popupPanel>
+
+        </h:body>
+    </f:view>
+</html>
+

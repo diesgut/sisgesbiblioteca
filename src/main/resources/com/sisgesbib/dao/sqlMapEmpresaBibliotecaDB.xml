@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="empresa">
+
+    <select id="getCompanyAssignedForUser"
+            parameterClass="int"
+            resultClass="java.util.LinkedHashMap">
+        Select
+            e.EmpresaId   as  empresaId,
+            e.Nombre      as  nombre
+        From
+            Empresa e
+        inner join
+            Sede    s   on  e.EmpresaId=s.EmpresaId
+        inner join
+            UsuarioSedePerfil   usp on  s.SedeId=usp.SedeId
+        Where
+            usp.UsuarioId=#value#  and e.Estado=1
+        Group by
+            e.EmpresaId
+        Order By
+            e.Nombre and e.Estado=1 and s.Estado=1
+    </select>
+    
+    <select id="getMapCompany"
+            resultClass="java.util.HashMap">
+        Select
+            EmpresaId   as  empresaId,
+            Nombre      as  nombre
+        From
+            Empresa
+    </select>
+    
+    <select id="getEmpresaBySede"
+            parameterClass="int"
+            resultClass="int">
+        Select
+            e.EmpresaId   as  empresaId
+        From
+            Empresa e
+        inner join
+            Sede    se  on  e.EmpresaId=se.EmpresaId
+        Where
+            se.SedeId=#value#
+        Group by
+            e.EmpresaId
+    </select>
+
+</sqlMap>

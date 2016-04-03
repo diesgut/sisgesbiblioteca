@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ejemplar">
+    
+    <insert id="insertaEjemplar"
+            parameterClass="com.sisgesbib.dao.beans.EjemplarBean">
+        insert into Ejemplar
+            (Estado,Condicion,TipoPrestamo,Procedencia,Tipo,Ubicacion,Precio,
+            FechaAdquisicion,FechaIns,UsuarioIns,SedeId,TextoId)
+        values
+            ("D",#condicion#,#tipoPrestamo#,#procedencia#,#tipo#,#ubicacion#,#precio#,
+                #fechaAdquisicion#,now(),#usuarioIns#,#sedeId#,#textoId#)
+    </insert>
+    
+    <update id="updateEjemplar"
+            parameterClass="com.sisgesbib.dao.beans.EjemplarBean">
+        update 
+            Ejemplar
+        Set
+            Estado=#estado#,
+            Condicion=#condicion#,
+            TipoPrestamo=#tipoPrestamo#,
+            Procedencia=#procedencia#,
+            Tipo=#tipo#,
+            Ubicacion=#ubicacion#,
+            Precio=#precio#,
+            FechaAdquisicion=#fechaAdquisicion#,
+            FechaAct=now(),
+            UsuarioAct=#usuarioIns#,
+            SedeId=#sedeId#,
+            TextoId=#textoId#
+        Where
+            EjemplarId=#ejemplarId#
+    </update>
+    
+    <select id="getListaEjemplarPorTexto"
+            parameterClass="com.sisgesbib.beans.filters.EjemplarPaginationBean"
+            resultClass="java.util.HashMap">
+        Select
+            e.EjemplarId      as  ejemplarId,
+            e.Estado          as  estado,
+            e.Condicion       as  condicion,
+            e.TipoPrestamo    as  tipoPrestamo,
+            e.Procedencia     as  procedencia,
+            e.Tipo            as  tipo,
+            e.Ubicacion       as  ubicacion,
+            e.Moneda          as  moneda,
+            e.Precio          as  precio,
+            e.Observacion     as  observacion,
+            e.FechaAdquisicion    as  fechaAdquisicion,
+            e.SedeId          as  sedeId,
+            e.TextoId         as  textoId,
+            e.FechaIns    as  fechaIns, 
+            e.FechaAct    as  fechaAct,
+            e.UsuarioIns  as  usuarioIns,
+            if(e.UsuarioIns=u.UsuarioId,u.Login,"") nomUsuIns,
+            e.UsuarioAct  as  usuarioAct,
+            if(e.UsuarioAct=u.UsuarioId,u.Login,"") nomUsuAct,
+            em.Nombre   as  nombreEmpresa,
+            s.Nombre    as  nombreSede
+        From
+            Ejemplar e
+        inner join
+            Usuario u   on  e.UsuarioIns=u.UsuarioId || e.UsuarioAct=u.UsuarioId  
+        inner join
+            Sede    s   on  s.SedeId=e.SedeId
+        inner join
+            Empresa em  on  s.EmpresaId=em.EmpresaId
+        <dynamic prepend="where">
+            <isNotNull property="textoId" prepend="and">
+                e.TextoId=#textoId#
+            </isNotNull>
+            <isNotNull property="sedeId" prepend="and">
+                e.SedeId=#sedeId#
+            </isNotNull>
+        </dynamic>    
+    </select>
+    
+    <update id="updateExemplaryState"
+            parameterClass="com.sisgesbib.dao.beans.EjemplarBean">
+        Update
+            Ejemplar
+        Set
+            Estado=#estado#
+        Where
+            EjemplarId=#ejemplarId#
+    </update>
+    
+    <update id="updateExemplaryStateAndCond">
+        Update
+            Ejemplar
+        Set
+            Estado=#estado#,
+            Condicion=#condicion#
+        Where
+            EjemplarId=#ejemplarId#
+    </update>
+
+</sqlMap>

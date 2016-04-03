@@ -1,0 +1,311 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      >
+    <h:head>
+        <title>SisGesBib</title>
+        <link rel="stylesheet" type="text/css" href="./resources/css/base.css"/>
+        <h:outputScript name="jquery.js" />
+        <!-- <h:outputScript name="jsf.js" library="javax.faces" /> -->
+        <script src="./resources/js/funciones.js" type="text/javascript"></script>
+        <script type="text/javascript" language="javascript">
+      //  <![CDATA[
+      $(document).ready(function(){
+          $("[id='frmLogin:txtUsuario']").focus()
+      });
+
+        function loginValidate(){
+            var usu=document.getElementById("frmLogin:txtUsuario");
+            var pass=document.getElementById("frmLogin:txtPassword");
+            var spnErrorLogin =jQuery("#spnErrorLogin").children().children();
+
+            jQuery("[id='frmLogin:richMsgErroLogin']").hide();
+       
+            if(trim(usu)==''){
+                usu.value=trim(usu);
+                usu.focus();
+                jQuery(spnErrorLogin).html("${msgs.messageErrorRequiredUsername}");
+                return false;
+            }else if(usu.value.length<5){
+                usu.value=trim(usu);
+                usu.focus();
+                jQuery(spnErrorLogin).html("${msgs.messageErrorUserNameIncorrectLength}");
+                return false;
+            }else{
+                var espacios = false;
+                var cont=0;
+                while (!espacios && (cont < usu.value.length)) {
+                    if (usu.value.charAt(cont) == " ")
+                        espacios = true;
+                    cont++;
+                }
+                if(espacios){
+                    jQuery(spnErrorLogin).html("${msgs.messageErrorUserNameNotBlanks}");
+                    usu.focus();
+                    return false;
+                }
+            }
+            if(trim(pass)== "" || pass.value.length<5){
+                pass.focus();
+                jQuery(spnErrorLogin).html("${msgs.messageErrorEmptyPassword}");
+                return false;
+            }else{
+                var espacios = false;
+                var cont=0;
+                while (!espacios && (cont < pass.value.length)) {
+                    if (pass.value.charAt(cont) == " ")
+                        espacios = true;
+                    cont++;
+                }
+                if(espacios){
+                    jQuery(spnErrorLogin).html("${msgs.messageErrorPasswordIncorrect}");
+                    pass.focus();
+                    return false;
+                }
+            }
+            return true;
+
+        }
+        
+        function validateSelectLibrary(){
+            var spnErrorSelectLibrary=jQuery("#spnErrorSelectLibrary").children().children();
+          //  var cboCompany=jQuery("[id='frmSelectBib:cboCompany']");
+            var lstSede=jQuery("[id='frmSelectBib:lstSede']");
+            jQuery(spnErrorSelectLibrary).html('');
+            if(jQuery(lstSede).val()==null){
+                jQuery(spnErrorSelectLibrary).html('${msgs.messageErrorSelectSede}');
+                return false;
+            }
+            return true;
+        }
+        
+      //    ]]>
+        </script>
+        <style type="text/css">
+
+        </style>
+    </h:head>
+    <h:body>
+
+        <center>
+            <rich:panel id="pnlLogin" header="#{msgs.tittleLogin}"
+                        style="font-size:16pt;font-weight:bold;width:400px;margin-top: 10em;min-height:  155px;">
+                <h:form id="frmLogin">
+
+                    <table width="100%">
+                        <tr>
+                            <td  style="text-align:left" width="50%">
+
+                                <h:outputText value="#{msgs.fieldUsername}" />
+                            </td>
+                            <td  style="text-align:left" width="50%">
+                                <h:inputText id="txtUsuario" tabindex="3"
+                                             maxlength="20"
+                                             value="#{usuarioBean.login}"
+                                             label="#{msgs.fieldUsername}"
+                                             autocomplete="off"
+                                             required="true">
+                                </h:inputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td  style="text-align:left" width="50%">
+                                <h:outputText value="#{msgs.fieldPassword}" />
+                            </td>
+                            <td  style="text-align:left" width="50%">
+                                <h:inputSecret id="txtPassword" tabindex="4"
+                                               value="#{usuarioBean.contraseña}"
+                                               label="#{msgs.fieldPassword}"
+                                               required="true"
+                                               >
+                                </h:inputSecret>
+                            </td>
+                        </tr>
+                        <!--      <tr>
+                                  <td colspan="2" style="text-align:left">
+                                      <h:outputLink value="#"  tabindex="5"
+                                                    onclick="modalInCenterScreen('modalPanelForgotPassword')"
+                                                    >
+                                          <h:outputText value="#{msgs.linkForgotPassword}"/>
+                                      </h:outputLink>
+                                  </td>
+                              </tr> -->
+                        <tr>
+                            <td colspan="2">
+                                &nbsp;
+                            </td>
+                        </tr>
+                        <tr>
+                            <td  style="text-align:left">
+                                <h:graphicImage alt=""/>
+                            </td>
+                            <td  style="text-align:left">
+                                &nbsp;
+                                <a4j:commandButton id="btnSignIn" style="width:65px"
+                                                   value="#{msgs.buttonSignIn}"
+                                                   onclick="return loginValidate();"
+                                                   action="#{loginMB.loginUsuario}"
+                                                   oncomplete="if(#{facesContext.maximumSeverity==null})RichFaces.$('modalSelectBib').show()"
+                                                   render=":pnlLogin,:frmSelectBib:pnlSelectBib"
+                                                   execute="@form"
+                                                   limitRender="true"
+                                                   >
+                                </a4j:commandButton>
+                                &nbsp;
+                                <a4j:commandButton id="btnCancel"
+                                                   onclick="resetForm(this.form,'lblErrorLogin');return false;"
+                                                   style="width:65px"
+                                                   value="#{msgs.buttonCancel}"
+                                                   onkeydown="return focusInCampo(event,'frmLogin:txtUsuario')"
+                                                   />
+                            </td>
+                        </tr>
+                        <tr valign="top">
+                            <td colspan="2" align="center" valign="top">
+                                <span id="spnErrorLogin"  class="rf-msgs error">
+                                    <span class="rf-msgs-err">
+                                        <span class="rf-msgs-sum"></span>
+                                    </span>
+                                </span>
+                                <rich:messages id="richMsgErroLogin"
+                                               for="frmLogin:btnSignIn"
+                                               />
+                            </td>
+                        </tr>
+                    </table>
+
+                </h:form>
+            </rich:panel>
+        </center>
+
+        <rich:popupPanel id="modalSelectBib" 
+                         modal="true"
+                         resizeable="false"
+                         autosized="true"
+                         header="#{msgs.tittleAccessToSystem}"
+                         >
+            <h:form id="frmSelectBib" style="min-height: 205px;"
+                    >
+                <a4j:outputPanel id="pnlSelectBib" >
+                    <table width="290px" >
+                        <tr>
+                            <td align="left" colspan="2">
+                                <h:outputText value="#{msgs.fieldLibrary}"
+                                              style="font-size:16pt;"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td  style="width:  80px;">
+                                <h:outputText value="#{msgs.fieldCompany}"/>
+                            </td>
+                            <td align="left" style="white-space: nowrap">
+                                <h:selectOneMenu id="cboCompany" tabindex="1" 
+                                                 value="#{empresaBean.empresaId}"
+                                                 style="width:185px;"
+                                                 onchange="jQuery('#spnErrorSelectLibrary').children().children().html('')">
+                                    <f:selectItem itemValue="-1" itemLabel="#{msgs.fieldSelect}"/>
+                                    <f:selectItems value="#{viewLstCompany}" />
+                                    <f:param name="userId" value="#{usuarioBean.usuarioId}"/>
+                                    <a4j:ajax event="change" status="statusSedeLoading"
+                                              listener="#{loginMB.loadSedeByEmpAndUsu}"
+                                              execute="@this"
+                                              render=":frmSelectBib:lstSede"
+                                              limitRender="true">
+                                    </a4j:ajax>
+                                </h:selectOneMenu>
+                                <span id="spnSedeLoading" style="display: none;">
+                                    <img style="position: absolute;" 
+                                         src="./images/loading/little-loading.gif"/>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top">
+                                <h:outputText value="#{msgs.fieldHeadQuarters}"/>
+                            </td>
+                            <td align="left">
+                                <h:selectOneListbox id="lstSede" 
+                                                    value="#{sedeBean.sedeId}"
+                                                    tabindex="2" required="true"
+                                                    size="7"
+                                                    style="width:185px;height: 100px;">
+                                    <f:selectItems value="#{viewLstSede}"/>
+                                </h:selectOneListbox>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <table width="100%">
+                                    <tr>
+                                        <td align="right">
+                                            <a4j:commandButton id="btnEnter" 
+                                                               value="#{msgs.buttonEnter}" 
+                                                               action="#{loginMB.accessToSystem}"
+                                                               onclick="return validateSelectLibrary()"
+                                                               >
+                                                <a4j:param value="#{usuarioBean.usuarioId}" assignTo="#{usuarioBean.usuarioId}"/>
+                                                <a4j:param value="#{usuarioBean.login}" assignTo="#{usuarioBean.login}"/>
+                                                <a4j:param value="#{usuarioBean.nombre}" assignTo="#{usuarioBean.nombre}"/>
+                                                <a4j:param value="#{usuarioBean.apePaterno}" assignTo="#{usuarioBean.apePaterno}"/>
+                                                <a4j:param value="#{usuarioBean.apeMaterno}" assignTo="#{usuarioBean.apeMaterno}"/>
+                                            </a4j:commandButton>
+                                            &nbsp;
+
+                                            <a4j:commandButton id="btnBack" value="#{msgs.buttonBack}"
+                                                               onclick="jQuery('[id=\'frmLogin:txtUsuario\']').focus();RichFaces.$('modalSelectBib').hide();return false;"
+                                                               onkeydown="return focusInCampo(event,'pageSelectClub:frmSelectClub:cmbSkin')"
+                                                               />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center">
+                                <span id="spnErrorSelectLibrary"  class="rf-msgs error">
+                                    <span class="rf-msgs-err">
+                                        <span class="rf-msgs-sum"></span>
+                                    </span>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </a4j:outputPanel>
+
+
+            </h:form>
+        </rich:popupPanel>
+
+
+            <a4j:region>
+                <a4j:status id="statusSedeLoading"  name="statusSedeLoading"
+                            onstart="jQuery('#spnSedeLoading').show()"
+                            onstop="jQuery('#spnSedeLoading').hide()"/>
+            </a4j:region>
+
+            <a4j:status  onstart="RichFaces.$('modalPanelLoading').show()"
+                         onstop="#{rich:component('modalPanelLoading')}.hide()"
+                         />
+
+            <rich:popupPanel id="modalPanelLoading"
+                             autosized="true"
+                             resizeable="false"
+                             shadowDepth="0"
+                             shadowOpacity="0"
+                             style="font-family:Arial,Verdana,sans-serif;padding: 0px;margin: 0px;"
+                           
+                             >
+
+                            <h:graphicImage value="/images/loading/16.gif" 
+                                            style="width: 220px;height: 15px;"
+                                            />
+
+            </rich:popupPanel>
+
+    </h:body>
+</html>
+

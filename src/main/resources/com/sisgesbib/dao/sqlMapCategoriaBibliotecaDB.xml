@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="categoria">
+
+    <select id="getListaCategoria"
+            resultClass="com.sisgesbib.dao.beans.CategoriaBean"
+            parameterClass="com.sisgesbib.beans.filters.CategoriaPaginationBean">
+        Select
+            c.CategoriaId   as  categoriaId,
+            c.Nombre        as  nombre,
+            c.Tipo          as  tipo,
+            c.Descripcion   as  descripcion,
+            c.Estado        as  estado,
+            c.FechaIns      as  fechaIns,
+            c.FechaAct      as  fechaAct,
+            c.UsuarioIns    as  usuarioIns,
+            c.UsuarioAct    as  usuarioAct,
+            if(c.UsuarioIns=u.UsuarioId,u.Login,"")    as  nameUsuIns,
+            if(c.UsuarioAct=u.UsuarioId,u.Login,"")    as  nameUsuAct
+        From
+            Categoria   c
+        inner join
+            Usuario u   on  u.UsuarioId=c.UsuarioIns || u.UsuarioId=c.UsuarioAct
+        <dynamic prepend="where">
+            <isNotEmpty property="nombre" prepend="and">
+                c.Nombre like '%$nombre$%'
+            </isNotEmpty>
+        </dynamic>
+    </select>
+
+    <select id="validateCategory"
+            parameterClass="com.sisgesbib.dao.beans.CategoriaBean"
+            resultClass="int">
+        Select
+            Count(*)
+        From
+            Categoria
+        Where
+            Nombre = #nombre#
+    </select>
+
+    <insert id="insertCategory"
+            parameterClass="com.sisgesbib.dao.beans.CategoriaBean">
+        insert into Categoria
+            (Nombre,Tipo,Descripcion,Estado,FechaIns,UsuarioIns)
+        values
+            (#nombre#,#tipo#,#descripcion#,1,now(),#usuarioIns#)
+    </insert>
+
+    <select id="validateChangeName"
+            parameterClass="com.sisgesbib.dao.beans.CategoriaBean"
+            resultClass="int">
+        Select
+            Count(*)
+        From
+            Categoria
+        Where
+            Nombre=#nombre# and
+            CategoriaId!=#categoriaId#
+    </select>
+
+    <update id="updateCategory"
+            parameterClass="com.sisgesbib.dao.beans.CategoriaBean">
+        Update
+            Categoria
+        Set
+            Nombre=#nombre#,
+            Descripcion=#descripcion#,
+            Tipo=#tipo#,
+            Estado=#estado#,
+            FechaAct=now(),
+            UsuarioAct=#usuarioAct#
+        Where
+            CategoriaId=#categoriaId#
+    </update>
+    
+    <select id="getCategoryForCombo"
+            resultClass="com.sisgesbib.dao.beans.CategoriaBean">
+        Select
+            CategoriaId     as  categoriaId,
+            Nombre          as  nombre
+        From
+            Categoria
+        Where
+            Estado=1
+    </select>
+
+</sqlMap>

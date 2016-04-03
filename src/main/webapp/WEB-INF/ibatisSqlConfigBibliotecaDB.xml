@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMapConfig
+    PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+    <settings useStatementNamespaces="true"/>
+
+    <sqlMap resource="com/sisgesbib/dao/sqlMapUsuarioBibliotecaDB.xml"/>
+    <sqlMap resource="com/sisgesbib/dao/sqlMapEmpresaBibliotecaDB.xml"/>
+    <sqlMap resource="com/sisgesbib/dao/sqlMapSedeBibliotecaDB.xml"/>
+    <sqlMap resource="com/sisgesbib/dao/sqlMapAutorBibliotecaDB.xml"/>
+    <sqlMap resource="com/sisgesbib/dao/sqlMapPaisBibliotecaDB.xml"/>
+    <sqlMap resource="com/sisgesbib/dao/sqlMapTemaBibliotecaDB.xml"/>
+    <sqlMap resource="com/sisgesbib/dao/sqlMapMateriaBibliotecaDB.xml"/>
+    <sqlMap resource="com/sisgesbib/dao/sqlMapCategoriaBibliotecaDB.xml"/>
+    <sqlMap resource="com/sisgesbib/dao/sqlMapMenuBibliotecaDB.xml"/>
+    <sqlMap resource="com/sisgesbib/dao/sqlMapPerfilBibliotecaDB.xml"/>
+    <sqlMap resource="com/sisgesbib/dao/sqlMapPerfilMenuBibliotecaDB.xml"/>
+    <sqlMap resource="com/sisgesbib/dao/sqlMapEditorialBibliotecaDB.xml"/>
+    <sqlMap resource="com/sisgesbib/dao/sqlMapUtilBibliotecaDB.xml"/>
+    <sqlMap resource="com/sisgesbib/dao/sqlMapTextoBibliotecaDB.xml"/>
+    <sqlMap resource="com/sisgesbib/dao/sqlMapEjemplarBibliotecaDB.xml"/>
+    <sqlMap resource="com/sisgesbib/dao/sqlMapLectorBibliotecaDB.xml"/>
+    <sqlMap resource="com/sisgesbib/dao/sqlMapSolicitudBibliotecaDB.xml"/>
+    <sqlMap resource="com/sisgesbib/dao/sqlMapPrestamoBibliotecaDB.xml"/>
+</sqlMapConfig>

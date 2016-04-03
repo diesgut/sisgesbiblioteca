@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="tema">
+    
+    <select id="getListaTheme" resultClass="com.sisgesbib.dao.beans.TemaBean" parameterClass="com.sisgesbib.beans.filters.TemaPaginationBean">
+        Select
+            t.TemaId      as  temaId,
+            t.Nombre      as  nombre,
+            t.Descripcion as  descripcion,
+            t.Estado      as  estado,
+            t.FechaIns    as  fechaIns,
+            t.FechaAct    as  fechaAct,
+            t.UsuarioIns  as  usuarioIns,
+            if(UsuarioIns=u.UsuarioId,u.Login,"")   as  nameUsuIns,
+            t.UsuarioAct  as  usuarioAct,
+            if(UsuarioAct=u.UsuarioId,u.Login,"")   as  nameUsuAct
+        From
+            Tema t
+        inner join
+            Usuario u on UsuarioId=UsuarioIns or UsuarioId=UsuarioAct
+       <dynamic prepend="where">
+           <isNotEmpty property="nombre" prepend="and">
+               t.Nombre like '%$nombre$%'
+           </isNotEmpty>
+       </dynamic>
+        Order By
+            Nombre
+    </select>
+    
+    <select id="validateNombre" resultClass="int" parameterClass="com.sisgesbib.dao.beans.TemaBean">
+        Select
+            Count(*)
+        From
+            Tema
+        Where
+            Nombre=#nombre#
+    </select>
+    
+    <insert id="insertTheme" parameterClass="com.sisgesbib.dao.beans.TemaBean">
+        insert into Tema
+        (Nombre,Descripcion,Estado,FechaIns,UsuarioIns)
+        values
+        (#nombre#,#descripcion#,1,now(),#usuarioIns#)
+    </insert>
+
+    <select id="validateChangedName" resultClass="int" parameterClass="com.sisgesbib.dao.beans.TemaBean">
+        Select
+            Count(*)
+        From
+            Tema
+        Where
+            Nombre=#nombre# and
+            TemaId!=#temaId#
+    </select>
+
+    <update id="updateTheme" parameterClass="com.sisgesbib.dao.beans.TemaBean">
+        Update
+            Tema
+        Set
+            Nombre=#nombre#,
+            Descripcion=#descripcion#,
+            Estado=#estado#,
+            FechaAct=now(),
+            UsuarioAct=#usuarioAct#
+        Where
+            TemaId=#temaId#
+    </update>
+    
+</sqlMap>

@@ -1,0 +1,391 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:composition template="/templates/main.xhtml">
+        <ui:define name="body">
+
+
+
+            <table width="100%">
+                <tr>
+                    <td>
+                        <h:outputText styleClass="tittlePage"
+                                      value="#{msgs.tittleNewText}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:form id="frmNewUser">
+                            <rich:panel id="pnlNewText"
+                                        style="width: 100%;">
+
+                                <h:inputHidden value="#{textMaintenance.initPage}"/>
+                                <table width="100%">
+                                    <tr>
+                                        <td>
+
+
+                                            <table width="100%" cellpadding="1" cellspacing="1">
+                                                <tr>
+                                                    <td width="100" style="white-space: nowrap" >
+                                                        <h:outputText value="#{msgs.fieldCodInt}"/>
+                                                    </td>
+                                                    <td style="white-space: nowrap" >
+                                                        <h:inputText id="txtCodInt" 
+                                                                     value="#{textoBean.codigoInterno}"
+                                                                     size="30"
+                                                                     required="true"
+                                                                     requiredMessage="#{msgs.messageErrorCtxRequiredCodInt}"
+                                                                     autocomplete="off"/>
+                                                        <rich:message for="frmNewUser:txtCodInt"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="white-space: nowrap">
+                                                        <h:outputText value="#{msgs.fieldName}"/>     
+                                                    </td>
+                                                    <td style="white-space: nowrap">
+                                                        <h:inputText id="txtName" 
+                                                                     value="#{textoBean.nombre}"
+                                                                     size="70"
+                                                                     required="true"
+                                                                     requiredMessage="#{msgs.messageErrorCtxRequiredName}"
+                                                                     autocomplete="off"/>
+                                                        <rich:message for="frmNewUser:txtName"/>
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" style="white-space: nowrap">
+                                                        &nbsp;
+
+                                                        <a4j:commandLink  id="cmbSearchAuthors"  
+                                                                          onclick="showModalPanel('modalSearchAuthors');return false;"
+                                                                          style="position: absolute;border: 0;margin-right: 10px;right: 100px;"
+                                                                          >
+                                                            <h:graphicImage value="/images/search.png"
+                                                                            height="15px"
+                                                                            style="border: 0;"/>
+                                                            <rich:tooltip style="background-color: #FAE6B0;border: 1px solid #E5973E;">
+                                                                <h:outputText value="#{msgs.messageSearchAuthor}"/>
+                                                            </rich:tooltip>
+                                                        </a4j:commandLink>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2">
+                                                        <fieldset>
+                                                            <legend>
+                                                                <h:outputText value="#{msgs.fieldAuthors}"/>
+                                                            </legend>
+                                                            <rich:dataTable id="dtbAuthors" 
+                                                                            noDataLabel="#{msgs.messageNoAuthorsAssigned}"
+                                                                            style="width: 100%;"
+                                                                            value="#{viewScope['viewListSelectedAuthors']}"
+                                                                            var="aut">
+
+                                                                <rich:column styleClass="columnCenter"
+                                                                             style="margin-top: 0pt; margin-bottom: 0pt; padding-top: 0px; padding-bottom: 0px;width: 20px;">
+                                                                    <f:facet name="header">
+
+                                                                    </f:facet>
+                                                                    <a4j:commandLink  execute="@this" 
+                                                                                      render="dtbAuthors"
+                                                                                      limitRender="true"
+                                                                                      actionListener="#{textMaintenance.deleteAuthor}"
+                                                                                      >
+                                                                        <h:graphicImage value="/images/icons/delete.png"
+                                                                                        style="border: 0;"
+                                                                                        width="15px" 
+                                                                                        height="13px"/>
+                                                                        <rich:tooltip style="background-color: #FAE6B0;border: 1px solid #E5973E;">
+                                                                            <h:outputText value="#{msgs.buttonDelete}"/>
+                                                                        </rich:tooltip>
+                                                                        <f:attribute name="authorToDelete" value="#{aut}"/>
+                                                                    </a4j:commandLink>
+                                                                </rich:column>          
+
+
+
+                                                                <rich:column styleClass="columnLeft"
+                                                                             style="margin-top: 0pt; margin-bottom: 0pt; padding-top: 0px; padding-bottom: 0px;width: 30%;"
+                                                                             >
+                                                                    <f:facet name="header">
+                                                                        <h:outputText value="#{msgs.fieldName}"/>
+                                                                    </f:facet>
+                                                                    <h:outputText value="#{aut.nombres}"/>
+                                                                </rich:column>
+
+                                                                <rich:column styleClass="columnLeft"
+
+                                                                             style="margin-top: 0pt; margin-bottom: 0pt; padding-top: 0px; padding-bottom: 0px;width: 50%;"
+                                                                             >
+                                                                    <f:facet name="header">
+                                                                        <h:outputText value="#{msgs.fieldApellidos}"/>
+                                                                    </f:facet>
+                                                                    <h:outputText value="#{aut.apellidos}"/>
+                                                                </rich:column>
+
+                                                                <rich:column styleClass="columnLeft"
+                                                                             style="margin-top: 0pt; margin-bottom: 0pt; padding-top: 0px; padding-bottom: 0px;width: 20%;"
+                                                                             >
+                                                                    <f:facet name="header">
+                                                                        <h:outputText value="#{msgs.fieldCountry}"/>
+                                                                    </f:facet>
+                                                                    <h:outputText value="#{aut.nombrePais}"/>
+                                                                </rich:column>
+
+                                                                <rich:column styleClass="columnLeft"
+                                                                             style="margin-top: 0pt; margin-bottom: 0pt; padding-top: 0px; padding-bottom: 0px;width: 100px;"
+                                                                             >
+                                                                    <f:facet name="header">
+                                                                        <h:outputText value="#{msgs.fieldSex}"/>
+                                                                    </f:facet>
+                                                                    <h:outputText value="#{aut.sexo == 'M' ? msgs.fieldMale : msgs.fieldFemale}"/>
+                                                                </rich:column>
+                                                                
+                                                            </rich:dataTable>
+                                                            
+                                                            <rich:messages for="frmNewUser:dtbAuthors"/>
+                                                        </fieldset>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2">
+                                                        <fieldset>
+                                                            <table width="100%" cellpadding="1"  cellspacing="0" style="padding-top: 2px;">
+                                                                <tr>
+                                                                    <td colspan="2">
+                                                                        <table width="100%" cellpadding="1"  cellspacing="0" >
+                                                                            <tr>
+                                                                                <td width="100" style="white-space: nowrap;">
+                                                                                    <h:outputText value="#{msgs.fieldVolume}"/>
+                                                                                </td>
+                                                                                <td style="white-space: nowrap;">
+                                                                                    <rich:inputNumberSpinner id="txtVolume" 
+                                                                                                             value="#{textoBean.tomo}"
+                                                                                                             minValue="0"
+                                                                                                             inputSize="2"/>
+                                                                                </td>
+                                                                                <td style="white-space: nowrap;">
+                                                                                    <h:outputText value="#{msgs.fieldEditionDate}"/>
+                                                                                </td>
+                                                                                <td style="white-space: nowrap;">
+                                                                                    <h:inputText id="txtEditionYear"
+                                                                                                 value="#{textoBean.añoEdicion}"
+                                                                                                 maxlength="4"
+                                                                                                 requiredMessage="#{msgs.messageErrorCtxRequiredEditionYear}"
+                                                                                                 required="true"
+                                                                                                 size="10"
+                                                                                                 autocomplete="off"/>
+                                                                                    <rich:message for="frmNewUser:txtEditionYear"/>
+                                                                                </td>
+                                                                                <td style="white-space: nowrap;">
+                                                                                    <h:outputText value="#{msgs.fieldEdition}"/>
+                                                                                </td>
+                                                                                <td style="white-space: nowrap;">
+                                                                                    <rich:inputNumberSpinner id="txtEdition" 
+                                                                                                             value="#{textoBean.edicion}"
+                                                                                                             minValue="1" maxValue="20"
+                                                                                                             inputSize="2"/>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="white-space: nowrap;">
+                                                                                    <h:outputText value="#{msgs.fieldDimensions}"/>
+                                                                                </td>
+                                                                                <td style="white-space: nowrap;">
+                                                                                    <h:inputText id="txtDimensions"
+                                                                                                 value="#{textoBean.dimension}"
+                                                                                                 size="10"
+                                                                                                 requiredMessage="#{msgs.messageErrorCtxRequiredDimension}"
+                                                                                                 required="true"
+                                                                                                 autocomplete="off"/>
+                                                                                    <rich:message for="frmNewUser:txtDimensions"/>
+                                                                                </td>
+                                                                                <td style="white-space: nowrap;">
+                                                                                    <h:outputText value="#{msgs.fieldNumPages}"/>
+                                                                                </td>
+                                                                                <td style="white-space: nowrap;">
+                                                                                    <h:inputText id="txtNumPages"
+                                                                                                 value="#{textoBean.numeroPaginas}"
+                                                                                                 size="10"
+                                                                                                 required="true"
+                                                                                                 requiredMessage="#{msgs.messageErrorCtxRequiredNumPages}"
+                                                                                                 autocomplete="off"/>    
+                                                                                    <rich:message for="frmNewUser:txtNumPages"/>
+                                                                                </td>
+                                                                                <td style="white-space: nowrap;">
+                                                                                    <h:outputText value="#{msgs.fieldISBN}"/>
+                                                                                </td>
+                                                                                <td style="white-space: nowrap;">
+                                                                                    <h:inputText id="txtISBN" 
+                                                                                                 value="#{textoBean.ISBN}"
+                                                                                                 size="10"
+                                                                                                 required="true"
+                                                                                                 requiredMessage="#{msgs.messageErrorCtxRequiredISBN}"
+                                                                                                 autocomplete="off"/>  
+                                                                                    <rich:message for="frmNewUser:txtISBN"/>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="100" style="white-space: nowrap;">
+                                                                        <h:outputText value="#{msgs.fieldCategory}"/>
+                                                                    </td>
+                                                                    <td style="white-space: nowrap;">
+                                                                        <h:selectOneMenu id="cboCategory"
+                                                                                         value="#{textoBean.categoriaId}"
+                                                                                         validatorMessage="#{msgs.messageErrorCtxRequiredCategory}">
+                                                                            <f:selectItem itemValue="-1" itemLabel="#{msgs.fieldSelect}"/>
+                                                                            <f:selectItems value="#{viewMapCategory}"/>
+                                                                            <f:validateLongRange minimum="0"/>
+                                                                        </h:selectOneMenu>
+                                                                        <rich:message for="frmNewUser:cboCategory"/>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <h:outputText value="#{msgs.fieldPublisher}"/>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a4j:outputPanel id="opnlPublisher">
+                                                                            <h:inputText id="txtPublisher"
+                                                                                         value="#{viewPublisherName}"
+                                                                                         disabled="true"
+                                                                                         size="50"/>
+
+                                                                            <h:inputHidden id="txtdPublisher" 
+                                                                                           value="#{textoBean.editorialId}"
+                                                                                           required="true"
+                                                                                           requiredMessage="#{msgs.messageErrorCtxRequiredPublisher}"/>
+                                                                            <a4j:commandLink  onclick="showModalPanel('modalSearchPublisher');return false;" 
+                                                                                              >
+                                                                                <h:graphicImage value="/images/search.png"
+                                                                                                height="15px"
+                                                                                                style="border: 0;"
+                                                                                                />
+                                                                                <rich:tooltip style="background-color: #FAE6B0;border: 1px solid #E5973E;">
+                                                                                    <h:outputText value="#{msgs.messageSearchPublisher}"/>
+                                                                                </rich:tooltip>
+                                                                            </a4j:commandLink>
+                                                                        </a4j:outputPanel>
+                                                                        <rich:message for="frmNewUser:txtdPublisher"/>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="100" style="white-space: nowrap;">
+                                                                        <h:outputText value="#{msgs.fieldMatter}"/>
+                                                                    </td>
+                                                                    <td style="white-space: nowrap;">
+                                                                        <h:selectOneMenu id="cboMatter"
+                                                                                         value="#{textoBean.materiaId}"
+                                                                                         validatorMessage="#{msgs.messageErrorCtxRequiredMatter}">
+                                                                            <f:selectItem itemValue="-1" itemLabel="#{msgs.fieldSelect}"/>
+                                                                            <f:selectItems value="#{viewMapMatter}"/>
+                                                                            <f:validateLongRange minimum="0"/>
+                                                                        </h:selectOneMenu>
+                                                                        <rich:message for="frmNewUser:cboMatter"/>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="100" style="white-space: nowrap;">
+                                                                        <h:outputText value="#{msgs.fieldLanguage}"/>
+                                                                    </td>
+                                                                    <td style="white-space: nowrap;">
+                                                                        <h:selectOneMenu id="cboLanguage"
+                                                                                         value="#{textoBean.idiomaId}"
+                                                                                         validatorMessage="#{msgs.messageErrorCtxRequiredLanguage}">
+                                                                            <f:selectItem itemValue="-1" itemLabel="#{msgs.fieldSelect}"/>
+                                                                            <f:selectItems value="#{viewMapLanguage}"/>
+                                                                            <f:validateLongRange minimum="0"/>
+                                                                        </h:selectOneMenu>
+                                                                        <rich:message for="frmNewUser:cboLanguage"/>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width="100" style="white-space: nowrap;">
+                                                                        <h:outputText value="#{msgs.fieldTheme}"/>
+                                                                    </td>
+                                                                    <td style="white-space: nowrap;">
+                                                                        <a4j:outputPanel id="opnlTheme">
+                                                                        <h:inputText id="txtTheme"
+                                                                                     value="#{viewThemeName}"
+                                                                                     disabled="true"
+                                                                                     size="50"
+                                                                                     autocomplete="off"/>
+                                                                        <a4j:commandLink   onclick="showModalPanel('modalSearchTheme');return false;"
+                                                                            >
+                                                                            <h:graphicImage value="/images/search.png"
+                                                                                            height="15px"
+                                                                                            style="border: 0;"/>
+                                                                            <rich:tooltip style="background-color: #FAE6B0;border: 1px solid #E5973E;">
+                                                                                <h:outputText value="#{msgs.messageSearchTheme}"/>
+                                                                            </rich:tooltip>
+                                                                        </a4j:commandLink>
+                                                                        <h:inputHidden id="txthTemaId" 
+                                                                                       value="#{textoBean.temaId}"
+                                                                                       required="true"
+                                                                                       requiredMessage="#{msgs.messageErrorCtxRequiredTheme}"/>
+                                                                        </a4j:outputPanel>
+                                                                        <rich:message for="frmNewUser:txthTemaId"/>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td >
+                                                                        <h:outputText value="#{msgs.fieldObservacion}"/>
+                                                                    </td>
+                                                                    <td >
+                                                                        <h:inputText id="txtObservacion"
+                                                                                     value="#{textoBean.observacion}"
+                                                                                     size="70"
+                                                                                     autocomplete="off"
+                                                                                     />
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </fieldset>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" align="center">
+                                                        <a4j:commandButton id="cmbSave"
+                                                                           value="#{msgs.buttonSave}"
+                                                                           render="pnlNewText"
+                                                                           limitRender="true"
+                                                                           action="#{textMaintenance.saveNewText}"
+                                                                           oncomplete="if(#{facesContext.maximumSeverity==null}){alert('#{msgs.messageSuccessSave}');document.location.href='#{facesContext.externalContext.requestContextPath}/library/maintenance/textmaintenance/textmaintenance.jsf';return false;}"
+                                                                           />
+                                                        &nbsp;
+                                                        <h:commandButton id="cmbBack"
+                                                                         value="#{msgs.buttonBack}"
+                                                                         onclick="document.location.href='#{facesContext.externalContext.requestContextPath}/library/maintenance/textmaintenance/textmaintenance.jsf';return false;"
+                                                                         immediate="true"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </rich:panel>
+                        </h:form>
+                    </td>
+                </tr>
+            </table>
+
+            <ui:include src="/library/includes/searchauthor.xhtml" />
+            <ui:include src="/library/includes/searchpublisher.xhtml" />
+            <ui:include src="/library/includes/searchtheme.xhtml" />
+            
+
+        </ui:define>
+    </ui:composition>
+</html>

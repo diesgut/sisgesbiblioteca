@@ -1,0 +1,492 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="/templates/main.xhtml">
+        <ui:define name="body">
+
+
+            <table width="100%">
+                <tr>
+                    <td align="left">
+                        <h:outputText styleClass="tittlePage"
+                                      value="Mantenimiento de Lectores"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left">
+                        <h:form id="frmSearchReader"
+                                >
+                            <h:inputHidden value="#{readerMaintenance.initPage}"/>
+                            <rich:tabPanel>
+                                <rich:tab header="#{msgs.labelFilters}">
+                                    <table >
+                                        <tr>
+                                            <td style="white-space: nowrap;">
+                                                <h:outputText value="#{msgs.fieldFullName}"/>
+                                                &nbsp;
+                                                <h:inputText id="txtNombres"
+                                                             value="#{lectorPaginacionBean.nombres}"
+                                                             />
+                                            </td>
+                                            <td>
+                                                <h:outputText value="Codigo"/>
+                                                &nbsp;
+                                                <h:inputText id="txtCodigoLector"
+                                                             value="#{lectorPaginacionBean.codigo}"
+                                                             />
+                                            </td>
+                                            <td style="white-space: nowrap;" align="right">
+                                                &nbsp; &nbsp;
+                                                <a4j:commandButton id="cmdSearch"
+                                                                   value="#{msgs.buttonSearch}"
+                                                                   action="#{readerMaintenance.listaLectores()}"
+                                                                   execute="@form"
+                                                                   render="frmReaderMaint:pnlReaderMaint"
+                                                                   limitRender="true"
+                                                                   />
+                                                &nbsp; 
+                                                <a4j:commandButton id="btnNewLector"
+                                                                   value="#{msgs.buttonNew}"
+                                                                   onclick="showModalPanel('modalNewLector');return false;"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </rich:tab>
+                            </rich:tabPanel>   
+                        </h:form>     
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:form id="frmReaderMaint">
+                            <rich:panel id="pnlReaderMaint" style="width: 100%;">
+
+                                <rich:dataScroller for="edtbReaderMaintenence"
+                                                   maxPages="5" />
+
+                                <rich:extendedDataTable id="edtbReaderMaintenence" rows="13"
+                                                        value="#{lectorPaginacionBean.listaLectores}"
+                                                        var="rdr"
+                                                        style="width:  900px;height: 350px;"
+                                                        frozenColumns="2" noDataLabel="#{msgs.messageNoData}"
+                                                        >
+
+                                    <rich:column styleClass="columnCenter"
+                                                 width="25px">
+                                        <f:facet name="header">
+
+                                        </f:facet>
+                                        <a4j:commandLink actionListener="#{readerMaintenance.selectReader}"
+                                                         render="lblTittleUpdLector,opnlUpdLector"
+                                                         oncomplete="showModalPanel('modalUpdLector')"
+                                                         execute="@this"
+                                                         limitRender="true"
+                                                         >
+                                            <h:graphicImage value="/images/updated.png"
+                                                            style="cursor:pointer;border: 0;"
+                                                            width="10px" height="15px"/>
+                                            <f:attribute name="readerSelected" value="#{rdr}"/>
+                                        </a4j:commandLink>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="Codigo"/>
+                                        </f:facet>
+                                        <h:outputText value="#{rdr.codigo}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldName}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{rdr.nombres}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldApePat}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{rdr.apePaterno}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldApeMat}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{rdr.apeMaterno}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldSex}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{rdr.sexo == 'M' ? msgs.fieldMale : msgs.fieldFemale}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="200px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldType}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{rdr.tipo == 'E' ? msgs.fieldStudent : msgs.fieldPerAdm}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnCenter"
+                                                 width="60px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldState}"/>
+                                        </f:facet>
+
+                                        <h:graphicImage value="#{rdr.estado == true ? '/images/icons/enable.png' : '/images/icons/disable.png'}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldDateTimeIns}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{rdr.fechaIns}">
+                                            <f:convertDateTime pattern="#{msgs.datePattern}"/>
+                                        </h:outputText>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldUserIns}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{rdr.nomUsuIns}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldDateTimeUpd}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{rdr.fechaAct}">
+                                            <f:convertDateTime pattern="#{msgs.datePattern}"/>
+                                        </h:outputText>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldUserUpd}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{rdr.nomUsuAct}"/>
+                                    </rich:column>
+
+
+                                </rich:extendedDataTable>
+
+                                <rich:dataScroller for="edtbReaderMaintenence"
+                                                   maxPages="5" />
+
+                            </rich:panel>
+                        </h:form>
+                    </td>
+                </tr>
+            </table>  
+
+
+            <rich:popupPanel id="modalNewLector" 
+                             autosized="true"
+                             resizeable="false" 
+                             header="#{msgs.tittleNewReader}"
+                             onbeforeshow="cleanForm('frmNewLector','lblErrorNewReader','frmNewLector:richMsgErrorNewReader')"
+                             onshow="$('[id=\'frmNewLector:txtCodigoLector\']').focus()"
+                             modal="true">
+                <h:form id="frmNewLector"
+                        >
+                    <a4j:outputPanel id="opnlNewLector">
+                        <table width="280">
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="Codigo Lector"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+
+                                    <h:inputText id="txtCodigoLector"
+                                                 value="#{lectorBean.codigo}"
+                                                 label="Codigo Lector"
+                                                 required="true"
+                                                 maxlength="20"
+                                                 autocomplete="off" tabindex="-1"
+                                                 />
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="Nombre"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:inputText id="txtName"
+                                                 value="#{lectorBean.nombres}"
+                                                 label="Nombre"
+                                                 required="true"
+                                                 autocomplete="off"
+                                                 />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="Ape. Paterno"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:inputText id="txtApePat"
+                                                 value="#{lectorBean.apePaterno}"
+                                                 label="Ape. Paterno"
+                                                 required="true"
+                                                 autocomplete="off"
+                                                 />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="Ape. Materno"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:inputText id="txtApeMat"
+                                                 value="#{lectorBean.apeMaterno}"
+                                                 label="Ape. Materno"
+                                                 autocomplete="off"
+                                                 required="true"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" >
+                                    <h:outputText value="#{msgs.fieldSex}"/>
+                                </td>
+                                <td style="white-space: nowrap" >
+                                    <h:selectOneRadio id="rdoSexo"
+                                                      label="#{msgs.fieldSex}"
+                                                      value="#{lectorBean.sexo}"
+                                                      required="true">
+                                        <f:selectItem itemLabel="#{msgs.fieldMale}" itemValue="M"/>
+                                        <f:selectItem itemLabel="#{msgs.fieldFemale}" itemValue="F"/>
+                                    </h:selectOneRadio>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" >
+                                    <h:outputText value="#{msgs.fieldType}"/>
+                                </td>
+                                <td style="white-space: nowrap" >
+                                    <h:selectOneRadio id="rdoType"
+                                                      label="#{msgs.fieldType}"
+                                                      value="#{lectorBean.tipo}"
+                                                      required="true">
+                                        <f:selectItem itemLabel="Estudiante" itemValue="E"/>
+                                        <f:selectItem itemLabel="Per. Adm y Docentes" itemValue="P"/>
+                                    </h:selectOneRadio>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="center" style="white-space: nowrap">
+                                    <a4j:commandButton id="btnInsReader"
+                                                       value="#{msgs.buttonInsert}"
+                                                       action="#{readerMaintenance.insertaLector()}"
+                                                       render=":frmNewLector:opnlNewLector,:frmReaderMaint:pnlReaderMaint"
+                                                       execute="@form"
+                                                       limitRender="true"
+                                                       oncomplete="if (#{facesContext.maximumSeverity==null}){alert('#{msgs.messageSuccessSave}');#{rich:component('modalNewLector')}.hide();}" 
+                                                       />
+                                    &nbsp;
+
+                                    <a4j:commandButton id="btnCancel"
+                                                       value="#{msgs.buttonCancel}"
+                                                       onclick="#{rich:component('modalNewLector')}.hide();return false;"
+                                                       onkeydown="return focusInCampo(event,'frmNewLector:txtCodigoLector')"
+                                                       />
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"  width="100%">
+
+                                    <rich:messages id="richMsgErrorNewReader"
+                                                   />
+
+                                    <label id="lblErrorNewReader" class="error"></label>
+                                </td>
+                            </tr>
+                        </table>
+                    </a4j:outputPanel>
+                </h:form>
+            </rich:popupPanel>
+
+
+            <rich:popupPanel id="modalUpdLector" 
+                             autosized="true"
+                             resizeable="false" 
+                             onshow="$('[id=\'frmUpdLector:txtCodigoLector\']').focus()"
+                             modal="true">
+                <f:facet name="header">
+                    <h:outputFormat id="lblTittleUpdLector" value="#{msgs.titleUpdateReader}" escape="false">
+                        <f:param value="#{lectorBean.apePaterno}"/>
+                        <f:param value="#{lectorBean.apeMaterno}"/>
+                        <f:param value="#{lectorBean.nombres}"/>
+                    </h:outputFormat>
+                </f:facet>
+                <h:form id="frmUpdLector"
+                        >
+                    <a4j:outputPanel id="opnlUpdLector">
+                        <table width="280">
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="Codigo Lector"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+
+                                    <h:inputText id="txtCodigoLector"
+                                                 value="#{lectorBean.codigo}"
+                                                 label="Codigo Lector"
+                                                 required="true"
+                                                 maxlength="20"
+                                                 autocomplete="off" tabindex="-1"
+                                                 />
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="Nombre"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:inputText id="txtName"
+                                                 value="#{lectorBean.nombres}"
+                                                 label="Nombre"
+                                                 required="true"
+                                                 autocomplete="off"
+                                                 />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="Ape. Paterno"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:inputText id="txtApePat"
+                                                 value="#{lectorBean.apePaterno}"
+                                                 label="Ape. Paterno"
+                                                 required="true"
+                                                 autocomplete="off"
+                                                 />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="Ape. Materno"/>
+                                </td>
+                                <td style="white-space: nowrap" width="180">
+                                    <h:inputText id="txtApeMat"
+                                                 value="#{lectorBean.apeMaterno}"
+                                                 label="Ape. Materno"
+                                                 autocomplete="off"
+                                                 required="true"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:outputText value="#{msgs.fieldState}"/>
+                                </td>
+                                <td style="white-space: nowrap" width="100">
+                                    <h:selectOneRadio id="rdpType"
+                                                      value="#{lectorBean.estado}">
+                                        <f:selectItem itemLabel="#{msgs.fieldInactive}" itemValue="false"/>
+                                        <f:selectItem itemLabel="#{msgs.fieldActive}" itemValue="true"/>
+                                    </h:selectOneRadio>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" >
+                                    <h:outputText value="#{msgs.fieldSex}"/>
+                                </td>
+                                <td style="white-space: nowrap" >
+                                    <h:selectOneRadio id="rdoSexo"
+                                                      label="#{msgs.fieldSex}"
+                                                      value="#{lectorBean.sexo}"
+                                                      required="true">
+                                        <f:selectItem itemLabel="#{msgs.fieldMale}" itemValue="M"/>
+                                        <f:selectItem itemLabel="#{msgs.fieldFemale}" itemValue="F"/>
+                                    </h:selectOneRadio>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap" >
+                                    <h:outputText value="#{msgs.fieldType}"/>
+                                </td>
+                                <td style="white-space: nowrap" >
+                                    <h:selectOneRadio id="rdoType"
+                                                      label="#{msgs.fieldType}"
+                                                      value="#{lectorBean.tipo}"
+                                                      required="true">
+                                        <f:selectItem itemLabel="Estudiante" itemValue="E"/>
+                                        <f:selectItem itemLabel="Per. Adm y Docentes" itemValue="P"/>
+                                    </h:selectOneRadio>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="center" style="white-space: nowrap">
+                                    <a4j:commandButton id="btnUpdReader"
+                                                       value="#{msgs.buttonUpdate}"
+                                                       action="#{readerMaintenance.updateLector}"
+                                                       render=":frmUpdLector:opnlUpdLector,:frmReaderMaint:pnlReaderMaint"
+                                                       execute="@form"
+                                                       limitRender="true"
+                                                       oncomplete="if (#{facesContext.maximumSeverity==null}){alert('#{msgs.messageSuccessSave}');#{rich:component('modalUpdLector')}.hide();}" 
+                                                       >
+                                        <a4j:param value="#{lectorBean.lectorId}" assignTo="#{lectorBean.lectorId}"/>
+                                    </a4j:commandButton>
+                                    &nbsp;
+
+                                    <a4j:commandButton id="btnCancel"
+                                                       value="#{msgs.buttonCancel}"
+                                                       onclick="#{rich:component('modalUpdLector')}.hide();return false;"
+                                                       onkeydown="return focusInCampo(event,'frmUpdLector:txtCodigoLector')"
+                                                       />
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"  width="100%">
+
+                                    <rich:messages id="richMsgErrorUpdReader"
+                                                   />
+
+                                    <label id="lblErrorUpdReader" class="error"></label>
+                                </td>
+                            </tr>
+                        </table>
+                    </a4j:outputPanel>
+                </h:form>
+            </rich:popupPanel>
+
+
+
+        </ui:define>
+    </ui:composition>
+</html>

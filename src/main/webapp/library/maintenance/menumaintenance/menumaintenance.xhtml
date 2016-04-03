@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="/templates/main.xhtml">
+        <ui:define name="body">
+
+            <style type="text/css">
+
+            </style>
+
+            <table width="100%">
+                <tr>
+                    <td>
+                        <h:outputText value="#{msgs.tittleMenuMaintenance}"
+                                      styleClass="tittlePage"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <rich:panel id="pnlMatterMaint" style="width: 100%;min-height: 460px;">
+                            <table width="100%">
+                                <tr>
+                                    <td valign="top" width="50%">
+                                        <rich:panel header="#{msgs.tittleAvailableMenu}"
+                                                    style="width: 100%;height: 430px;overflow: auto;">
+                                            <h:form id="frmMenuMaint">
+                                                <h:inputHidden value="#{menuMaintenanceMB.initPage}"/>
+                                                <a4j:outputPanel id="opnlMenuMaint">
+
+                                                    <a4j:commandButton id="cmbNewParentMenu"
+                                                                     value="#{msgs.buttonNewParentMenu}"
+                                                                     onclick="showModalPanel('modalNewMenu');return false;"
+                                                                     />
+                                                    &nbsp;
+                                                    <h:commandButton id="cmbNewChildrenMenu"
+                                                                     value="#{msgs.buttonNewChildrenMenu}"
+                                                                     onclick="showModalPanel('modalChildMenu');return false;"
+                                                                     rendered="#{not empty lstMenu}"/>
+                                                    <br/>  <br/>
+                                                    <ui:remove>
+                                            
+                                                    <rich:tree id="treeMenuMaint" toggleType="client" var="menu"
+                                                               style="margin-left: 2em;"
+
+                                                               selectionType="ajax"
+
+                                                               >
+                                                        <rich:treeModelRecursiveAdaptor roots="#{lstMenu}" >
+                                                            <rich:treeNode expanded="#{true}"
+                                                                           iconCollapsed="/images/icons/iconleaft_parent.png"
+                                                                           iconExpanded="/images/icons/iconleaft_parent.png">
+                                                                <h:outputText value="#{menu.nombre}"
+                                                                              style="font-size: 15px; font-family: arial,sans-serif;"/>
+                                                            </rich:treeNode>
+                                                            <rich:treeModelAdaptor nodes="#{menu.menusHijos}">
+                                                                <rich:treeNode iconLeaf="/images/icons/iconleaft_child.png">
+                                                                    <h:outputText value="#{menu.nombre}"
+                                                                                  style="font-size: 15px; font-family: arial,sans-serif;"/>
+                                                                </rich:treeNode>
+                                                            </rich:treeModelAdaptor>
+                                                        </rich:treeModelRecursiveAdaptor>
+                                                    </rich:tree>
+                                                   </ui:remove>         
+                                                </a4j:outputPanel>
+                                            </h:form>
+                                        </rich:panel>
+                                    </td>
+                                    <td width="50%">
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </rich:panel>
+                    </td>
+                </tr>
+            </table>
+
+
+            <rich:popupPanel id="modalNewMenu" 
+                             autosized="true"
+                             modal="true"
+                             resizeable="false"
+                             header="#{msgs.tittleNewParentMenu}"
+                             onbeforeshow="cleanForm('frmNewParentdMenu','lblNewMenu','frmNewParentdMenu:richMsgNewMenu')"
+                             onshow="$('[id=\'frmNewParentdMenu:txtName\']').focus()">
+                <h:form id="frmNewParentdMenu">
+                    <a4j:outputPanel id="opnlNewParentMenu">
+                        <table>
+                            <tr>
+                                <td style="white-space: nowrap;width: 100px;">
+                                    <h:outputText value="#{msgs.fieldName}"/>
+                                </td>
+                                <td style="white-space: nowrap;"> 
+                                    <h:inputText id="txtName" 
+                                                 value="#{menuBean.nombre}"
+                                                 required="true"
+                                                 autocomplete="off"
+                                                 label="#{msgs.fieldName}"
+                                                 style="width : 200px;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;" valign="top">
+                                    <h:outputText value="#{msgs.fieldDescripcion}"/>
+                                </td>
+                                <td style="white-space: nowrap;"> 
+                                    <h:inputTextarea id="txtDescription"
+                                                     value="#{menuBean.descripcion}"
+                                                     style="width: 200px;"
+                                                     required="true"
+                                                     label="#{msgs.fieldDescripcion}"
+                                                     rows="4"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="center" style="white-space: nowrap;">
+                                    <a4j:commandButton id="cmbNewMenu"
+                                                     value="#{msgs.buttonSave}"
+                                                     action="#{menuMaintenanceMB.insertParentMenu}"
+                                                     oncomplete="if(#{facesContext.maximumSeverity==null}){alert('#{msgs.messageSuccessSave}');#{rich:component('modalNewMenu')}.hide()}"
+                                                     render="opnlNewParentMenu,pnlMatterMaint"
+                                                     limitRender="true"/> 
+                                    &nbsp;
+                                    <h:commandButton value="#{msgs.buttonCancel}"
+                                                     onclick="#{rich:component('modalNewMenu')}.hide();return false;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <label id="lblNewMenu"></label>
+                                    <rich:messages id="richMsgNewMenu"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </a4j:outputPanel>
+                </h:form>
+            </rich:popupPanel>
+            
+            <rich:popupPanel id="modalChildMenu" 
+                             autosized="true"
+                             modal="true"
+                             resizeable="false"
+                             header="#{msgs.tittleNewChildMenu}"
+                             onbeforeshow="cleanForm('frmNewChildMenu','lblNewChildMenu','frmNewChildMenu:richMsgNewChildMenu')"
+                             onshow="$('[id=\'frmNewChildMenu:txtName\']').focus()">
+                <h:form id="frmNewChildMenu">
+                    <a4j:outputPanel id="opnlNewChildMenu">
+                        <table>
+                            <tr>
+                                <td style="white-space: nowrap;width: 100px;">
+                                    <h:outputText value="#{msgs.fieldParentMenu}"/>
+                                </td>
+                                <td style="white-space: nowrap;"> 
+                                    <h:selectOneMenu id="cboParentMenu"
+                                                     value="#{menuBean.menuParentId}"
+                                                     validatorMessage="#{msgs.messageErrorParentMenuRequired}">
+                                        <f:selectItem itemValue="-1" itemLabel="#{msgs.fieldSelect}"/>
+                                        <f:selectItems value="#{viewMapParentMenu}"/>
+                                        <f:validateLongRange minimum="0"/>
+                                    </h:selectOneMenu>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">
+                                    <h:outputText value="#{msgs.fieldName}"/>
+                                </td>
+                                <td style="white-space: nowrap;"> 
+                                    <h:inputText id="txtName" 
+                                                 value="#{menuBean.nombre}"
+                                                 required="true"
+                                                 autocomplete="off"
+                                                 label="#{msgs.fieldName}"
+                                                 style="width : 200px;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">
+                                    <h:outputText value="#{msgs.fieldPathId}"/>
+                                </td>
+                                <td style="white-space: nowrap;">
+                                    <h:inputText id="txtPathiD"
+                                                 value="#{menuBean.pathId}"
+                                                 required="true"
+                                                 autocomplete="off"
+                                                 label="#{msgs.fieldPathId}"
+                                                 style="width : 200px;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;">
+                                    <h:outputText value="#{msgs.fieldPath}"/>
+                                </td>
+                                <td style="white-space: nowrap;">
+                                    <h:inputText id="txtPath"
+                                                 value="#{menuBean.path}"
+                                                 required="true"
+                                                 autocomplete="off"
+                                                 label="#{msgs.fieldPath}"
+                                                 style="width : 200px;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space: nowrap;" valign="top">
+                                    <h:outputText value="#{msgs.fieldDescripcion}"/>
+                                </td>
+                                <td style="white-space: nowrap;"> 
+                                    <h:inputTextarea id="txtDescription"
+                                                     value="#{menuBean.descripcion}"
+                                                     style="width: 200px;"
+                                                     required="true"
+                                                     label="#{msgs.fieldDescripcion}"
+                                                     rows="4"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="center" style="white-space: nowrap;">
+                                    <a4j:commandButton id="cmbNewMenu"
+                                                     value="#{msgs.buttonSave}"
+                                                     action="#{menuMaintenanceMB.insertChildMenu}"
+                                                     oncomplete="if(#{facesContext.maximumSeverity==null}){alert('#{msgs.messageSuccessSave}');#{rich:component('modalChildMenu')}.hide()}"
+                                                     render="opnlNewChildMenu,pnlMatterMaint"
+                                                     limitRender="true"/> 
+                                    &nbsp;
+                                    <h:commandButton value="#{msgs.buttonCancel}"
+                                                     onclick="#{rich:component('modalChildMenu')}.hide();return false;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <label id="lblNewChildMenu"></label>
+                                    <rich:messages id="richMsgNewChildMenu"
+                                                   />
+                                </td>
+                            </tr>
+                        </table>
+                    </a4j:outputPanel>
+                </h:form>
+            </rich:popupPanel>
+
+        </ui:define>
+    </ui:composition>
+</html>

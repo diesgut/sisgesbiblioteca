@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="texto">
+    
+    <select id="getListaTextos"
+            parameterClass="com.sisgesbib.beans.filters.TextoPaginationBean"
+            resultClass="java.util.HashMap">
+        Select
+            t.TextoId         as  textoId,
+            t.CodigoInterno   as  codigoInterno,
+            t.Nombre          as  nombre,
+            t.Observacion     as  observacion,    
+            t.Tomo            as  tomo,
+            t.AñoEdicion      as  añoEdicion,
+            t.Edicion         as  edicion,
+            t.dimension       as  dimension,
+            t.NumeroPaginas   as  numeroPaginas,
+            t.ISBN            as  ISBN,
+            t.Estado          as  estado,
+            t.TemaId          as  temaId,
+            te.Nombre         as  nombreTema,
+            t.EditorialId     as  editorialId,
+            e.Nombre          as  nombreEditorial,
+            t.CategoriaId     as  categoriaId,
+            c.Nombre          as  nombreCategoria,
+            t.MateriaId       as  materiaId,
+            m.Nombre          as  nombreMateria,
+            t.IdiomaId        as  idiomaId,
+            i.Nombre          as  nombreIdioma,
+            t.FechaIns        as  fechaIns,
+            t.FechaAct        as  fechaAct,
+            t.UsuarioIns      as  usuariosIns,
+            t.UsuarioAct      as  usuarioAct,
+            t.FechaIns        as  fechaIns,
+            t.FechaAct        as  fechaAct,
+            if(t.UsuarioIns=u.UsuarioId,u.Login,'')   as  nomUsuIns,
+            if(t.UsuarioAct=u.UsuarioId,u.Login,'')   as  nomUsuAct
+        From
+            Texto   t
+        inner join
+            Editorial   e   on  t.EditorialId=e.EditorialId
+        inner join
+            Categoria   c   on  c.CategoriaId=t.CategoriaId
+        inner join
+            Materia     m   on  m.MateriaId=t.MateriaId
+        inner join
+            Idioma      i   on  i.IdiomaId=t.IdiomaId
+        inner join
+            Tema        te  on  t.TemaId=te.TemaId
+        inner join
+            Usuario u   on  t.UsuarioIns=u.UsuarioId || t.UsuarioAct=u.UsuarioId
+        <dynamic prepend="where">
+                <isNotEmpty property="nombre" prepend="and">
+                    t.Nombre like '%$nombre$%'
+                </isNotEmpty>
+                <isNotNull property="estado" prepend="and">
+                    t.Estado=#estado#
+                </isNotNull>
+        </dynamic>    
+        Order By
+            t.Nombre
+    </select>
+    
+    <select id="getListaTextoForSearch"
+            parameterClass="com.sisgesbib.beans.filters.TextoPaginationBean"
+            resultClass="java.util.HashMap">
+        Select
+            t.TextoId         as  textoId,
+            t.CodigoInterno   as  codigoInterno,
+            t.Nombre          as  nombre,
+            t.Observacion     as  observacion,    
+            t.Tomo            as  tomo,
+            t.AñoEdicion      as  añoEdicion,
+            t.Edicion         as  edicion,
+            t.dimension       as  dimension,
+            t.NumeroPaginas   as  numeroPaginas,
+            t.ISBN            as  ISBN,
+            t.Estado          as  estado,
+            t.TemaId          as  temaId,
+            te.Nombre         as  nombreTema,
+            t.EditorialId     as  editorialId,
+            e.Nombre          as  nombreEditorial,
+            t.CategoriaId     as  categoriaId,
+            c.Nombre          as  nombreCategoria,
+            t.MateriaId       as  materiaId,
+            m.Nombre          as  nombreMateria,
+            t.IdiomaId        as  idiomaId,
+            i.Nombre          as  nombreIdioma
+        From
+            Texto   t
+        inner join
+            Editorial   e   on  t.EditorialId=e.EditorialId
+        inner join
+            Categoria   c   on  c.CategoriaId=t.CategoriaId
+        inner join
+            Materia     m   on  m.MateriaId=t.MateriaId
+        inner join
+            Idioma      i   on  i.IdiomaId=t.IdiomaId
+        inner join
+            Tema        te  on  t.TemaId=te.TemaId
+        inner join
+            TextoAutor  ta  on  ta.TextoId=t.TextoId
+        inner join
+            Autor       au  on  ta.AutorId=au.AutorId
+        <dynamic prepend="where">
+            <isEqual property="criterioBusqueda" compareValue="text" >
+                <isNotEmpty property="textoBusqueda" prepend="and">
+                    t.Nombre like '%$textoBusqueda$%'
+                </isNotEmpty>
+            </isEqual>
+            <isEqual property="criterioBusqueda" compareValue="aut" >
+                <isNotEmpty property="textoBusqueda" prepend="and">
+                    au.AutorId = #textoBusqueda#
+                </isNotEmpty>
+            </isEqual>
+            <isEqual property="criterioBusqueda" compareValue="tem" >
+                <isNotEmpty property="textoBusqueda" prepend="and">
+                    te.TemaId = #textoBusqueda#
+                </isNotEmpty>
+            </isEqual>
+            <isEqual property="criterioBusqueda" compareValue="mat" >
+                <isNotEmpty property="textoBusqueda" prepend="and">
+                    m.MateriaId = #textoBusqueda#
+                </isNotEmpty>
+            </isEqual>
+        </dynamic>    
+        Group by
+            t.TextoId 
+        Order by
+            t.Nombre 
+    </select>
+    
+    <insert id="insertText"
+            parameterClass="com.sisgesbib.dao.beans.TextoBean">
+        insert into
+            Texto (CodigoInterno,Nombre,Observacion,Tomo,AñoEdicion,Edicion,Dimension,NumeroPaginas,
+            ISBN,Estado,TemaId,EditorialId,CategoriaId,MateriaId,IdiomaId,FechaIns,UsuarioIns)
+        Values
+            (#codigoInterno#,#nombre#,#observacion#,#tomo#,#añoEdicion#,#edicion#,#dimension#,#numeroPaginas#,
+            #ISBN#,1,#temaId#,#editorialId#,#categoriaId#,#materiaId#,#idiomaId#,now(),#usuarioIns#)
+        <selectKey resultClass="int" keyProperty="textoId">
+            SELECT LAST_INSERT_ID() AS textoId
+        </selectKey>    
+    </insert>
+    
+    <select id="validaCodIntText"
+            parameterClass="com.sisgesbib.dao.beans.TextoBean"
+            resultClass="int">
+        Select
+            Count(*)
+        From
+            Texto
+        Where
+            CodigoInterno=#codigoInterno#
+    </select>
+    
+    <select id="validaUpdateCodIntText"
+            parameterClass="com.sisgesbib.dao.beans.TextoBean"
+            resultClass="int">
+        Select
+            Count(*)
+        From
+            Texto
+        Where
+            CodigoInterno=#codigoInterno# and TextoId!=#textoId#
+    </select>
+
+    <select id="validaNameText"
+            parameterClass="com.sisgesbib.dao.beans.TextoBean"
+            resultClass="int">
+        Select
+            Count(*)
+        From
+            Texto
+        Where
+            Nombre=#nombre#
+    </select>
+
+    <select id="validaUpdateNameText"
+            parameterClass="com.sisgesbib.dao.beans.TextoBean"
+            resultClass="int">
+        Select
+            Count(*)
+        From
+            Texto
+        Where
+            Nombre=#nombre# and TextoId!=#textoId#
+    </select>
+
+    <select id="validaISBNText"
+            parameterClass="com.sisgesbib.dao.beans.TextoBean"
+            resultClass="int">
+        Select
+            Count(*)
+        From
+            Texto
+        Where
+            ISBN=#ISBN#
+    </select>
+    
+    <select id="validaUpdateISBNText"
+            parameterClass="com.sisgesbib.dao.beans.TextoBean"
+            resultClass="int">
+        Select
+            Count(*)
+        From
+            Texto
+        Where
+            ISBN=#ISBN# and TextoId!=#textoId#
+    </select>
+    
+    <update id="updateTexto"
+            parameterClass="com.sisgesbib.dao.beans.TextoBean">
+        Update 
+            Texto
+        Set
+            CodigoInterno=#codigoInterno#,
+            Nombre=#nombre#,
+            Observacion=#observacion#,
+            Tomo=#tomo#,
+            AñoEdicion=#añoEdicion#,
+            Edicion=#edicion#,
+            Dimension=#dimension#,
+            NumeroPaginas=#numeroPaginas#,
+            ISBN=#ISBN#,
+            Estado=#estado#,
+            IdiomaId=#idiomaId#,
+            FechaAct=sysdate(),
+            UsuarioAct=#usuarioAct#
+        Where
+            TextoId=#textoId#
+    </update>
+    
+    <delete id="deleteTextoAutor"
+            parameterClass="int">
+        delete from
+            TextoAutor
+        Where
+            TextoId=#textoId#
+    </delete>
+
+    <insert id="insertTextoAutor"
+            parameterClass="java.util.Map">
+        insert into 
+            TextoAutor
+        values 
+        <iterate property="listaAutor" conjunction=",">
+            (#textoId#,#listaAutor[].autorId#)
+        </iterate>
+    </insert>
+    
+    <select id="getListTextForMatter"
+            resultClass="java.util.HashMap"
+            parameterClass="map">
+        Select
+            t.TextoId     as  textoId,
+            t.Nombre      as  titulo,
+            Group_Concat(Distinct Concat(a.Apellidos,", ",a.Nombres)," " SEPARATOR ' - ')   as  autores,
+            Edicion       as  edicion,
+            AñoEdicion    as  añoEdicion,
+            c.Tipo        as  catalogo,
+            Count(distinct ejemplarId)  cantEje
+        From
+            Texto   t
+        inner join
+            TextoAutor  ta  on  t.TextoId=ta.TextoId
+        inner join
+            Autor   a   on  a.AutorId=ta.AutorId
+        inner join
+            Categoria  c on t.CategoriaId=c.CategoriaId
+        inner join
+            Ejemplar e  on  t.TextoId=e.TextoId 
+        Where
+            e.SedeId=#sedeId# and t.MateriaId=#materiaId#
+        Group   by
+            t.TextoId
+        Order by
+            t.Nombre
+    </select>
+    
+   
+</sqlMap>

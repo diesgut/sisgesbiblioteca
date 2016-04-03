@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="prestamo">
+    
+    <insert id="insertRomeLoan"
+            parameterClass="com.sisgesbib.dao.beans.PrestamoBean">
+        insert into
+            Prestamo
+        (FechaIns,FechaInicio,FechaFin,
+        Estado,TipoPrestamo,UsuarioAte,EjemplarId,SolicitudId)
+        values
+            (sysdate(),sysdate(),Concat(Curdate()," 22:00:00") ,
+            "C","S",#usuarioAte#,#ejemplarId#,#solicitudId#)
+    </insert>
+    
+    <insert id="insertStudentHomeLoan"
+            parameterClass="com.sisgesbib.dao.beans.PrestamoBean">
+        insert into
+            Prestamo
+        (FechaIns,FechaInicio,FechaFin,TipoDocGarantia,NumDocGarantia,
+        Estado,TipoPrestamo,UsuarioAte,EjemplarId,SolicitudId)
+        values
+            (sysdate(),sysdate(),AddDate(now(), INTERVAL 1 DAY),#tipoDocGarantia#,#numDocGarantia#,
+            "C","D",#usuarioAte#,#ejemplarId#,#solicitudId#)
+    </insert>
+    
+    <insert id="insertPerAdmHomeLoan"
+            parameterClass="com.sisgesbib.dao.beans.PrestamoBean">
+        insert into
+            Prestamo
+        (FechaIns,FechaInicio,FechaFin,TipoDocGarantia,NumDocGarantia,
+        Estado,TipoPrestamo,UsuarioAte,EjemplarId,SolicitudId)
+        values
+            (sysdate(),sysdate(),AddDate(now(), INTERVAL 2 DAY),#tipoDocGarantia#,#numDocGarantia#,
+            "C","D",#usuarioAte#,#ejemplarId#,#solicitudId#)
+    </insert>
+    
+    <select id="getCountPrestamosEnCursoPorLectorId"
+            resultClass="int"
+            parameterClass="int">
+        Select
+            Count(*)
+        From
+            Prestamo p
+        inner join
+            Solicitud s on  p.SolicitudId=s.SolicitudId
+        Where
+            p.Estado="C"  and
+            s.LectorId=#value#
+    </select>
+    
+    <select id="getListaPrestamos"
+            parameterClass="com.sisgesbib.beans.filters.PrestamoPaginationBean"
+            resultClass="java.util.HashMap">
+        Select
+            pre.PrestamoId          as  prestamoId,
+            pre.FechaIns            as  fechaIns,
+            pre.FechaInicio         as  fechaInicio,
+            pre.FechaFin            as  fechaFin,
+            ifNull(pre.Renovado,false)            as  renovado,
+            pre.Estado              as  estado,
+            pre.TipoPrestamo        as  tipoPrestamo,
+            pre.TipoDocGarantia     as  tipoDocGarantia,
+            pre.NumDocGarantia      as  numDocGarantia,
+            pre.UsuarioAte          as  usuarioAte,
+            pre.EjemplarId          as  ejemplarId,
+            pre.SolicitudId         as  solicitudId,
+            tex.Nombre              as  nombreTexto,
+            tex.Tomo                as  tomoTexto,
+            tex.AñoEdicion          as  añoEdicionTexto,
+            tex.Edicion             as  edicionTexto,
+            Group_Concat(Distinct Concat(a.Apellidos,", ",a.Nombres)," " SEPARATOR ' - ')   as  authors,
+            lec.LectorId            as  lectorId,
+            Concat(lec.ApePaterno," ",lec.ApeMaterno,", ",lec.Nombres)  as  nombreLector,
+            lec.Tipo                as  tipoLector,
+       <![CDATA[     if(pre.FechaFin<sysdate(),true,false)   amonestado ]]>
+        From    
+            Prestamo    pre
+        inner join
+            Solicitud   sol on  pre.SolicitudId=sol.SolicitudId
+        inner join
+            Lector  lec on  sol.LectorId=lec.LectorId
+        inner join
+            Texto   tex on sol.TextoId=tex.TextoId
+        inner join
+            TextoAutor  ta  on  tex.TextoId=ta.TextoId
+        inner join
+            Autor  a on  a.AutorId=ta.AutorId
+        Where
+            Date(pre.FechaInicio)  between Date(#dateFrom#) and Date(#dateTo#)
+        <isNotNull property="estado" prepend="and">
+            pre.Estado=#estado#
+        </isNotNull>
+        <isNotNull property="sedeId" prepend="and">
+               sol.SedeId=#sedeId#
+        </isNotNull>
+        <isNotEmpty property="argTipoPrestamo">
+            <iterate property="argTipoPrestamo" prepend="and" open=" pre.TipoPrestamo in (" close=")" conjunction=",">
+                #argTipoPrestamo[]#
+            </iterate>
+        </isNotEmpty>
+        Group by 
+            pre.PrestamoId
+        Order by
+            pre.FechaInicio 
+    </select>
+
+    <update id="updateLoanState"
+            parameterClass="com.sisgesbib.dao.beans.PrestamoBean">
+        Update
+            Prestamo
+        Set
+            Estado=#estado#
+        Where
+            PrestamoId=#prestamoId#
+    </update>
+    
+    <update id="renewLoanStudent"
+            parameterClass="com.sisgesbib.dao.beans.PrestamoBean">
+        Update
+            Prestamo
+        Set
+            FechaFin=AddDate(now(), INTERVAL 1 DAY),
+            Renovado=true
+        Where
+            PrestamoId=#prestamoId#
+    </update>
+    
+    <update id="renewLoanPersAdm"
+            parameterClass="com.sisgesbib.dao.beans.PrestamoBean">
+        Update
+            Prestamo
+        Set
+            FechaFin=AddDate(now(), INTERVAL 2 DAY),
+            Renovado=true
+        Where
+            PrestamoId=#prestamoId#
+    </update>
+
+</sqlMap>

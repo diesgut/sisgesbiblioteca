@@ -1,0 +1,644 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="/templates/main.xhtml">
+        <ui:define name="body">
+
+            <table width="100%">
+                <tr>
+                    <td align="left">
+                        <h:outputText styleClass="tittlePage"
+                                      value="#{msgs.tittleExemplaryMaintenance}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:form id="txtSearchTexto"
+                                >
+                            <h:inputHidden value="#{exemplaryMaintenanceMB.initPage}"/>
+                            <rich:tabPanel>
+                                <rich:tab header="#{msgs.labelTextInfo}">
+
+                                    <table width="100%">
+                                        <tr>
+                                            <td style="width: 100px;">
+                                                <h:outputText value="#{msgs.fieldText}"/>
+                                            </td>
+                                            <td style="width: 480px;"> 
+                                                <h:inputText id="txtText"
+                                                             value="#{viewTextName}"
+                                                             disabled="true"
+                                                             size="70"/>
+                                            </td>
+                                            <td rowspan="3" valign="top" style="width: 100px;">  
+                                                <h:outputText value="#{msgs.fieldAuthors}"/>
+                                            </td>
+                                            <td rowspan="3" valign="top">
+                                                <rich:list id="lstAuthors" 
+                                                           value="#{viewListSelectedAuthors}" 
+                                                           type="ordered"
+                                                           var="aut" 
+                                                           style="margin-top: 0px; margin-bottom: 0px;">                                                    <h:outputText value="#{aut.nombres}" />
+                                                </rich:list>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 100px;">
+                                                <h:outputText value="#{msgs.fieldPublisher}"/>
+                                            </td>
+                                            <td>
+                                                <h:inputText id="txtPublisher"
+                                                             value="#{viewPublisher}"
+                                                             disabled="true"
+                                                             size="50"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 100px;">
+                                                <h:outputText value="#{msgs.fieldCategory}"/>
+                                            </td>
+                                            <td>
+                                                <h:inputText id="txtCategory"
+                                                             value="#{viewCategory}"
+                                                             disabled="true"
+                                                             size="50"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" align="right">
+                                                <h:commandButton id="btnNew"
+                                                                 value="#{msgs.buttonNew}"
+                                                                 onclick="showModalPanel('modalNewExemplary');return false;"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </rich:tab>
+                            </rich:tabPanel>
+                        </h:form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:form id="frmEjemplartMaintenance">
+                            <rich:panel id="pnlEjemplarMaint" style="width: 100%;">
+
+                                <rich:dataScroller for="edtbEjemplartMaint"
+                                                   maxPages="5" />
+
+                                <rich:extendedDataTable id="edtbEjemplartMaint" rows="13"
+                                                        value="#{ejemplarPaginationBean.listaEjemplares}"
+                                                        var="eje"
+                                                        style="width:  900px;height: 350px;"
+                                                        noDataLabel="#{msgs.messageNoData}"
+                                                        >
+
+                                    <rich:column styleClass="columnCenter"
+                                                 width="30px">
+                                        <f:facet name="header">
+                                        </f:facet>
+                                        <a4j:commandLink actionListener="#{exemplaryMaintenanceMB.selectExemplary}"
+                                                         render="opnlUpdExemplary"
+                                                         oncomplete="showModalPanel('modalUpdateExemplary')"
+                                                         execute="@this"
+                                                         limitRender="true"
+                                                         >  
+                                            <h:graphicImage value="/images/updated.png"
+                                                            style="cursor:pointer;border: 0;"
+                                                            width="10px" height="15px"/>
+                                            <f:attribute name="ejemplarSelected" value="#{eje}"/>
+                                            <rich:tooltip style="background-color: #FAE6B0;border: 1px solid #E5973E;">
+                                                <h:outputText value="#{msgs.fieldUpdate}"/>
+                                            </rich:tooltip>
+                                        </a4j:commandLink>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldTextCondicion}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{eje.condicion == 'B' ? msgs.fieldTextCondicionB : eje.condicion == 'R' ? msgs.fieldTextCondicionR : msgs.fieldTextCondicionM }"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldTipoPrestamo}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{eje.tipoPrestamo == 'S' ? msgs.fieldTextTipoPrestamoS : msgs.fieldTextTipoPrestamoD}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldState}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{eje.estado == 'P' ? msgs.fieldTextStateP : eje.estado == 'D' ? msgs.fieldTextStateD : msgs.fieldTextStateN}"
+                                                      style="color:#{eje.estado == 'P' ? 'green' : eje.estado == 'D' ? 'black' : 'red'};"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldTipoTexto}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{eje.tipo == 'O' ? msgs.fieldTextTipoTextoO : msgs.fieldTextTipoTextoC}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="200px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldCompany}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{eje.nombreEmpresa}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="200px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldHeadQuarters}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{eje.nombreSede}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnRight"
+                                                 width="100px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldTextPurchase}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{eje.precio}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldProcedencia}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{eje.procedencia == 'C' ? msgs.fieldTextProcedenciaC  : msgs.fieldTextProcedenciaD}"/>
+                                    </rich:column>
+
+                                </rich:extendedDataTable>
+
+                                <rich:dataScroller for="edtbEjemplartMaint"
+                                                   maxPages="5" />
+                            </rich:panel>
+                        </h:form>
+                    </td>
+                </tr>
+            </table>
+
+
+
+            <rich:popupPanel id="modalNewExemplary"
+                             modal="true"
+                             resizeable="false"
+                             autosized="true"
+                             header="#{msgs.tittleNewExemplary}"    
+                             onbeforeshow="cleanForm('frmNewExemplary','lblNewExemplary','frmNewExemplary:richMsgNewExemplary')"  
+                             > 
+                <!--  onbeforeshow="cleanForm('frmNewExemplary','lblNreExemplary','frmNewExemplary:richMsgNewExemplary')" -->
+                <h:form id="frmNewExemplary">
+                    <a4j:outputPanel id="opnlNewExemplary">
+                        <table>
+                            <tr>
+                                <td style="white-space: nowrap;" valign="top">
+                                    <fieldset style="padding-top: 0px; padding-bottom: 0px;">
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldTextCondicion}"/>
+                                        </legend>
+                                        <h:selectOneRadio id="rdoTextoState"
+                                                          value="#{ejemplarBean.condicion}"
+                                                          layout="pageDirection"
+                                                          label="#{msgs.fieldTextCondicion}"
+                                                          required="true">
+                                            <f:selectItem itemLabel="Bueno" itemValue="B"/>
+                                            <f:selectItem itemLabel="Regular" itemValue="R"/>
+                                            <f:selectItem itemLabel="Malo" itemValue="M"/>
+                                        </h:selectOneRadio>
+                                    </fieldset>
+                                </td>
+                                <td style="white-space: nowrap;" valign="top">
+                                    <fieldset style="padding-top: 0px; padding-bottom: 0px;">
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldTipoPrestamo}"/>
+                                        </legend>
+                                        <h:selectOneRadio id="rdoTipoPrestamo"
+                                                          value="#{ejemplarBean.tipoPrestamo}"
+                                                          layout="pageDirection"
+                                                          label="#{msgs.fieldTipoPrestamo}"
+                                                          required="true">
+                                            <f:selectItem itemLabel="Sala" itemValue="S"/>
+                                            <f:selectItem itemLabel="Domicilio" itemValue="D"/>
+                                        </h:selectOneRadio>
+                                    </fieldset>
+                                </td>
+                                <td style="white-space: nowrap;" valign="top">
+                                    <fieldset style="padding-top: 0px; padding-bottom: 0px;">
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldProcedencia}"/>
+                                        </legend>
+                                        <h:selectOneRadio id="rdoProcedencia"
+                                                          value="#{ejemplarBean.procedencia}"
+                                                          layout="pageDirection"
+                                                          label="#{msgs.fieldProcedencia}"
+                                                          required="true">
+                                            <f:selectItem itemLabel="Donado" itemValue="D"/>
+                                            <f:selectItem itemLabel="Comprado" itemValue="C"/>
+                                        </h:selectOneRadio>
+                                    </fieldset>
+                                </td> 
+                                <td style="white-space: nowrap;" valign="top">
+                                    <fieldset style="padding-top: 0px; padding-bottom: 0px;">
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldTipoTexto}"/>
+                                        </legend>
+                                        <h:selectOneRadio id="rdoTipoTexto"
+                                                          value="#{ejemplarBean.tipo}"
+                                                          layout="pageDirection"
+                                                          label="#{msgs.fieldTipoTexto}"
+                                                          required="true">
+                                            <f:selectItem itemLabel="Original" itemValue="O"/>
+                                            <f:selectItem itemLabel="Copia" itemValue="C"/>
+                                        </h:selectOneRadio>
+                                    </fieldset>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <fieldset>
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldCompany}"/>
+                                        </legend>
+                                        <h:selectOneMenu id="cboCompany" tabindex="1" 
+                                                         value="#{reqCompanyId}"
+                                                         style="width:185px;"
+                                                         label="#{msgs.fieldCompany}"
+                                                         >
+                                            <f:selectItem itemValue="-1" itemLabel="#{msgs.fieldSelect}"/>
+                                            <f:selectItems value="#{viewMapEmpresa}" />
+                                            <f:param name="userId" value="#{usuarioBean.usuarioId}"/>
+                                            <a4j:ajax event="change" 
+                                                      listener="#{exemplaryMaintenanceMB.loadSedeByCompany}"
+                                                      execute="@this" 
+                                                      render="frmNewExemplary:cboSede"
+                                                      status="statusSedeLoading"
+                                                      limitRender="true">
+                                            </a4j:ajax>
+                                            <f:validateLongRange minimum="0"/>
+                                        </h:selectOneMenu>
+
+                                    </fieldset>
+                                </td>
+                                <td colspan="2">
+                                    <fieldset>
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldHeadQuarters}"/>
+                                        </legend>
+                                        <h:selectOneMenu id="cboSede" 
+                                                         value="#{ejemplarBean.sedeId}"
+                                                         label="#{msgs.fieldHeadQuarters}"
+                                                         >
+                                            <f:selectItem itemValue="-1" itemLabel="#{msgs.fieldSelect}"/>
+                                            <f:selectItems value="#{viewMapSede}"/>
+                                            <f:validateLongRange minimum="0"/>
+                                        </h:selectOneMenu>
+                                        <span id="spnSedeLoading" style="display: none;">
+                                            <img style="position: absolute;" 
+                                                 src="../../../images/loading/little-loading.gif"/>
+                                        </span>
+                                    </fieldset>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <fieldset>
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldUbicacion}"/>
+                                        </legend>
+                                        <table>
+                                            <tr>
+                                                <td width="80">
+                                                    <h:outputText value="#{msgs.fieldStand}"/>
+                                                </td>
+                                                <td>
+                                                    <h:inputText id="txtStand" 
+                                                                 value="#{ejemplarBean.stand}"
+                                                                 size="5"
+                                                                 autocomplete="off"/>    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <h:outputText value="#{msgs.fieldFila}"/>
+                                                </td>
+                                                <td>
+                                                    <h:inputText id="txtFila"
+                                                                 value="#{ejemplarBean.fila}"
+                                                                 size="5"
+                                                                 autocomplete="off"/>     
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <h:outputText value="#{msgs.fieldColumna}"/>
+                                                </td>
+                                                <td>
+                                                    <h:inputText id="txtColumna"
+                                                                 value="#{ejemplarBean.columna}"
+                                                                 size="5"
+                                                                 autocomplete="off"/>       
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </fieldset>
+                                </td>
+                                <td colspan="2">
+                                    <fieldset>
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldTextPurchase}"/>
+                                        </legend>
+                                        <h:inputText id="txtTextPurchase"
+                                                     value="#{ejemplarBean.precio}"
+                                                     size="5"
+                                                     style="margin-left: 15px;"
+                                                     autocomplete="off"
+                                                     />
+                                    </fieldset>
+                                    <fieldset>
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldFechaAdq}"/>
+                                        </legend>
+                                        <rich:calendar id="calFechaAdq" 
+                                                       value="#{ejemplarBean.fechaAdquisicion}"
+                                                       datePattern="#{msgs.datePattern}"
+                                                       inputSize="8"
+                                                       style="margin-left: 15px;"/>
+                                    </fieldset>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" align="center">
+                                    <a4j:commandButton id="cmbInsertExemplary"
+                                                       value="#{msgs.buttonSave}"
+                                                       action="#{exemplaryMaintenanceMB.insertaEjemplar}"
+                                                       render="opnlNewExemplary,pnlEjemplarMaint"
+                                                       limitRender="true"
+                                                       oncomplete="if(#{facesContext.maximumSeverity==null}){alert('#{msgs.messageSuccessSave}');#{rich:component('modalNewExemplary')}.hide();}"
+                                                       />
+                                    &nbsp;
+                                    <h:commandButton id="btnCancel"
+                                                     value="#{msgs.buttonCancel}"
+                                                     onclick="#{rich:component('modalNewExemplary')}.hide();return false;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <label id="lblNewExemplary"></label>
+                                    <rich:messages id="richMsgNewExemplary"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </a4j:outputPanel>
+                </h:form>
+            </rich:popupPanel>
+
+            <rich:popupPanel id="modalUpdateExemplary"
+                             modal="true"
+                             resizeable="false"
+                             autosized="true"
+                             header="#{msgs.titleUpdateExemplary}"     
+                             > 
+                <!--  onbeforeshow="cleanForm('frmNewExemplary','lblNreExemplary','frmNewExemplary:richMsgNewExemplary')" -->
+                <h:form id="frmUpdExemplary">
+                    <a4j:outputPanel id="opnlUpdExemplary">
+                        <table>
+                            <tr>
+                                <td style="white-space: nowrap;" valign="top">
+                                    <fieldset style="padding-top: 0px; padding-bottom: 0px;">
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldTextCondicion}"/>
+                                        </legend>
+                                        <h:selectOneRadio id="rdoTextoState"
+                                                          value="#{ejemplarBean.condicion}"
+                                                          layout="pageDirection"
+                                                          label="#{msgs.fieldTextState}">
+                                            <f:selectItem itemLabel="Bueno" itemValue="B"/>
+                                            <f:selectItem itemLabel="Regular" itemValue="R"/>
+                                            <f:selectItem itemLabel="Malo" itemValue="M"/>
+                                        </h:selectOneRadio>
+                                    </fieldset>
+                                </td>
+                                <td style="white-space: nowrap;" valign="top">
+                                    <fieldset style="padding-top: 0px; padding-bottom: 0px;">
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldTipoPrestamo}"/>
+                                        </legend>
+                                        <h:selectOneRadio id="rdoTipoPrestamo"
+                                                          value="#{ejemplarBean.tipoPrestamo}"
+                                                          layout="pageDirection"
+                                                          label="#{msgs.fieldTipoPrestamo}">
+                                            <f:selectItem itemLabel="Sala" itemValue="S"/>
+                                            <f:selectItem itemLabel="Domicilio" itemValue="D"/>
+                                        </h:selectOneRadio>
+                                    </fieldset>
+                                </td>
+                                <td style="white-space: nowrap;" valign="top">
+                                    <fieldset style="padding-top: 0px; padding-bottom: 0px;">
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldProcedencia}"/>
+                                        </legend>
+                                        <h:selectOneRadio id="rdoProcedencia"
+                                                          value="#{ejemplarBean.procedencia}"
+                                                          layout="pageDirection"
+                                                          label="#{msgs.fieldProcedencia}">
+                                            <f:selectItem itemLabel="Donado" itemValue="D"/>
+                                            <f:selectItem itemLabel="Comprado" itemValue="C"/>
+                                        </h:selectOneRadio>
+                                    </fieldset>
+                                </td> 
+                                <td style="white-space: nowrap;" valign="top">
+                                    <fieldset style="padding-top: 0px; padding-bottom: 0px;">
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldTipoTexto}"/>
+                                        </legend>
+                                        <h:selectOneRadio id="rdoTipoTexto"
+                                                          value="#{ejemplarBean.tipo}"
+                                                          layout="pageDirection"
+                                                          label="#{msgs.fieldTipoTexto}">
+                                            <f:selectItem itemLabel="Original" itemValue="O"/>
+                                            <f:selectItem itemLabel="Copia" itemValue="C"/>
+                                        </h:selectOneRadio>
+                                    </fieldset>
+                                </td>
+                                <td style="white-space: nowrap;" valign="top">
+                                    <fieldset style="padding-top: 0px; padding-bottom: 0px;">
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldState}"/>
+                                        </legend>
+                                        <h:selectOneRadio id="rdoState"
+                                                          value="#{ejemplarBean.estado}"
+                                                          layout="pageDirection"
+                                                          label="#{msgs.fieldState}">
+                                            <f:selectItem itemLabel="#{msgs.fieldExemplaryStateD}" itemValue="D"/>
+                                            <f:selectItem itemLabel="#{msgs.fieldExemplaryStateP}" itemValue="P"/>
+                                            <f:selectItem itemLabel="#{msgs.fieldExemplaryStateN}" itemValue="N"/>
+                                        </h:selectOneRadio>
+                                    </fieldset>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <fieldset>
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldCompany}"/>
+                                        </legend>
+                                        <h:selectOneMenu id="cboCompany" tabindex="1" 
+                                                         value="#{reqCompanyId}"
+                                                         style="width:185px;"
+                                                         onchange="jQuery('#spnErrorSelectLibrary').children().children().html('')"
+                                                         label="#{msgs.fieldCompany}">
+                                            <f:selectItem itemValue="-1" itemLabel="#{msgs.fieldSelect}"/>
+                                            <f:selectItems value="#{viewMapEmpresa}" />
+                                            <f:param name="userId" value="#{usuarioBean.usuarioId}"/>
+                                            <a4j:ajax event="change" 
+                                                      listener="#{exemplaryMaintenanceMB.loadSedeByCompany}"
+                                                      execute="@this"
+                                                      render="cboSede"
+                                                      status="statusSedeLoading"
+                                                      limitRender="true">
+                                            </a4j:ajax>
+                                        </h:selectOneMenu>
+
+                                    </fieldset>
+                                </td>
+                                <td colspan="3">
+                                    <fieldset>
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldHeadQuarters}"/>
+                                        </legend>
+                                        <h:selectOneMenu id="cboSede" 
+                                                         value="#{ejemplarBean.sedeId}"
+                                                         label="#{msgs.fieldHeadQuarters}">
+                                            <f:selectItem itemValue="-1" itemLabel="#{msgs.fieldSelect}"/>
+                                            <f:selectItems value="#{viewMapSede}"/>
+                                        </h:selectOneMenu>
+                                        <span id="spnSedeLoading" style="display: none;">
+                                            <img style="position: absolute;" 
+                                                 src="../../../images/loading/little-loading.gif"/>
+                                        </span>
+                                    </fieldset>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <fieldset>
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldUbicacion}"/>
+                                        </legend>
+                                        <table>
+                                            <tr>
+                                                <td width="80">
+                                                    <h:outputText value="#{msgs.fieldStand}"/>
+                                                </td>
+                                                <td>
+                                                    <h:inputText id="txtStand" 
+                                                                 value="#{ejemplarBean.stand}"
+                                                                 size="5"
+                                                                 autocomplete="off"/>    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <h:outputText value="#{msgs.fieldFila}"/>
+                                                </td>
+                                                <td>
+                                                    <h:inputText id="txtFila"
+                                                                 value="#{ejemplarBean.fila}"
+                                                                 size="5"
+                                                                 autocomplete="off"/>     
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <h:outputText value="#{msgs.fieldColumna}"/>
+                                                </td>
+                                                <td>
+                                                    <h:inputText id="txtColumna"
+                                                                 value="#{ejemplarBean.columna}"
+                                                                 size="5"
+                                                                 autocomplete="off"/>       
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </fieldset>
+                                </td>
+                                <td colspan="3">
+                                    <fieldset>
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldTextPurchase}"/>
+                                        </legend>
+                                        <h:inputText id="txtTextPurchase"
+                                                     value="#{ejemplarBean.precio}"
+                                                     size="5"
+                                                     style="margin-left: 15px;"
+                                                     autocomplete="off"
+                                                     />
+                                    </fieldset>
+                                    <fieldset>
+                                        <legend>
+                                            <h:outputText value="#{msgs.fieldFechaAdq}"/>
+                                        </legend>
+                                        <rich:calendar id="calFechaAdq" 
+                                                       value="#{ejemplarBean.fechaAdquisicion}"
+                                                       datePattern="#{msgs.datePattern}"
+                                                       inputSize="8"
+                                                       style="margin-left: 15px;"/>
+                                    </fieldset>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" align="center">
+                                    <a4j:commandButton id="cmbUpdatetExemplary"
+                                                       value="#{msgs.buttonUpdate}"
+                                                       action="#{exemplaryMaintenanceMB.updateExemplary}"
+                                                       render="opnlUpdExemplary,pnlEjemplarMaint"
+                                                       limitRender="true"
+                                                       oncomplete="if(#{success}==true){alert('#{msgs.messageSuccessSave}');#{rich:component('modalUpdateExemplary')}.hide();}"
+                                                       >
+                                        <a4j:param value="#{ejemplarBean.ejemplarId}" assignTo="#{ejemplarBean.ejemplarId}"/>
+                                    </a4j:commandButton>
+                                    &nbsp;
+                                    <h:commandButton id="btnCancel"
+                                                     value="#{msgs.buttonCancel}"
+                                                     onclick="#{rich:component('modalUpdateExemplary')}.hide();return false;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5">
+                                    <label id="lblNewExemplary"></label>
+                                    <rich:messages id="richMsgNewExemplary"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </a4j:outputPanel>
+                </h:form>
+            </rich:popupPanel>
+
+
+
+            <a4j:region>
+                <a4j:status id="statusSedeLoading"  name="statusSedeLoading"
+                            onstart="jQuery('#spnSedeLoading').show()"
+                            onstop="jQuery('#spnSedeLoading').hide()"/>
+            </a4j:region>
+
+
+
+        </ui:define>
+    </ui:composition>
+</html>

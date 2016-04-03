@@ -1,0 +1,477 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="/templates/main.xhtml">
+        <ui:define name="body">
+
+            <table width="100%">
+                <tr>
+                    <td>
+                        <h:outputText value="#{msgs.tittleAuthorMaintenance}"
+                                      styleClass="tittlePage"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:form id="frmSearchAuthors"
+                                >
+                            <h:inputHidden value="#{authorMaintenanceMB.initPage}"/>
+                            <rich:tabPanel>
+                                <rich:tab header="#{msgs.labelFilters}">
+                                    <table width="100%">
+                                        <tr>
+                                            <td style="white-space: nowrap;" align="left">
+                                                <h:outputText value="#{msgs.fieldFullName}"/> &nbsp;
+                                                <h:inputText id="txtFirstName"
+                                                             value="#{autorPaginationBean.nombres}"
+                                                             autocomplete="off"
+                                                             />
+                                            </td>
+
+                                            <td style="white-space: nowrap;" align="right">
+                                                &nbsp; &nbsp;
+                                                <a4j:commandButton id="cmdSearch"
+                                                                   value="#{msgs.buttonSearch}"
+                                                                   action="#{authorMaintenanceMB.listaAuthors}"
+                                                                   execute="@form"
+                                                                   render="pnlAuthorMaint"
+                                                                   limitRender="true"
+                                                                   />
+                                                &nbsp;
+                                                <a4j:commandButton id="btnNewUser"
+                                                                   value="#{msgs.buttonNew}"
+                                                                   onclick="showModalPanel('modalNewAuthor');return false;"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </rich:tab>
+                            </rich:tabPanel>
+                        </h:form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:form id="frmAuthorMaint">
+                            <rich:panel id="pnlAuthorMaint" style="width: 100%;">
+
+                                <rich:dataScroller for="edtbAuthorMaint" 
+                                                   maxPages="5" />
+
+                                <rich:extendedDataTable id="edtbAuthorMaint"
+                                                        var="aut"
+                                                        value="#{autorPaginationBean.lstAuthors}"
+                                                        style="width:  900px;height: 350px;"
+                                                        frozenColumns="2"
+                                                        noDataLabel="#{msgs.messageNoData}"
+                                                        rows="13"
+                                                        >
+                                    <rich:column styleClass="columnCenter"
+                                                 width="100px">
+                                        <f:facet name="header">
+                                            
+                                        </f:facet>
+                                        <a4j:commandLink id="fdh" actionListener="#{authorMaintenanceMB.selectAuthor}"
+                                                         render="lblTittleUpdAuthor,opnlUpdAutor"
+                                                         oncomplete="showModalPanel('modalUpdAuthor')"
+                                                         execute="@this"
+                                                         limitRender="true"
+                                                         >
+                                            <h:graphicImage value="/images/updated.png"
+                                                            style="cursor:pointer;border: 0;"
+                                                            width="10px" height="15px"/>
+                                            <f:attribute name="authorSelected" value="#{aut}"/>
+                                        </a4j:commandLink>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldName}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{aut.nombres}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldApellidos}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{aut.apellidos}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="200px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldEmail}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{aut.email}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="200px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldWeb}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{aut.web}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldSex}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{aut.sexo == 'M' ? msgs.fieldMale : msgs.fieldFemale}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldCountry}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{aut.nombrePais}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnCenter"
+                                                 width="60px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldState}"/>
+                                        </f:facet>
+
+                                        <h:graphicImage value="#{aut.estado == true ? '/images/icons/enable.png' : '/images/icons/disable.png'}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldDateTimeIns}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{aut.fechaIns}">
+                                            <f:convertDateTime pattern="#{msgs.datePattern}"/>
+                                        </h:outputText>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldUserIns}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{aut.nameUsuIns}"/>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldDateTimeUpd}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{aut.fechaAct}">
+                                            <f:convertDateTime pattern="#{msgs.datePattern}"/>
+                                        </h:outputText>
+                                    </rich:column>
+
+                                    <rich:column styleClass="columnLeft"
+                                                 width="100px"
+                                                 >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.fieldUserUpd}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{aut.nameUsuAct}"/>
+                                    </rich:column>
+
+
+                                </rich:extendedDataTable>
+
+                                <rich:dataScroller for="edtbAuthorMaint" 
+                                                   maxPages="5" />
+                            </rich:panel>
+                        </h:form>
+                    </td>
+                </tr>
+            </table>
+
+
+            <rich:popupPanel id="modalNewAuthor"
+                             modal="true"
+                             resizeable="false"
+                             autosized="true"
+                             header="#{msgs.tittleNewAuthor}"
+                             onbeforeshow="cleanForm('frmNewAuthor','lblNewAuthor','frmNewAuthor:richMsgNewAuthor')"
+                             onshow="$('[id=\'frmNewAuthor:txtName\']').focus()"
+                             >
+                <h:form id="frmNewAuthor">
+                    <a4j:outputPanel id="opnlNewAutor">
+                        <table>
+                            <tr>
+                                <td width="100">
+                                    <h:outputText value="#{msgs.fieldName}"/>
+                                </td>
+                                <td width="180">
+                                    <h:inputText id="txtName"
+                                                 value="#{autorBean.nombres}"
+                                                 label="#{msgs.fieldName}"
+                                                 autocomplete="off"
+                                                 required="true"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputText value="#{msgs.fieldApellidos}"/>
+                                </td>
+                                <td>
+                                    <h:inputText id="txtApe"
+                                                 value="#{autorBean.apellidos}"
+                                                 label="#{msgs.fieldApellidos}"
+                                                 autocomplete="off"
+                                                 required="true">
+                                        <rich:validator />
+                                    </h:inputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputText value="#{msgs.fieldSex}"/>
+                                </td>
+                                <td>
+                                    <h:selectOneRadio id="rdbSex"
+                                                      value="#{autorBean.sexo}"
+                                                      required="true"
+                                                      label="#{msgs.fieldSex}"
+                                                      >
+                                        <f:selectItem itemLabel="#{msgs.fieldMale}" itemValue="M"/>
+                                        <f:selectItem itemLabel="#{msgs.fieldFemale}" itemValue="F"/>
+                                        <rich:validator />
+                                    </h:selectOneRadio>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputText value="#{msgs.fieldCountry}"/>
+                                </td>
+                                <td>
+                                    <h:selectOneMenu id="cboCountry"
+                                                     value="#{autorBean.paisId}"
+                                                     style="width: 128px;"
+                                                     label="#{msgs.fieldCountry}"
+                                                     required="true">
+                                        <f:selectItem itemLabel="#{msgs.fieldSelect}" itemValue="-1"/>
+                                        <f:selectItems value="#{viewLstCountry}"/>
+                                         <f:validateRegex pattern="[a-zA-z ]*"/>
+                                        <rich:validator />
+                                    </h:selectOneMenu>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputText value="#{msgs.fieldEmail}"/>
+                                </td>
+                                <td>
+                                    <h:inputText id="txtEmail"
+                                                 value="#{autorBean.email}"
+                                                 label="#{msgs.fieldEmail}"
+                                                 autocomplete="off"
+                                                 required="true">
+                                        <rich:validator />
+                                    </h:inputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputText value="#{msgs.fieldWeb}"/>
+                                </td>
+                                <td>
+                                    <h:inputText id="txtWeb"
+                                                 value="#{autorBean.web}"
+                                                 label="#{msgs.fieldWeb}"
+                                                 autocomplete="off"
+                                                 required="true">
+                                        <rich:validator />
+                                    </h:inputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="center">
+                                    <a4j:commandButton id="cmbInsertAuthor"
+                                                       action="#{authorMaintenanceMB.insertAuthor}"
+                                                       oncomplete="if(#{facesContext.maximumSeverity==null}){alert('#{msgs.messageSuccessSave}');#{rich:component('modalNewAuthor')}.hide();}"
+                                                       value="#{msgs.buttonInsert}"
+                                                       execute="@form"
+                                                       render="opnlNewAutor,:frmAuthorMaint:pnlAuthorMaint"
+                                                       limitRender="true"/>
+                                    &nbsp;
+                                    <h:commandButton value="#{msgs.buttonCancel}"
+                                                     onclick="#{rich:component('modalNewAuthor')}.hide();return false;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <label id="lblNewAuthor"></label>
+                                    <rich:messages id="richMsgNewAuthor"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </a4j:outputPanel>
+                </h:form>
+            </rich:popupPanel>
+
+            <rich:popupPanel id="modalUpdAuthor"
+                             modal="true"
+                             resizeable="false"
+                             autosized="true"
+                             onshow="$('[id=\'frmUpdAuthor:txtName\']').focus()"
+                             >
+                <f:facet name="header">
+                    <h:outputFormat id="lblTittleUpdAuthor" value="#{msgs.tittleUpdateAuthor}" escape="false">
+                        <f:param value="#{autorBean.nombres} #{autorBean.apellidos}"/>
+                    </h:outputFormat>
+                </f:facet>
+                <h:form id="frmUpdAuthor">
+                    <a4j:outputPanel id="opnlUpdAutor">
+                        <table>
+                            <tr>
+                                <td width="100">
+                                    <h:outputText value="#{msgs.fieldName}"/>
+                                </td>
+                                <td width="180">
+                                    <h:inputText id="txtName"
+                                                 value="#{autorBean.nombres}"
+                                                 label="#{msgs.fieldName}"
+                                                 autocomplete="off"
+                                                 required="true"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputText value="#{msgs.fieldApellidos}"/>
+                                </td>
+                                <td>
+                                    <h:inputText id="txtApe"
+                                                 value="#{autorBean.apellidos}"
+                                                 label="#{msgs.fieldApellidos}"
+                                                 autocomplete="off"
+                                                 required="true">
+                                        <rich:validator />
+                                    </h:inputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputText value="#{msgs.fieldSex}"/>
+                                </td>
+                                <td>
+                                    <h:selectOneRadio id="rdbSex"
+                                                      value="#{autorBean.sexo}"
+                                                      required="true"
+                                                      label="#{msgs.fieldSex}"
+                                                      >
+                                        <f:selectItem itemLabel="#{msgs.fieldMale}" itemValue="M"/>
+                                        <f:selectItem itemLabel="#{msgs.fieldFemale}" itemValue="F"/>
+                                        <rich:validator />
+                                    </h:selectOneRadio>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputText value="#{msgs.fieldCountry}"/>
+                                </td>
+                                <td>
+                                    <h:selectOneMenu id="cboCountry"
+                                                     value="#{autorBean.paisId}"
+                                                     style="width: 128px;"
+                                                     label="#{msgs.fieldCountry}"
+                                                     required="true">
+                                        <f:selectItem itemLabel="#{msgs.fieldSelect}" itemValue="-1"/>
+                                        <f:selectItems value="#{viewLstCountry}"/>
+                                         <f:validateRegex pattern="[a-zA-z ]*"/>
+                                        <rich:validator />
+                                    </h:selectOneMenu>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputText value="#{msgs.fieldEmail}"/>
+                                </td>
+                                <td>
+                                    <h:inputText id="txtEmail"
+                                                 value="#{autorBean.email}"
+                                                 label="#{msgs.fieldEmail}"
+                                                 autocomplete="off"
+                                                 required="true">
+                                        <rich:validator />
+                                    </h:inputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputText value="#{msgs.fieldWeb}"/>
+                                </td>
+                                <td>
+                                    <h:inputText id="txtWeb"
+                                                 value="#{autorBean.web}"
+                                                 label="#{msgs.fieldWeb}"
+                                                 autocomplete="off"
+                                                 required="true">
+                                        <rich:validator />
+                                    </h:inputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputText value="#{msgs.fieldState}"/>
+                                </td>
+                                <td>
+                                    <h:selectOneRadio id="rdbEstado"
+                                                      value="#{autorBean.estado}"
+                                                      required="true"
+                                                      label="#{msgs.fieldState}">
+                                        <f:selectItem itemLabel="#{msgs.fieldActive}" itemValue="true"/>
+                                        <f:selectItem itemLabel="#{msgs.fieldInactive}" itemValue="false"/>
+                                        <rich:validator />
+                                    </h:selectOneRadio>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="center">
+                                    <a4j:commandButton id="cmbUpdAuthor"
+                                                       action="#{authorMaintenanceMB.updateAutor}"
+                                                       oncomplete="if(#{facesContext.maximumSeverity==null}){alert('#{msgs.messageSuccessSave}');#{rich:component('modalUpdAuthor')}.hide();}"
+                                                       value="#{msgs.buttonUpdate}"
+                                                       execute="@form"
+                                                       render="opnlUpdAutor,:frmAuthorMaint:pnlAuthorMaint"
+                                                       limitRender="true">
+                                        <a4j:param value="#{autorBean.autorId}" assignTo="#{autorBean.autorId}"/>
+                                    </a4j:commandButton>
+                                    &nbsp;
+                                    <h:commandButton value="#{msgs.buttonCancel}"
+                                                     onclick="#{rich:component('modalUpdAuthor')}.hide();return false;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <label id="lblUpdAuthor"></label>
+                                    <rich:messages id="richMsgUpdAuthor"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </a4j:outputPanel>
+                </h:form>
+            </rich:popupPanel>
+
+
+        </ui:define>
+    </ui:composition>
+
+</html>

@@ -1,0 +1,121 @@
+<?xml version="1.0"?><!DOCTYPE some_name [<!ENTITY nbsp "&#160;">]> 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                >
+
+
+    <rich:popupPanel id="modalSearchTheme"
+                     autosized="true"
+                     modal="false"
+                     resizeable="false"
+                     header="#{msgs.tittleSearchTheme}"
+                     onshow="$('[id=\'frmSearchTheme:txtName\']').focus()">
+        <f:facet name="controls">
+            <h:graphicImage value="/images/close.png"
+                            style="cursor:pointer;"
+                            onclick="#{rich:component('modalSearchTheme')}.hide()"/>
+        </f:facet>
+        <table width="450">
+            <tr>
+                <td>
+            <h:form id="frmSearchTheme"
+                    >
+                <rich:tabPanel>
+                    <rich:tab header="#{msgs.labelFilters}">
+                        <table width="100%">
+                            <tr>
+                                <td style="white-space: nowrap;" align="left">
+                            <h:outputText value="#{msgs.fieldName}"/> &nbsp;
+                            <h:inputText id="txtName"
+                                         value="#{temaPaginationBean.nombre}"
+                                         autocomplete="off"
+                                         />
+                            </td>
+
+                            <td style="white-space: nowrap;" align="right">
+                            <a4j:commandButton id="cmdSearch"
+                                               value="#{msgs.buttonSearch}"
+                                               action="#{themeMaintenanceMB.listaThemes}"
+                                               execute="@form"
+                                               render="pnlSearchTheme"
+                                               limitRender="true"
+                                               />
+                            </td>
+                            </tr>
+                        </table>
+                    </rich:tab>
+                </rich:tabPanel>
+            </h:form>
+            </td>
+            </tr>  
+            <tr>
+                <td>
+            <h:form id="frmThemeResult">
+                <rich:panel id="pnlSearchTheme" style="width: 100%;">
+
+                    <rich:dataScroller for="dtbSearchTheme" 
+                                       maxPages="5" />
+
+                    <rich:dataTable id="dtbSearchTheme"
+                                    var="tem"
+                                    value="#{temaPaginationBean.listaTema}"
+                                    style="width:  100%;"
+                                    noDataLabel="#{msgs.messageNoData}"
+                                    rows="7"
+                                    >
+                        <rich:column styleClass="columnCenter"
+                                     style="margin-top: 0pt; margin-bottom: 0pt; padding-top: 0px; padding-bottom: 0px;"
+                                     width="30px">
+                            <f:facet name="header">
+
+                            </f:facet>
+                            <a4j:commandLink actionListener="#{textMaintenance.selectTheme}"
+                                             render="opnlTheme"
+                                             oncomplete="#{rich:component('modalSearchTheme')}.hide()"
+                                             execute="@this"
+                                             limitRender="true"
+                                             >
+                                <h:graphicImage value="/images/select.png"
+                                                style="cursor:pointer;border: 0;"
+                                                width="10px" height="15px"/>
+                                <f:attribute name="themeSelected" value="#{tem}"/>
+                                <rich:tooltip style="background-color: #FAE6B0;border: 1px solid #E5973E;">
+                                    <h:outputText value="#{msgs.fieldSeleccionar}"/>
+                                </rich:tooltip>
+                            </a4j:commandLink>
+                        </rich:column>
+
+                        <rich:column styleClass="columnLeft"
+                                     style="margin-top: 0pt; margin-bottom: 0pt; padding-top: 0px; padding-bottom: 0px;"
+                                     width="20%"
+                                     >
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.fieldName}"/>
+                            </f:facet>
+                            <h:outputText value="#{tem.nombre}"/>
+                        </rich:column>
+
+                        <rich:column styleClass="columnLeft"
+                                     style="margin-top: 0pt; margin-bottom: 0pt; padding-top: 0px; padding-bottom: 0px;"
+                                     width="80%"
+                                     >
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.fieldDescripcion}"/>
+                            </f:facet>
+                            <h:outputText value="#{tem.descripcion}"/>
+                        </rich:column>
+
+                    </rich:dataTable>
+
+                </rich:panel>
+            </h:form>
+            </td>
+            </tr>
+        </table>
+    </rich:popupPanel>
+
+</ui:composition>

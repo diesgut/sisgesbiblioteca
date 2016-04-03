@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="menu">
+
+    <select id="getListMenu"
+            resultClass="com.sisgesbib.dao.beans.MenuBean">
+        Select
+            MenuId          as  menuId,
+            MenuParentId    as  menuParentId,
+            Nombre          as  nombre,
+            Descripcion     as  descripcion,
+            Orden           as  orden,
+            Estado          as  estado,
+            PathId          as  pathId
+        From
+            Menu
+        Where
+            Estado=1
+        Order By
+            Orden
+    </select>
+    
+    <select id="getListaMenusForAssign"
+            resultClass="com.sisgesbib.dao.beans.MenuBean"
+            parameterClass="int">
+        Select
+            MenuId          as  menuId,
+            MenuParentId    as  menuParentId,
+            Nombre          as  nombre,
+            Descripcion     as  descripcion,
+            Orden           as  orden,
+            Estado          as  estado,
+            PathId          as  pathId,
+            (Select 
+                Count(*)
+             From   
+                PerfilMenu
+            Where
+                PerfilId=#value# and
+                MenuId=m.MenuId)    as  selected
+        From
+            Menu m
+        Where
+            Estado=1
+    </select>
+    
+    <select id="getMaxOrdenParentMenu" 
+            resultClass="int">
+        Select
+            ifNull(Max(Orden),1)
+        From
+            Menu
+        Where
+            MenuParentId=0
+    </select>
+    
+    <insert id="insertParentMenu" 
+            parameterClass="com.sisgesbib.dao.beans.MenuBean">
+        insert into 
+            Menu (MenuParentId,Nombre,Descripcion,Orden,Estado,PathId)
+        values
+            (0,#nombre#,#descripcion#,#orden#,1,#pathId#)
+    </insert>
+    
+    <select id="validateNameParentMenu" 
+            parameterClass="com.sisgesbib.dao.beans.MenuBean" 
+            resultClass="int">
+        Select 
+            Count(*)
+        From
+            Menu
+        Where
+            Nombre=#nombre# and
+            MenuParentId=0        
+    </select>
+    
+    <select id="getMenuParentForCombo"
+            resultClass="com.sisgesbib.dao.beans.MenuBean">
+        Select
+            MenuId  as  menuId,
+            Nombre  as  nombre
+        From
+            Menu
+        Where
+            MenuParentId=0
+    </select>
+    
+    <select id="validateNameChildMenu"
+            parameterClass="com.sisgesbib.dao.beans.MenuBean" 
+            resultClass="int">
+        Select
+            Count(*)
+        From
+            Menu
+        Where
+            Nombre=#nombre# and 
+            MenuParentId=#menuParentId#
+    </select>
+    
+    <select id="maxOrderChildMenu"
+            parameterClass="com.sisgesbib.dao.beans.MenuBean" 
+            resultClass="int">
+        Select 
+            ifNull(Max(Orden),0)
+        From
+            Menu
+        Where
+            MenuParentId=#menuParentId#
+    </select>
+    
+    <insert id="insertChildMenu"
+            parameterClass="com.sisgesbib.dao.beans.MenuBean" >
+        insert into Menu
+        (MenuParentId,Nombre,Descripcion,Orden,Estado,PathId)
+        values
+        (#menuParentId#,#nombre#,#descripcion#,#orden#,1,#pathId#)
+    </insert>
+    
+    <select id="getListMenuesByRoleId"
+            parameterClass="int"
+            resultClass="com.sisgesbib.dao.beans.MenuBean">
+        Select 
+            distinct
+            m.MenuId          as  menuId,
+            m.MenuParentId    as  menuParentId,
+            m.Nombre          as  nombre,
+            m.Orden           as  orden,
+            m.PathId          as  pathId
+        From
+            Menu    m, PerfilMenu  pm 
+        Where
+            (m.MenuId=pm.MenuId or m.MenuId in (
+                Select 
+                    mm.MenuParentId
+                 From
+                    Menu mm
+                inner join
+                    PerfilMenu pmm  on  mm.MenuId=pmm.MenuId
+                and pmm.PerfilId=#value# and mm.Estado=1
+                )
+            )   and PerfilId=#value#
+       Order by
+           m.Nombre 
+    </select>
+
+</sqlMap>

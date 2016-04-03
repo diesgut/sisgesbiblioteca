@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="editorial">
+    
+    <select id="getListaEditorial"
+            resultClass="com.sisgesbib.dao.beans.EditorialBean"
+            parameterClass="com.sisgesbib.beans.filters.EditorialPaginationBean">
+        Select
+            edi.EditorialId   as  editorialId,
+            edi.Nombre        as  nombre,
+            edi.Direccion     as  direccion,
+            edi.Email         as  email,
+            edi.Web           as  web,
+            edi.Telefono      as  telefono,
+            edi.Movil         as  movil,
+            edi.Estado        as  estado,
+            edi.CiudadId      as  ciudadId,
+            edi.FechaIns      as  fechaIns,
+            edi.FechaAct      as  fechaAct,
+            edi.UsuarioIns    as  usuarioIns,
+            edi.UsuarioAct    as  usuarioAct,
+            if(UsuarioIns=usu.UsuarioId,usu.Login,'')   as  nomUsuIns,
+            if(UsuarioAct=usu.UsuarioId,usu.Login,'')   as  nomUsuAct,
+            c.Nombre          as  nombreCiudad,
+            p.Nombre          as  nombrePais
+        From
+            Editorial edi
+        inner join
+            Usuario usu on  edi.UsuarioIns=usu.UsuarioId || edi.UsuarioAct=usu.UsuarioId  
+        inner join
+            Ciudad  c on edi.CiudadId=c.CiudadId
+        inner join
+            Pais    p on c.PaisId=p.PaisId
+        <dynamic prepend="where">
+            <isNotEmpty property="nombre">
+                edi.Nombre like '%$nombre$%'
+            </isNotEmpty>
+            <isNotEqual property="ciudadId" compareValue="-1" prepend="and">
+                edi.CiudadId=#ciudadId#
+            </isNotEqual>
+            <isNotEqual property="paisId" compareValue="-1" prepend="and">
+                p.PaisId=#paisId#
+            </isNotEqual>
+        </dynamic> 
+        Order by
+            edi.Nombre 
+    </select>
+    
+    <select id="validaNombre"
+            parameterClass="com.sisgesbib.dao.beans.EditorialBean"
+            resultClass="int">
+        Select
+            Count(*)
+        From
+            Editorial
+        Where
+            Nombre=#nombre#
+    </select>
+    
+    <select id="validaCambioNombre"
+            parameterClass="com.sisgesbib.dao.beans.EditorialBean"
+            resultClass="int">
+        Select
+            Count(*)
+        From    
+            Editorial
+        Where
+            Nombre=#nombre# and EditorialId!=#editorialId#
+    </select>
+    
+    <insert id="insertaEditorial"
+            parameterClass="com.sisgesbib.dao.beans.EditorialBean">
+        insert into
+            Editorial (Nombre,Direccion,Email,Web,Telefono,Movil,Estado,CiudadId,FechaIns,UsuarioIns)
+        values 
+            (#nombre#,#direccion#,#email#,#web#,#telefono#,#movil#,1,#ciudadId#,now(),#usuarioIns#)
+    </insert>
+    
+    <update id="updateEditorial"
+            parameterClass="com.sisgesbib.dao.beans.EditorialBean">
+        Update
+            Editorial
+        Set
+            Nombre=#nombre#,
+            Direccion=#direccion#,
+            Email=#email#,
+            Web=#web#,
+            Telefono=#telefono#,
+            Movil=#movil#,
+            Estado=#estado#,
+            CiudadId=#ciudadId#,
+            FechaAct=now(),
+            UsuarioAct=#usuarioAct#
+       Where
+            EditorialId=#editorialId#
+    </update>
+
+
+</sqlMap>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="sede">
+<!--
+    Document   : sqlMapSedeBibliotecaDB.xml
+    Created on : November 19, 2011, 12:28 PM
+    Author     : despantoso
+    Description:
+        Purpose of the document follows.
+-->
+    <select id="getSedeByCompanyAndUser" 
+            parameterClass="java.util.Map" 
+            resultClass="java.util.HashMap">
+        Select
+            s.SedeId  as  sedeId,
+            s.Nombre  as  nombre
+        From
+            Sede s
+        inner join
+            Empresa e   on  e.EmpresaId=s.EmpresaId
+        inner join
+            UsuarioSedePerfil   usp on  s.SedeId=usp.SedeId
+        Where
+            usp.UsuarioId=#userId# and e.EmpresaId=#companyId#
+            and e.Estado=1 and s.Estado=1
+    </select>
+    
+    <select id="getSedePorEmpresa"
+            parameterClass="int"
+            resultClass="java.util.HashMap">
+        Select
+            Nombre  as  nombre,
+            SedeId  as  sedeId
+        From
+            Sede
+        Where
+            EmpresaId=#value#
+    </select>
+
+    <insert id="insertEjemplar"
+            parameterClass="com.sisgesbib.dao.beans.EjemplarBean">
+        insert into Ejemplar
+            (Estado,Condicion.TipoPrestamo,Procedencia,Tipo,Ubicacion,Precio,
+            FechaAdquisicion,FechaIns,UsuariosIns,SedeId)
+        values
+            ("D",#condicion#,#tipoPrestamo#,#procedencia#,#tipo#,#ubicacion#,#precio#,
+                #fechaAdquisicion#,now(),#usuarioIns#,#sedeId#)
+    </insert>
+    
+    
+</sqlMap>
+

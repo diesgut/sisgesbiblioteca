@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!-- =========== FULL CONFIGURATION FILE ================================== -->
+
+<faces-config version="2.0"
+    xmlns="http://java.sun.com/xml/ns/javaee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+    <managed-bean>
+        <managed-bean-name>usuarioPaginationBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.beans.filters.UsuarioPaginationBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>autorPaginationBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.beans.filters.AutorPaginationBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>temaPaginationBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.beans.filters.TemaPaginationBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>materiaPaginationBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.beans.filters.MateriaPaginationBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>categoriaPaginationBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.beans.filters.CategoriaPaginationBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>editorialPaginationBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.beans.filters.EditorialPaginationBean</managed-bean-class>
+    
+        <managed-bean-scope>view</managed-bean-scope></managed-bean>
+    <managed-bean>
+        <managed-bean-name>textoPaginationBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.beans.filters.TextoPaginationBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>lectorPaginacionBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.beans.filters.LectorPaginacionBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>prestamoPaginationBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.beans.filters.PrestamoPaginationBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>solicitudPaginacionBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.beans.filters.SolicitudPaginacionBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>ejemplarPaginationBean</managed-bean-name>
+        <managed-bean-class>com.sisgesbib.beans.filters.EjemplarPaginationBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+</faces-config>

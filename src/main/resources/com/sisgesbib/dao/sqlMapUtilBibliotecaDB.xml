@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="util">
+    
+    <select id="getPaisForCombo"
+            resultClass="java.util.HashMap">
+        Select
+            PaisId  as  paisId,
+            Nombre  as  nombre
+        From
+            Pais
+    </select>
+    
+    <select id="getCiudadPorPais"
+            parameterClass="string"
+            resultClass="java.util.HashMap">
+        Select
+            CiudadId    as  ciudadId,
+            Nombre      as  nombre
+        From
+            Ciudad
+        Where
+            PaisId=#value# 
+    </select>
+    
+    <select id="getLanguageForCombo"
+            resultClass="java.util.HashMap">
+        Select
+            IdiomaId    as  idiomaId,
+            Nombre      as  nombre
+        From
+            Idioma
+    </select>
+
+</sqlMap>

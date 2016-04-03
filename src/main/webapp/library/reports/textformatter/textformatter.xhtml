@@ -1,0 +1,271 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="/templates/main.xhtml">
+        <ui:define name="body">
+
+            <table width="100%">
+                <tr>
+                    <td align="left">
+                        <h:outputText styleClass="tittlePage"
+                                      value="#{msgs.tittleTextForMatter}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:form id="frmSearchLoan"
+                                >
+                            <h:inputHidden value="#{textForMatterReportMB.initPage}"/>
+                            <rich:tabPanel>
+                                <rich:tab header="#{msgs.labelMatterResume}">
+
+                                    <table width="100%" cellpadding="0" cellspacing="0">
+                                        <tr>
+                                            <td>
+                                                
+                                            </td>
+                                            <td align="right">
+                                                <a4j:commandButton value="Extor a Excel"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <rich:extendedDataTable id="edtbMatterResume"
+                                                                        frozenColumns="3"
+                                                                        value="#{lstMatterResume}"
+                                                                        var="mat" 
+                                                                        style="width:  900px;height: 220px;"
+                                                                        noDataLabel="#{msgs.messageNoData}"
+
+                                                                        >
+                                                    <rich:column  
+                                                        styleClass="columnLeft"
+                                                        width="30px">
+                                                        <f:facet name="header">
+                                                            <h:outputText value=""/>
+                                                        </f:facet>
+                                                        <a4j:commandLink id="cmlSelectMatter"
+                                                                         execute="@this"
+                                                                         render="frmTextForMatter:pnlTextForMatter"
+                                                                         limitRender="true"
+                                                                         actionListener="#{textForMatterReportMB.selectMatter}"
+                                                                         >
+                                                            <h:graphicImage value="/images/detail.png"/>
+                                                            <rich:tooltip style="background-color: #FAE6B0;border: 1px solid #E5973E;">
+                                                                <h:outputText value="#{msgs.fieldSeleccionar}"/>
+                                                            </rich:tooltip>
+                                                            <f:attribute name="matterSelected" value="#{mat}"/>
+                                                        </a4j:commandLink>
+                                                    </rich:column>
+
+                                                    <rich:column 
+                                                        styleClass="columnLeft"
+                                                        width="80px">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{msgs.fieldMatterId}"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{mat.materiaId}"/>
+                                                    </rich:column>
+
+                                                    <rich:column footerClass="columnRight"
+                                                                 styleClass="columnLeft"
+                                                                 width="220px">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{msgs.fieldMatter}"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{mat.nombre}"/>
+                                                        <f:facet name="footer">
+                                                            <h:outputText value="#{msgs.fieldTotals}"/>
+                                                        </f:facet>
+                                                    </rich:column>
+
+                                                    <rich:column footerClass="columnRight"
+                                                                 styleClass="columnRight"
+                                                                 width="100px">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{msgs.fieldTexts}"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{mat.titulos}"/>
+                                                        <f:facet name="footer">
+                                                            <h:outputText value="#{viewMptotalsMatterResume.titulos}"/>
+                                                        </f:facet>
+                                                    </rich:column>
+
+                                                    <rich:column footerClass="columnRight"
+                                                                 styleClass="columnRight"
+                                                                 width="100px">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{msgs.fieldTextBib}"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{mat.canTitBiblioteca}"/>
+                                                        <f:facet name="footer">
+                                                            <h:outputText value="#{viewMptotalsMatterResume.canTitBiblioteca}"/>
+                                                        </f:facet>
+                                                    </rich:column>
+
+                                                    <rich:column footerClass="columnRight"
+                                                                 styleClass="columnRight"
+                                                                 width="100px">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{msgs.fieldTextHem}"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{mat.canTitHemeroteca}"/>
+                                                        <f:facet name="footer">
+                                                            <h:outputText value="#{viewMptotalsMatterResume.canTitHemeroteca}"/>
+                                                        </f:facet>
+                                                    </rich:column>
+
+                                                    <rich:column footerClass="columnRight"
+                                                                 styleClass="columnRight"
+                                                                 width="100px">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{msgs.fieldEjemplares}"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{mat.cantEjeTot}"/>
+                                                        <f:facet name="footer">
+                                                            <h:outputText value="#{viewMptotalsMatterResume.cantEjeTot}"/>
+                                                        </f:facet>
+                                                    </rich:column>
+
+                                                    <rich:column footerClass="columnRight"
+                                                                 styleClass="columnRight"
+                                                                 width="100px">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{msgs.fieldEjeBib}"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{mat.canEjeBiblioteca}"/>
+                                                        <f:facet name="footer">
+                                                            <h:outputText value="#{viewMptotalsMatterResume.canEjeBiblioteca}"/>
+                                                        </f:facet>
+                                                    </rich:column>
+
+                                                    <rich:column 
+                                                        width="100px"
+                                                        >
+                                                        <f:facet name="header">
+                                                            <h:outputText value="#{msgs.fieldEjeHem}"/>
+                                                        </f:facet>
+                                                        <h:outputText 
+                                                            style="display: block;margin-left: 50px;"
+                                                            value="#{mat.canEjeHemeroteca}"/>
+                                                        <f:facet name="footer">
+                                                            <h:outputText value="#{viewMptotalsMatterResume.canEjeHemeroteca}"/>
+                                                        </f:facet>
+                                                    </rich:column>
+
+
+                                                </rich:extendedDataTable> 
+
+
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </rich:tab>
+                            </rich:tabPanel>
+                        </h:form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:form id="frmTextForMatter">
+                            <rich:panel id="pnlTextForMatter">
+
+                                <table width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td>
+                                            <rich:dataScroller for="edtbTextForMatter"
+                                                               maxPages="5" />
+                                        </td>
+                                        <td align="right">
+                                            <a4j:commandButton value="Extor a Excel"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <rich:dataTable id="edtbTextForMatter"
+                                                            value="#{lstTextForMatter}"
+                                                            var="text" rows="8"
+                                                            style="width:  100%;"
+                                                            noDataLabel="#{msgs.messageNoData}"
+                                                            >
+
+                                                <f:facet name="header">
+                                                    <h:outputFormat value="#{msgs.tittleTextDetails}">
+
+                                                    </h:outputFormat>
+                                                </f:facet>
+                                                <rich:column 
+                                                    style="text-align: left;"
+                                                    width="300px">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{msgs.fieldTextTitle}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{text.titulo}"/>
+                                                </rich:column>
+
+                                                <rich:column 
+                                                    style="text-align: left;"
+                                                    width="200px">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{msgs.fieldAuthors}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{text.autores}"/>
+                                                </rich:column>
+
+                                                <rich:column 
+                                                    style="text-align: left;"
+                                                    width="100px">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{msgs.fieldEdition}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{text.edicion}"/>
+                                                </rich:column>
+
+                                                <rich:column 
+                                                    style="text-align: left;"
+                                                    width="100px">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{msgs.fieldEditionDate}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{text.añoEdicion}"/>
+                                                </rich:column>
+
+                                                <rich:column 
+                                                    style="text-align: right;"
+                                                    width="100px">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{msgs.fieldEjemplares}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{text.cantEje}"/>
+                                                </rich:column>
+
+                                                <rich:column 
+                                                    style="text-align: left;"
+                                                    width="100px">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="#{msgs.fieldCatalogo}"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{text.catalogo == 'B' ? msgs.fieldCategoryTypeBib : msgs.fieldCategoryTypeHem}"/>
+                                                </rich:column>
+
+
+                                            </rich:dataTable> 
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </rich:panel>
+                        </h:form>
+                    </td>
+                </tr>
+            </table>
+
+        </ui:define>
+    </ui:composition>
+</html>

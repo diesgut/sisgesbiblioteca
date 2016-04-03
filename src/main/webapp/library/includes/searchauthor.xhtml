@@ -1,0 +1,145 @@
+<?xml version="1.0"?><!DOCTYPE some_name [<!ENTITY nbsp "&#160;">]> 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                >
+
+    <rich:popupPanel id="modalSearchAuthors"
+                     autosized="true"
+                     modal="false"
+                     resizeable="false"
+                     header="#{msgs.tittleSearchAuthors}"
+                     onshow="$('[id=\'frmSearchAuthors:txtFullName\']').focus()">
+        <f:facet name="controls">
+            <h:graphicImage value="/images/close.png"
+                            style="cursor:pointer;"
+                            onclick="#{rich:component('modalSearchAuthors')}.hide()"/>
+        </f:facet>
+        <table width="450">
+            <tr>
+                <td>
+            <h:form id="frmSearchAuthors" >
+                <rich:tabPanel>
+                    <rich:tab header="#{msgs.labelFilters}">
+                        <table width="100%">
+                            <tr>
+                                <td style="white-space: nowrap;" align="left">
+                            <h:outputText value="#{msgs.fieldFullName}"/> 
+                            &nbsp;
+                            <h:inputText id="txtFullName"
+                                         value="#{autorPaginationBean.nombres}"
+                                         autocomplete="off"
+                                         />
+                            </td>
+
+                            <td style="white-space: nowrap;" align="right">
+                            <a4j:commandButton id="cmdSearch"
+                                               value="#{msgs.buttonSearch}"
+                                               action="#{authorMaintenanceMB.listaAuthors}"
+                                               execute="@form"
+                                               render="pnlAuthorsList"
+                                               limitRender="true"
+                                               />
+                            </td>
+                            </tr>
+                        </table>
+                    </rich:tab>
+                </rich:tabPanel>
+            </h:form>
+            </td>
+            </tr>
+            <tr>
+                <td>
+            <h:form id="frmAuthorsList">
+                <rich:panel id="pnlAuthorsList" style="width: 100%;">
+
+                    <rich:dataScroller for="edtbAuthorList" 
+                                       maxPages="5" />
+
+                    <rich:dataTable id="edtbAuthorList"
+                                    var="aut"
+                                    value="#{autorPaginationBean.lstAuthors}"
+                                    style="width: 100%;"
+                                    noDataLabel="#{msgs.messageNoData}"
+                                    rows="7" 
+                                    >
+
+                        <rich:column styleClass="columnCenter"
+                                     style="margin-top: 0pt; margin-bottom: 0pt; padding-top: 0px; padding-bottom: 0px;"
+                                     width="5%"
+                                     >
+                            <f:facet name="header">
+                                <h:outputText/>
+                            </f:facet>
+
+                            <a4j:commandLink  id="cmbSearchAuthors"  
+                                              execute="@this"
+                                              render="dtbAuthors"
+                                              limitRender="true"
+                                              actionListener="#{textMaintenance.selectAuthor}"
+                                              >
+                                <h:graphicImage value="/images/select.png"
+                                                height="15px"
+                                                style="border: 0;"/>
+                                <f:attribute name="selectdAuthor" value="#{aut}"/>
+                                <rich:tooltip style="background-color: #FAE6B0;border: 1px solid #E5973E;">
+                                    <h:outputText value="#{msgs.fieldSeleccionar}"/>
+                                </rich:tooltip>
+                            </a4j:commandLink>
+                        </rich:column>
+
+                        <rich:column styleClass="columnLeft"
+                                     width="30%"
+                                     style="margin-top: 0pt; margin-bottom: 0pt; padding-top: 0px; padding-bottom: 0px;"
+                                     >
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.fieldName}"/>
+                            </f:facet>
+                            <h:outputText value="#{aut.nombres}"/>
+                        </rich:column>
+
+                        <rich:column styleClass="columnLeft"
+                                     width="50%"
+                                     style="margin-top: 0pt; margin-bottom: 0pt; padding-top: 0px; padding-bottom: 0px;"
+                                     >
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.fieldApellidos}"/>
+                            </f:facet>
+                            <h:outputText value="#{aut.apellidos}"/>
+                        </rich:column>
+
+                        <rich:column styleClass="columnLeft"
+                                     width="10%"
+                                     style="margin-top: 0pt; margin-bottom: 0pt; padding-top: 0px; padding-bottom: 0px;"
+                                     >
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.fieldCountry}"/>
+                            </f:facet>
+                            <h:outputText value="#{aut.nombrePais}"/>
+                        </rich:column>
+
+                        <rich:column styleClass="columnLeft"
+                                     width="5%"
+                                     style="margin-top: 0pt; margin-bottom: 0pt; padding-top: 0px; padding-bottom: 0px;"
+                                     >
+                            <f:facet name="header">
+                                <h:outputText value="#{msgs.fieldSex}"/>
+                            </f:facet>
+                            <h:outputText value="#{aut.sexo == 'M' ? msgs.fieldMale : msgs.fieldFemale}"/>
+                        </rich:column>
+
+                    </rich:dataTable>
+
+
+                </rich:panel>
+            </h:form>
+            </td>
+            </tr>
+        </table>
+
+    </rich:popupPanel>
+
+</ui:composition>
